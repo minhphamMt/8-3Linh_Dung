@@ -667,3 +667,76 @@ body[data-theme="night"] .wish-card[data-rarity="legendary"].revealed {
     height: min(360px, 46vh);
   }
 }
+
+/* ===== responsive fixes: center gallery + compact garden on small laptop ===== */
+@media (max-width: 920px) {
+  .screen-2.active {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: calc(100svh - 16px);
+    gap: 8px;
+  }
+
+  .screen-2 .topbar {
+    margin-bottom: 0;
+  }
+
+  .screen-2 .stage {
+    margin-inline: auto;
+  }
+}
+
+@media (max-height: 860px) and (min-width: 900px) {
+  .screen-4.active {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100svh - 16px);
+    justify-content: center;
+  }
+
+  .screen-4 .topbar {
+    margin-bottom: 8px;
+  }
+
+  .screen-4 .garden-wrap {
+    padding: 14px;
+    max-height: min(78vh, 700px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .screen-4 .garden-header h2 {
+    margin: 4px 0 6px;
+    font-size: clamp(26px, 2vw, 36px);
+  }
+
+  .screen-4 .garden-header p,
+  .screen-4 .garden-tip {
+    margin: 0;
+  }
+
+  .screen-4 .garden-meta {
+    gap: 8px;
+    margin: 10px 0;
+  }
+
+  .screen-4 .garden-actions {
+    margin: 0;
+    gap: 8px;
+  }
+
+  .screen-4 .wish-grid {
+    margin-top: 10px;
+    overflow: auto;
+    padding-right: 4px;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+  }
+
+  .screen-4 .wish-card {
+    min-height: 128px;
+    padding: 12px;
+  }
+}
