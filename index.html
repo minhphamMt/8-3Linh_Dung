@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="vi">
+<html Dungg="vi">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -17,6 +17,7 @@
     </div>
     <div id="hearts"></div>
     <div id="petals"></div>
+    <div id="flowers"></div>
   </div>
 
   <main class="app">
@@ -31,18 +32,20 @@
         </p>
 
         <div class="choice-grid">
-          <button class="choice-btn" data-girl="lan">
+          <button class="choice-btn" data-girl="Dung">
             <span class="choice-emoji">🌸</span>
-            <span class="choice-name">Lan</span>
+            <span class="choice-name">Dung</span>
             <span class="choice-hint">Bấm để chọn</span>
           </button>
 
           <button class="choice-btn" data-girl="ha">
             <span class="choice-emoji">🌷</span>
-            <span class="choice-name">Hà</span>
+            <span class="choice-name">Linh</span>
             <span class="choice-hint">Bấm để chọn</span>
           </button>
         </div>
+
+        <button class="explore-btn" id="openGardenFromHero">🌺 Khám phá vườn điều ước</button>
 
         <div class="tiny">
           <span></span> Desigin and build by <code>Minh Pham</code>
@@ -58,10 +61,14 @@
           <span class="pill">Gửi đến</span>
           <strong id="girlNameTop">...</strong>
         </div>
-        <button class="mute-btn" id="toggleMusic" aria-label="Bật/tắt nhạc">♪</button>
+        <div class="topbar-actions">
+          <button class="garden-btn" id="openGardenBtn" aria-label="Mở vườn điều ước">🌺</button>
+          <button class="mute-btn" id="toggleMusic" aria-label="Bật/tắt nhạc">♪</button>
+        </div>
       </header>
 
       <div class="stage">
+        <div class="gallery gallery-bg" id="galleryBg" aria-hidden="true"></div>
         <div class="gallery" id="gallery" aria-label="Bộ sưu tập ảnh"></div>
 
         <button class="center-btn" id="openLetterBtn" aria-label="Nhận lời chúc">
@@ -124,10 +131,29 @@
         </div>
       </div>
     </section>
+
+    <!-- Screen 4 -->
+    <section class="screen screen-4" data-screen="4" aria-hidden="true">
+      <header class="topbar">
+        <button class="back-btn" id="backFromGarden" aria-label="Quay lại">←</button>
+        <div class="who">
+          <span class="pill">Vườn điều ước</span>
+          <strong id="gardenName">Bạn</strong>
+        </div>
+        <div style="width:42px"></div>
+      </header>
+
+      <div class="garden-wrap card">
+        <div class="garden-header">
+          <h2>Gieo một điều ước hôm nay 🌷</h2>
+          <p>Chạm vào từng bông hoa để mở ra một lời chúc tích cực.</p>
+        </div>
+        <div class="wish-grid" id="wishGrid"></div>
+      </div>
+    </section>
   </main>
 
   <audio id="bgm" preload="auto" loop>
-    <!-- tuỳ chọn: thêm nhạc trong assets/music.mp3 -->
     <source src="./assets/music.mp3" type="audio/mpeg" />
   </audio>
 

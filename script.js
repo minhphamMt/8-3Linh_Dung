@@ -1,22 +1,11 @@
-/* -------------------------------------------
-   8/3 Frontend Project (no backend)
-   - Screen 1: choose girl
-   - Screen 2: 3D-ish gallery + center button
-   - Screen 3: envelope + typewriter letter
--------------------------------------------- */
-
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => document.querySelectorAll(s);
 
-// =====================
-// CONFIG (Edit here)
-// =====================
 const CONFIG = {
   fromName: "Minh",
   girls: {
-    lan: {
-      name: "Lan",
-      // Add as many images as you want
+    Dung: {
+      name: "Dung",
       images: [
         "./assets/Linh/Linh1.png",
         "./assets/Linh/Linh2.png",
@@ -25,7 +14,7 @@ const CONFIG = {
         "./assets/Linh/Linh5.png",
       ],
       letter: [
-        "Lan à,",
+        "Dung à,",
         "",
         "Chúc em một ngày 8/3 thật dịu dàng và rực rỡ 🌸",
         "Mong em luôn vui vẻ, được yêu thương đúng cách,",
@@ -38,7 +27,7 @@ const CONFIG = {
       ].join("\n"),
     },
     ha: {
-      name: "Hà",
+      name: "Linh",
       images: [
         "./assets/Dung/Dung1.png",
         "./assets/Dung/Dung2.png",
@@ -47,7 +36,7 @@ const CONFIG = {
         "./assets/Dung/Dung5.png",
       ],
       letter: [
-        "Hà yêu,",
+        "Linh yêu,",
         "",
         "Nhân ngày 8/3, chúc em luôn xinh đẹp,",
         "tươi tắn như những bông hoa mùa xuân 🌷",
@@ -62,239 +51,286 @@ const CONFIG = {
       ].join("\n"),
     },
   },
-
-  // gallery layout preset (desktop)
-  // (x,y) in percentage of stage, w/h in px
-  // You can tweak these for a different vibe.
   layoutDesktop: [
     { x: 10, y: 18, w: 190, h: 250, r: -6 },
-    { x: 28, y: 8,  w: 220, h: 160, r: 4  },
-    { x: 66, y: 10, w: 210, h: 240, r: 8  },
+    { x: 28, y: 8, w: 220, h: 160, r: 4 },
+    { x: 66, y: 10, w: 210, h: 240, r: 8 },
     { x: 78, y: 42, w: 180, h: 220, r: -8 },
     { x: 16, y: 52, w: 240, h: 170, r: 10 },
     { x: 40, y: 62, w: 210, h: 230, r: -4 },
-    { x: 56, y: 44, w: 160, h: 150, r: 6  },
-    { x: 6,  y: 36, w: 170, h: 160, r: -10 },
+    { x: 56, y: 44, w: 160, h: 150, r: 6 },
+    { x: 6, y: 36, w: 170, h: 160, r: -10 },
   ],
-
-  // simplified layout for mobile (relative)
+  layoutDesktopBg: [
+    { x: -5, y: -6, w: 200, h: 160, r: -10 },
+    { x: 22, y: -8, w: 180, h: 150, r: 8 },
+    { x: 72, y: -5, w: 210, h: 170, r: -6 },
+    { x: 88, y: 14, w: 170, h: 210, r: 10 },
+    { x: 84, y: 62, w: 190, h: 180, r: -9 },
+    { x: 62, y: 82, w: 180, h: 150, r: 6 },
+    { x: 22, y: 82, w: 200, h: 160, r: -5 },
+    { x: -8, y: 70, w: 180, h: 190, r: 9 },
+    { x: -10, y: 30, w: 170, h: 180, r: -8 },
+  ],
   layoutMobile: [
-    { x: 10, y: 14, w: 150, h: 200, r: -6 },
-    { x: 58, y: 12, w: 160, h: 120, r: 6  },
-    { x: 60, y: 34, w: 150, h: 190, r: 10 },
-    { x: 8,  y: 40, w: 165, h: 130, r: -8 },
-    { x: 18, y: 60, w: 170, h: 190, r: 8  },
-    { x: 58, y: 62, w: 140, h: 150, r: -4 },
+    { x: 8, y: 14, w: 148, h: 192, r: -6 },
+    { x: 56, y: 12, w: 156, h: 116, r: 6 },
+    { x: 60, y: 34, w: 148, h: 186, r: 10 },
+    { x: 8, y: 40, w: 164, h: 130, r: -8 },
+    { x: 18, y: 62, w: 168, h: 184, r: 8 },
+    { x: 58, y: 64, w: 138, h: 148, r: -4 },
   ],
-
-  typeSpeed: 28, // typing speed (ms)
+  layoutMobileBg: [
+    { x: -8, y: -6, w: 136, h: 104, r: -10 },
+    { x: 34, y: -6, w: 130, h: 106, r: 8 },
+    { x: 74, y: 0, w: 130, h: 96, r: -8 },
+    { x: 84, y: 28, w: 124, h: 146, r: 8 },
+    { x: 86, y: 68, w: 122, h: 118, r: -6 },
+    { x: 66, y: 88, w: 126, h: 96, r: 6 },
+    { x: 30, y: 88, w: 128, h: 104, r: -4 },
+    { x: -8, y: 78, w: 126, h: 132, r: 10 },
+    { x: -10, y: 38, w: 128, h: 126, r: -8 },
+  ],
+  wishes: [
+    { emoji: "🌸", title: "Rạng rỡ", text: "Mỗi ngày bạn đều có năng lượng tích cực và tỏa sáng theo cách rất riêng." },
+    { emoji: "💖", title: "Được yêu thương", text: "Bạn luôn gặp những người tử tế, biết trân trọng và nâng niu bạn." },
+    { emoji: "🌷", title: "Bình yên", text: "Lịch trình bận rộn vẫn có những khoảng lặng thật dễ chịu dành cho bạn." },
+    { emoji: "🫶", title: "Can đảm", text: "Mọi mục tiêu bạn theo đuổi đều có đủ kiên định và may mắn để tLinhnh công." },
+    { emoji: "✨", title: "May mắn", text: "Điều tốt đẹp luôn đến đúng lúc, đúng cách, đúng người." },
+    { emoji: "💐", title: "Hạnh phúc", text: "Nụ cười hôm nay sẽ kéo dài thật lâu và Dung sang cả những người xung quanh." },
+  ],
+  typeSpeed: 28,
 };
 
-// =====================
-// State
-// =====================
-let currentKey = null;
 let currentGirl = null;
 let typingTimer = null;
 let musicOn = false;
+let previousScreen = 1;
 
-// =====================
-// Screen handling
-// =====================
-function showScreen(n){
-  $$(".screen").forEach(sec => {
+function showScreen(n) {
+  $$(".screen").forEach((sec) => {
     const active = sec.dataset.screen === String(n);
     sec.classList.toggle("active", active);
     sec.setAttribute("aria-hidden", active ? "false" : "true");
   });
 }
 
-// =====================
-// Decor: hearts + petals
-// =====================
-function rand(min, max){ return Math.random() * (max - min) + min; }
+function rand(min, max) {
+  return Math.random() * (max - min) + min;
+}
 
-function spawnHeart(){
+function spawnHeart() {
   const el = document.createElement("div");
   el.className = "heart";
-  el.textContent = Math.random() > 0.4 ? "💗" : "💖";
+  el.textContent = Math.random() > 0.35 ? "💗" : "💖";
   el.style.left = `${rand(0, 100)}vw`;
-  el.style.bottom = `-20px`;
+  el.style.bottom = "-20px";
   el.style.fontSize = `${rand(14, 24)}px`;
   el.style.setProperty("--drift", `${rand(-60, 60)}px`);
   el.style.animationDuration = `${rand(6.5, 11.5)}s`;
   $("#hearts").appendChild(el);
-
   setTimeout(() => el.remove(), 12000);
 }
 
-function spawnPetal(){
+function spawnPetal() {
   const el = document.createElement("div");
   el.className = "petal";
   el.style.left = `${rand(0, 100)}vw`;
-  el.style.top = `-30px`;
+  el.style.top = "-30px";
   el.style.setProperty("--drift", `${rand(-80, 80)}px`);
   el.style.animationDuration = `${rand(7.5, 14)}s`;
   el.style.transform = `rotate(${rand(0, 360)}deg)`;
   $("#petals").appendChild(el);
-
   setTimeout(() => el.remove(), 16000);
 }
 
-setInterval(spawnHeart, 550);
-setInterval(spawnPetal, 850);
+function spawnFlower() {
+  const el = document.createElement("div");
+  el.className = "flower";
+  el.textContent = Math.random() > 0.5 ? "🌸" : "🌺";
+  el.style.left = `${rand(0, 100)}vw`;
+  el.style.bottom = "-14px";
+  el.style.fontSize = `${rand(12, 18)}px`;
+  el.style.setProperty("--drift", `${rand(-40, 40)}px`);
+  el.style.animationDuration = `${rand(9, 16)}s`;
+  $("#flowers").appendChild(el);
+  setTimeout(() => el.remove(), 17000);
+}
 
-// =====================
-// Gallery
-// =====================
-function isMobile(){
+setInterval(spawnHeart, 620);
+setInterval(spawnPetal, 900);
+setInterval(spawnFlower, 1300);
+
+function isMobile() {
   return window.matchMedia("(max-width: 820px)").matches;
 }
 
-function loadGallery(){
+function createPhoto(imgSrc, slot, photoClass = "photo") {
+  const wrap = document.createElement("div");
+  wrap.className = photoClass;
+  wrap.style.left = `${slot.x}%`;
+  wrap.style.top = `${slot.y}%`;
+  wrap.style.width = `${slot.w}px`;
+  wrap.style.height = `${slot.h}px`;
+  wrap.style.transform = `translateZ(${Math.round(rand(8, 60))}px) rotate(${slot.r}deg)`;
+
+  const img = document.createElement("img");
+  img.src = imgSrc;
+  img.alt = `${currentGirl.name} photo`;
+  img.loading = "lazy";
+
+  wrap.appendChild(img);
+  return wrap;
+}
+
+function loadGallery() {
   const g = $("#gallery");
+  const gBg = $("#galleryBg");
   g.innerHTML = "";
+  gBg.innerHTML = "";
 
   const layout = isMobile() ? CONFIG.layoutMobile : CONFIG.layoutDesktop;
-
-  // We will place as many images as possible using layout slots
+  const layoutBg = isMobile() ? CONFIG.layoutMobileBg : CONFIG.layoutDesktopBg;
   const imgs = currentGirl.images;
-  const count = Math.min(imgs.length, layout.length);
 
-  for(let i=0;i<count;i++){
-    const slot = layout[i];
-    const wrap = document.createElement("div");
-    wrap.className = "photo";
-    wrap.style.left = `${slot.x}%`;
-    wrap.style.top = `${slot.y}%`;
-    wrap.style.width = `${slot.w}px`;
-    wrap.style.height = `${slot.h}px`;
-    wrap.style.transform = `translateZ(${Math.round(rand(10, 70))}px) rotate(${slot.r}deg)`;
+  layout.forEach((slot, idx) => {
+    const imgSrc = imgs[idx % imgs.length];
+    const wrap = createPhoto(imgSrc, slot);
 
-    const img = document.createElement("img");
-    img.src = imgs[i];
-    img.alt = `${currentGirl.name} photo ${i+1}`;
-    img.loading = "lazy";
-
-    // slight hover tilt on each photo
     wrap.addEventListener("mousemove", (e) => {
       const rect = wrap.getBoundingClientRect();
       const dx = (e.clientX - rect.left) / rect.width - 0.5;
       const dy = (e.clientY - rect.top) / rect.height - 0.5;
-      wrap.style.transform =
-        `translateZ(${Math.round(40)}px) rotate(${slot.r}deg) rotateY(${dx*10}deg) rotateX(${-dy*10}deg)`;
+      wrap.style.transform = `translateZ(40px) rotate(${slot.r}deg) rotateY(${dx * 10}deg) rotateX(${(-dy) * 10}deg)`;
     });
     wrap.addEventListener("mouseleave", () => {
-      wrap.style.transform = `translateZ(${Math.round(rand(10, 70))}px) rotate(${slot.r}deg)`;
+      wrap.style.transform = `translateZ(${Math.round(rand(8, 60))}px) rotate(${slot.r}deg)`;
     });
 
-    wrap.appendChild(img);
     g.appendChild(wrap);
-  }
+  });
 
-  // If user has more images than layout, ignore extras (or you can extend layout arrays).
+  layoutBg.forEach((slot, idx) => {
+    const imgSrc = imgs[(idx + 1) % imgs.length];
+    const wrap = createPhoto(imgSrc, slot, "photo photo--bg");
+    gBg.appendChild(wrap);
+  });
 }
 
-// Parallax feel on stage
-function setupStageParallax(){
+function setupStageParallax() {
   const stage = $(".stage");
   const gallery = $("#gallery");
-  if(!stage || !gallery) return;
+  const galleryBg = $("#galleryBg");
+  if (!stage || !gallery || !galleryBg) return;
 
   stage.addEventListener("mousemove", (e) => {
     const rect = stage.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width - 0.5; // -0.5..0.5
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
     const y = (e.clientY - rect.top) / rect.height - 0.5;
 
-    gallery.style.transform = `rotateY(${x*10}deg) rotateX(${-y*10}deg) scale(1.01)`;
+    gallery.style.transform = `rotateY(${x * 10}deg) rotateX(${(-y) * 10}deg) scale(1.01)`;
+    galleryBg.style.transform = `rotateY(${x * 6}deg) rotateX(${(-y) * 6}deg) scale(1.02)`;
   });
 
   stage.addEventListener("mouseleave", () => {
     gallery.style.transform = "none";
+    galleryBg.style.transform = "none";
   });
 }
 
-// =====================
-// Typewriter
-// =====================
-function stopTyping(){
-  if(typingTimer) clearTimeout(typingTimer);
+function stopTyping() {
+  if (typingTimer) clearTimeout(typingTimer);
   typingTimer = null;
 }
 
-function typeWriter(text, el, speed){
+function typeWriter(text, el, speed) {
   stopTyping();
   el.textContent = "";
   let i = 0;
 
   const tick = () => {
-    // Support newline
     el.textContent += text[i] ?? "";
     i++;
-    if(i < text.length){
+    if (i < text.length) {
       typingTimer = setTimeout(tick, speed);
     }
   };
   tick();
 }
 
-// =====================
-// Music toggle (optional)
-// =====================
-function setMusic(on){
+function setMusic(on) {
   const audio = $("#bgm");
   musicOn = on;
+  if (!audio) return;
 
-  if(!audio) return;
-  if(on){
+  if (on) {
     audio.volume = 0.35;
-    audio.play().catch(() => {
-      // autoplay might be blocked; user can tap again.
-    });
-  }else{
+    audio.play().catch(() => {});
+  } else {
     audio.pause();
   }
 
   $("#toggleMusic")?.classList.toggle("is-on", on);
 }
 
-// =====================
-// Envelope open
-// =====================
-function openEnvelopeAndType(){
+function openEnvelopeAndType() {
   const env = $("#envelope");
   const typing = $("#typing");
-  if(!env || !typing) return;
+  if (!env || !typing || !currentGirl) return;
 
   env.classList.add("open");
   typeWriter(currentGirl.letter, typing, CONFIG.typeSpeed);
 }
 
-// =====================
-// Init events
-// =====================
-function init(){
+function renderWishCards() {
+  const target = $("#wishGrid");
+  target.innerHTML = "";
+
+  CONFIG.wishes.forEach((wish) => {
+    const card = document.createElement("button");
+    card.className = "wish-card";
+    card.innerHTML = `
+      <div class="wish-emoji">${wish.emoji}</div>
+      <div class="wish-title">${wish.title}</div>
+      <div class="wish-text">${wish.text}</div>
+    `;
+
+    card.addEventListener("click", () => {
+      card.classList.toggle("revealed");
+    });
+
+    target.appendChild(card);
+  });
+}
+
+function openGarden(fromScreen = 1) {
+  previousScreen = fromScreen;
+  $("#gardenName").textContent = currentGirl?.name ?? "Bạn";
+  renderWishCards();
+  showScreen(4);
+}
+
+function init() {
   $("#fromName").textContent = CONFIG.fromName;
 
-  // Screen 1 choices
-  $$(".choice-btn").forEach(btn => {
+  $$(".choice-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       const key = btn.dataset.girl;
-      currentKey = key;
       currentGirl = CONFIG.girls[key];
-
       $("#girlNameTop").textContent = currentGirl.name;
-
       showScreen(2);
       loadGallery();
       setupStageParallax();
-
-      // try music on first interaction? keep off by default
-      // setMusic(true);
     });
   });
 
-  // Back buttons
+  $("#openGardenFromHero").addEventListener("click", () => openGarden(1));
+  $("#openGardenBtn").addEventListener("click", () => openGarden(2));
+
+  $("#backFromGarden").addEventListener("click", () => {
+    showScreen(previousScreen);
+  });
+
   $("#backTo1").addEventListener("click", () => {
     stopTyping();
     showScreen(1);
@@ -302,33 +338,26 @@ function init(){
 
   $("#backTo2").addEventListener("click", () => {
     stopTyping();
-    // reset envelope state
     $("#envelope")?.classList.remove("open");
     $("#typing").textContent = "";
     showScreen(2);
   });
 
-  // Music toggle
   $("#toggleMusic").addEventListener("click", () => setMusic(!musicOn));
 
-  // Open letter
   $("#openLetterBtn").addEventListener("click", () => {
-    if(!currentGirl) return;
+    if (!currentGirl) return;
 
     $("#girlNameLetter").textContent = currentGirl.name;
     $("#girlNameTo").textContent = currentGirl.name;
 
-    // reset envelope
     $("#envelope")?.classList.remove("open");
     $("#typing").textContent = "";
 
     showScreen(3);
-
-    // Delay for nicer transition
     setTimeout(openEnvelopeAndType, 450);
   });
 
-  // Again button
   $("#againBtn").addEventListener("click", () => {
     stopTyping();
     $("#envelope")?.classList.remove("open");
@@ -336,9 +365,8 @@ function init(){
     showScreen(2);
   });
 
-  // Re-layout on resize
   window.addEventListener("resize", () => {
-    if(currentGirl && $(".screen-2").classList.contains("active")){
+    if (currentGirl && $(".screen-2").classList.contains("active")) {
       loadGallery();
     }
   });
