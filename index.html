@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Chúc mừng 8/3 💖</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+
+<body>
+  <div class="bg-layers">
+    <div class="grain"></div>
+    <div class="blobs">
+      <span class="blob b1"></span>
+      <span class="blob b2"></span>
+      <span class="blob b3"></span>
+    </div>
+    <div id="hearts"></div>
+    <div id="petals"></div>
+  </div>
+
+  <main class="app">
+    <!-- Screen 1 -->
+    <section class="screen screen-1 active" data-screen="1" aria-hidden="false">
+      <div class="card hero">
+        <div class="badge">💐 08/03</div>
+        <h1 class="title">Chúc mừng ngày Quốc tế Phụ nữ</h1>
+        <p class="subtitle">
+          Một chút dịu dàng dành cho người đặc biệt ✨<br/>
+          Hôm nay bạn muốn gửi đến ai?
+        </p>
+
+        <div class="choice-grid">
+          <button class="choice-btn" data-girl="lan">
+            <span class="choice-emoji">🌸</span>
+            <span class="choice-name">Lan</span>
+            <span class="choice-hint">Bấm để chọn</span>
+          </button>
+
+          <button class="choice-btn" data-girl="ha">
+            <span class="choice-emoji">🌷</span>
+            <span class="choice-name">Hà</span>
+            <span class="choice-hint">Bấm để chọn</span>
+          </button>
+        </div>
+
+        <div class="tiny">
+          <span></span> Desigin and build by <code>Minh Pham</code>
+        </div>
+      </div>
+    </section>
+
+    <!-- Screen 2 -->
+    <section class="screen screen-2" data-screen="2" aria-hidden="true">
+      <header class="topbar">
+        <button class="back-btn" id="backTo1" aria-label="Quay lại chọn tên">←</button>
+        <div class="who">
+          <span class="pill">Gửi đến</span>
+          <strong id="girlNameTop">...</strong>
+        </div>
+        <button class="mute-btn" id="toggleMusic" aria-label="Bật/tắt nhạc">♪</button>
+      </header>
+
+      <div class="stage">
+        <div class="gallery" id="gallery" aria-label="Bộ sưu tập ảnh"></div>
+
+        <button class="center-btn" id="openLetterBtn" aria-label="Nhận lời chúc">
+          <span class="center-btn__ring"></span>
+          <span class="center-btn__inner">
+            <span class="center-btn__icon">💌</span>
+            <span class="center-btn__text">Nhận lời chúc</span>
+          </span>
+        </button>
+
+        <div class="stage-hint">Di chuột để cảm nhận “không gian” ✨</div>
+      </div>
+    </section>
+
+    <!-- Screen 3 -->
+    <section class="screen screen-3" data-screen="3" aria-hidden="true">
+      <header class="topbar">
+        <button class="back-btn" id="backTo2" aria-label="Quay lại ảnh">←</button>
+        <div class="who">
+          <span class="pill">Thư gửi</span>
+          <strong id="girlNameLetter">...</strong>
+        </div>
+        <div style="width:42px"></div>
+      </header>
+
+      <div class="letter-wrap">
+        <div class="envelope" id="envelope">
+          <div class="env-back"></div>
+          <div class="env-front"></div>
+          <div class="env-flap" id="flap"></div>
+
+          <div class="paper" id="paper">
+            <div class="paper-head">
+              <div class="stamp">💗</div>
+              <div class="paper-title">Happy Women’s Day</div>
+            </div>
+
+            <div class="paper-body">
+              <div class="to-line">
+                <span>Gửi</span>
+                <strong id="girlNameTo">...</strong>
+                <span>—</span>
+              </div>
+
+              <div class="typing" id="typing"></div>
+
+              <div class="paper-footer">
+                <div class="signature">
+                  <span class="sig">— From</span>
+                  <strong id="fromName">Minh</strong>
+                </div>
+                <button class="again-btn" id="againBtn">Xem lại ảnh ✨</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="letter-tip">
+          Lời chúc sẽ hiện dần như đang được gõ… ⌨️💞
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <audio id="bgm" preload="auto" loop>
+    <!-- tuỳ chọn: thêm nhạc trong assets/music.mp3 -->
+    <source src="./assets/music.mp3" type="audio/mpeg" />
+  </audio>
+
+  <script src="./script.js"></script>
+</body>
+</html>
