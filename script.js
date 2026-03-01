@@ -43,6 +43,9 @@ const CONFIG = {
       { x: 57, y: 58, w: 184, h: 136, r: 4 },
       { x: 30, y: 58, w: 172, h: 206, r: -4 },
       { x: 7, y: 40, w: 184, h: 138, r: 7 },
+      { x: 39, y: 28, w: 164, h: 122, r: 8 },
+      { x: 17, y: 72, w: 170, h: 120, r: -8 },
+      { x: 66, y: 74, w: 168, h: 124, r: 5 },
     ],
     mobile: [
       { x: 5, y: 8, w: 124, h: 158, r: -6 },
@@ -52,6 +55,8 @@ const CONFIG = {
       { x: 9, y: 58, w: 132, h: 158, r: 5 },
       { x: 53, y: 58, w: 126, h: 122, r: -4 },
       { x: 32, y: 76, w: 126, h: 108, r: 3 },
+      { x: 1, y: 76, w: 116, h: 92, r: -9 },
+      { x: 66, y: 72, w: 112, h: 92, r: 10 },
     ],
   },
   wishes: [
@@ -152,7 +157,18 @@ function loadGallery() {
     wrap.addEventListener("mouseleave", () => (wrap.style.transform = `translateZ(${Math.round(rand(8, 60))}px) rotate(${slot.r}deg)`));
     g.appendChild(wrap);
   });
-  layout.forEach((slot, idx) => gBg.appendChild(createPhoto(currentGirl.images[(idx + 1) % currentGirl.images.length], slot, "photo photo--bg")));
+  const bgSlots = [...layout, ...layout.slice(0, Math.ceil(layout.length * 0.7))];
+  bgSlots.forEach((slot, idx) => {
+    const drift = {
+      ...slot,
+      x: Math.max(0, Math.min(84, slot.x + rand(-8, 8))),
+      y: Math.max(0, Math.min(82, slot.y + rand(-10, 10))),
+      w: Math.round(slot.w * rand(0.92, 1.12)),
+      h: Math.round(slot.h * rand(0.9, 1.1)),
+      r: slot.r + rand(-6, 6),
+    };
+    gBg.appendChild(createPhoto(currentGirl.images[(idx + 1) % currentGirl.images.length], drift, "photo photo--bg"));
+  });
 }
 
 function setupStageParallax() {
@@ -194,6 +210,10 @@ function setMusic(on) {
 function openEnvelopeAndType() {
   const env = $("#envelope");
   const typing = $("#typing");
+  const text = document.getElementById("signatureText");
+const length = text.getComputedTextLength();
+text.style.strokeDasharray = length;
+text.style.strokeDashoffset = length;
   if (!env || !typing || !currentGirl) return;
   env.classList.add("open");
   $("#signatureSvg")?.classList.remove("draw");
