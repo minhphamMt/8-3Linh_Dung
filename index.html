@@ -15,9 +15,22 @@
       <span class="blob b2"></span>
       <span class="blob b3"></span>
     </div>
+    <div id="stars"></div>
+    <div id="sunGlow"></div>
     <div id="hearts"></div>
     <div id="petals"></div>
     <div id="flowers"></div>
+    <div id="confettiLayer"></div>
+  </div>
+
+  <div class="theme-switcher card" aria-label="Tuỳ chọn giao diện theo thời gian">
+    <span class="theme-label">Giao diện</span>
+    <select id="themeSelect" class="theme-select">
+      <option value="auto">Tự động</option>
+      <option value="morning">Buổi sáng</option>
+      <option value="afternoon">Buổi chiều</option>
+      <option value="night">Buổi tối</option>
+    </select>
   </div>
 
   <main class="app">
@@ -36,14 +49,14 @@
           <div class="choice-grid">
           <button class="choice-btn" data-girl="Dung">
             <span class="choice-emoji">🌸</span>
-            <span class="choice-name">Linh</span>
-            <span class="choice-hint">Bấm để chọn</span>
+            <span class="choice-name">Mỹ Linh</span>
+            <span class="choice-hint">click vô đây nè</span>
           </button>
 
           <button class="choice-btn" data-girl="ha">
             <span class="choice-emoji">🌷</span>
-            <span class="choice-name">Dung</span>
-            <span class="choice-hint">Bấm để chọn</span>
+            <span class="choice-name">Vân Dung</span>
+            <span class="choice-hint">click vô đây nè</span>
           </button>
         </div>
           <div class="belt belt--right" id="heroBeltRight"></div>
@@ -85,6 +98,17 @@
           </span>
         </button>
 
+        <div class="gift-sequence" id="giftSequence" aria-hidden="true">
+          <div class="gift-box" id="giftBox" role="button" tabindex="0" aria-label="Mở hộp quà">
+            <div class="gift-lid"></div>
+            <div class="gift-body"></div>
+            <div class="gift-ribbon gift-ribbon--v"></div>
+            <div class="gift-ribbon gift-ribbon--h"></div>
+            <div class="gift-tag">🎁</div>
+          </div>
+          <p class="gift-text" id="giftText">Bấm lần nữa để mở quà nha ✨</p>
+        </div>
+
         <div class="stage-hint">Di chuột để cảm nhận “không gian” ✨</div>
       </div>
     </section>
@@ -124,7 +148,11 @@
               <div class="paper-footer">
                 <div class="signature">
                   <span class="sig">— From</span>
-                  <strong id="fromName">Minh</strong>
+                  <svg class="signature-svg" id="signatureSvg" viewBox="0 0 240 80" aria-label="Chữ ký Minh">
+                    <path id="signaturePath"
+                      d="M10 57 C18 28, 30 28, 36 56 C41 78, 49 50, 54 38 C58 28, 63 29, 67 56 C72 82, 86 39, 93 29 C98 23, 104 31, 106 42 C109 58, 117 65, 125 42 C131 24, 140 26, 142 45 C144 63, 153 64, 164 34 C170 18, 178 22, 182 35 C186 48, 193 55, 204 42 C214 30, 223 31, 230 48"
+                      pathLength="100" />
+                  </svg>
                 </div>
                 <button class="again-btn" id="againBtn">Xem lại ảnh ✨</button>
               </div>
