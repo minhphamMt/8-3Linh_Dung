@@ -424,3 +424,46 @@ body[data-theme="night"] .typing::-webkit-scrollbar-thumb {
   from { transform: rotate(-5deg); }
   to { transform: rotate(5deg); }
 }
+
+/* ===== mobile performance tuning ===== */
+@media (max-width: 820px) {
+  .card {
+    backdrop-filter: blur(8px);
+  }
+
+  .grain,
+  .blob,
+  #stars::after,
+  .photo::before {
+    display: none;
+  }
+
+  .photo,
+  .photo--bg,
+  .gift-sequence {
+    backdrop-filter: none;
+    box-shadow: 0 8px 18px rgba(39, 23, 43, 0.16);
+  }
+
+  .stage,
+  #gallery,
+  #galleryBg,
+  .photo {
+    transition: transform 0.12s linear;
+    will-change: transform;
+  }
+
+  .stage {
+    touch-action: pan-y;
+  }
+
+  .belt-track {
+    animation-duration: 36s;
+  }
+
+  .heart,
+  .petal,
+  .flower {
+    filter: none;
+  }
+}

@@ -75,6 +75,8 @@ let typingTimer = null;
 let musicOn = false;
 let previousScreen = 1;
 let giftStep = 0;
+let stageParallaxBound = false;
+let floatingTimers = [];
 
 const rand = (min, max) => Math.random() * (max - min) + min;
 const isMobile = () => window.matchMedia("(max-width: 820px)").matches;
@@ -147,18 +149,22 @@ function loadGallery() {
   g.innerHTML = "";
   gBg.innerHTML = "";
   const layout = isMobile() ? CONFIG.layouts.mobile : CONFIG.layouts.desktop;
+  const isPhone = isMobile();
+  const bgDensity = isPhone ? 0.25 : 0.7;
   layout.forEach((slot, idx) => {
     const wrap = createPhoto(currentGirl.images[idx % currentGirl.images.length], slot);
-    wrap.addEventListener("mousemove", (e) => {
-      const r = wrap.getBoundingClientRect();
-      const dx = (e.clientX - r.left) / r.width - 0.5;
-      const dy = (e.clientY - r.top) / r.height - 0.5;
-      wrap.style.transform = `translateZ(40px) rotate(${slot.r}deg) rotateY(${dx * 10}deg) rotateX(${(-dy) * 10}deg)`;
-    });
-    wrap.addEventListener("mouseleave", () => (wrap.style.transform = `translateZ(${Math.round(rand(8, 60))}px) rotate(${slot.r}deg)`));
+    if (!isPhone) {
+      wrap.addEventListener("mousemove", (e) => {
+        const r = wrap.getBoundingClientRect();
+        const dx = (e.clientX - r.left) / r.width - 0.5;
+        const dy = (e.clientY - r.top) / r.height - 0.5;
+        wrap.style.transform = `translateZ(40px) rotate(${slot.r}deg) rotateY(${dx * 10}deg) rotateX(${(-dy) * 10}deg)`;
+      });
+      wrap.addEventListener("mouseleave", () => (wrap.style.transform = `translateZ(${Math.round(rand(8, 60))}px) rotate(${slot.r}deg)`));
+    }
     g.appendChild(wrap);
   });
-  const bgSlots = [...layout, ...layout.slice(0, Math.ceil(layout.length * 0.7))];
+  const bgSlots = [...layout, ...layout.slice(0, Math.ceil(layout.length * bgDensity))];
   bgSlots.forEach((slot, idx) => {
     const drift = {
       ...slot,
@@ -176,15 +182,38 @@ function setupStageParallax() {
   const stage = $(".stage");
   const gallery = $("#gallery");
   const galleryBg = $("#galleryBg");
-  if (!stage || !gallery || !galleryBg) return;
+  if (!stage || !gallery || !galleryBg || stageParallaxBound) return;
+  stageParallaxBound = true;
+
+  const resetTransform = () => { gallery.style.transform = "none"; galleryBg.style.transform = "none"; };
+  let raf = null;
+  const applyTilt = (x, y) => {
+    if (raf) cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(() => {
+      gallery.style.transform = `rotateY(${x * 10}deg) rotateX(${(-y) * 10}deg) scale(1.01)`;
+      galleryBg.style.transform = `rotateY(${x * 6}deg) rotateX(${(-y) * 6}deg) scale(1.02)`;
+    });
+  };
+
   stage.addEventListener("mousemove", (e) => {
+    if (isMobile()) return;
     const r = stage.getBoundingClientRect();
     const x = (e.clientX - r.left) / r.width - 0.5;
     const y = (e.clientY - r.top) / r.height - 0.5;
-    gallery.style.transform = `rotateY(${x * 10}deg) rotateX(${(-y) * 10}deg) scale(1.01)`;
-    galleryBg.style.transform = `rotateY(${x * 6}deg) rotateX(${(-y) * 6}deg) scale(1.02)`;
+    applyTilt(x, y);
   });
-  stage.addEventListener("mouseleave", () => { gallery.style.transform = "none"; galleryBg.style.transform = "none"; });
+  stage.addEventListener("mouseleave", resetTransform);
+
+  if (window.DeviceOrientationEvent) {
+    window.addEventListener("deviceorientation", (e) => {
+      if (!isMobile() || !$(".screen-2")?.classList.contains("active")) return;
+      const gamma = Math.max(-35, Math.min(35, e.gamma ?? 0));
+      const beta = Math.max(-35, Math.min(35, e.beta ?? 0));
+      applyTilt(gamma / 35, (beta - 8) / 35);
+    }, { passive: true });
+  }
+
+  stage.addEventListener("touchend", () => isMobile() && setTimeout(resetTransform, 120));
 }
 
 function stopTyping() { if (typingTimer) clearTimeout(typingTimer); typingTimer = null; }
@@ -202,10 +231,59 @@ function typeWriter(text, el, speed) {
 
 function setMusic(on) {
   const audio = $("#bgm");
-  musicOn = on;
   if (!audio) return;
-  if (on) { audio.volume = 0.35; audio.play().catch(() => {}); } else { audio.pause(); }
+  if (on) {
+    audio.volume = 0.35;
+    const playPromise = audio.play();
+    if (playPromise && typeof playPromise.then === "function") {
+      playPromise
+        .then(() => {
+          musicOn = true;
+          $("#toggleMusic")?.classList.add("is-on");
+        })
+        .catch(() => {
+          musicOn = false;
+          $("#toggleMusic")?.classList.remove("is-on");
+        });
+      return;
+    }
+    musicOn = true;
+  } else {
+    audio.pause();
+    musicOn = false;
+  }
   $("#toggleMusic")?.classList.toggle("is-on", on);
+}
+
+function setupAutoplayRetry() {
+  const resume = () => {
+    if (!musicOn) setMusic(true);
+    if (musicOn) {
+      ["pointerdown", "touchstart", "keydown", "visibilitychange"].forEach((evt) => {
+        document.removeEventListener(evt, resume);
+      });
+    }
+  };
+  ["pointerdown", "touchstart", "keydown", "visibilitychange"].forEach((evt) => {
+    document.addEventListener(evt, resume, { passive: true });
+  });
+}
+
+function setupFloatingEffects() {
+  floatingTimers.forEach((timer) => clearInterval(timer));
+  floatingTimers = [];
+  const lowPower = isMobile();
+  const recipes = [
+    { icon: () => (Math.random() > 0.35 ? "💗" : "💖"), target: "#hearts", className: "heart", duration: lowPower ? [7.2, 12.5] : [6.5, 11.5], interval: lowPower ? 1300 : 620 },
+    { icon: () => "", target: "#petals", className: "petal", duration: lowPower ? [9.2, 15.5] : [7.5, 14], interval: lowPower ? 1800 : 900 },
+    { icon: () => (Math.random() > 0.5 ? "🌸" : "🌺"), target: "#flowers", className: "flower", duration: lowPower ? [10.5, 17] : [9, 16], interval: lowPower ? 2200 : 1300 },
+  ];
+  recipes.forEach((recipe) => {
+    const layer = $(recipe.target);
+    if (!layer) return;
+    const timer = setInterval(() => spawnFloating(recipe.icon, layer, recipe.className, recipe.duration), recipe.interval);
+    floatingTimers.push(timer);
+  });
 }
 
 function openEnvelopeAndType() {
@@ -297,8 +375,15 @@ function renderHeroBelts() {
 
 function openGarden(fromScreen = 1) { previousScreen = fromScreen; $("#gardenName").textContent = currentGirl?.name ?? "Bạn"; renderWishCards(); showScreen(4); }
 
+function syncStageHint() {
+  const hint = $(".stage-hint");
+  if (!hint) return;
+  hint.textContent = isMobile() ? "Nghiêng điện thoại để xoay ảnh 3D ✨" : "Di chuột để cảm nhận “không gian” ✨";
+}
+
 function init() {
   renderHeroBelts();
+  syncStageHint();
   const savedTheme = localStorage.getItem("themeMode") || "auto";
   setTheme(savedTheme);
   $$(".theme-icon").forEach((btn) => {
@@ -306,9 +391,7 @@ function init() {
     btn.addEventListener("click", () => setTheme(btn.dataset.themeMode));
   });
 
-  setInterval(() => spawnFloating(() => (Math.random() > 0.35 ? "💗" : "💖"), $("#hearts"), "heart", [6.5, 11.5]), 620);
-  setInterval(() => spawnFloating(() => "", $("#petals"), "petal", [7.5, 14]), 900);
-  setInterval(() => spawnFloating(() => (Math.random() > 0.5 ? "🌸" : "🌺"), $("#flowers"), "flower", [9, 16]), 1300);
+  setupFloatingEffects();
 
   $$(".choice-btn").forEach((btn) => btn.addEventListener("click", () => {
     currentGirl = CONFIG.girls[btn.dataset.girl];
@@ -326,9 +409,14 @@ function init() {
   $("#giftBox").addEventListener("click", handleGiftTap);
   $("#giftBox").addEventListener("keydown", (e) => (e.key === "Enter" || e.key === " ") && handleGiftTap());
   $("#againBtn").addEventListener("click", () => { stopTyping(); $("#envelope")?.classList.remove("open"); $("#typing").textContent = ""; showScreen(2); });
-  window.addEventListener("resize", () => currentGirl && $(".screen-2").classList.contains("active") && loadGallery());
+  window.addEventListener("resize", () => {
+    syncStageHint();
+    setupFloatingEffects();
+    if (currentGirl && $(".screen-2").classList.contains("active")) loadGallery();
+  });
 
   setMusic(true);
+  setupAutoplayRetry();
 }
 
 init();
