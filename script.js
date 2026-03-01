@@ -59,14 +59,17 @@ const CONFIG = {
       { x: 66, y: 72, w: 112, h: 92, r: 10 },
     ],
   },
-  wishes: [
-    { emoji: "🌸", title: "Rạng rỡ", text: "Mỗi ngày bạn đều có năng lượng tích cực và tỏa sáng theo cách rất riêng." },
-    { emoji: "💖", title: "Được yêu thương", text: "Bạn luôn gặp những người tử tế, biết trân trọng và nâng niu bạn." },
-    { emoji: "🌷", title: "Bình yên", text: "Lịch trình bận rộn vẫn có những khoảng lặng thật dễ chịu dành cho bạn." },
-    { emoji: "🫶", title: "Can đảm", text: "Mọi mục tiêu bạn theo đuổi đều có đủ kiên định và may mắn để đạt được thành công." },
-    { emoji: "✨", title: "May mắn", text: "Điều tốt đẹp luôn đến đúng lúc, đúng cách, đúng người." },
-    { emoji: "💐", title: "Hạnh phúc", text: "Nụ cười hôm nay sẽ kéo dài thật lâu và kéo sang cả những người xung quanh nhéeee." },
+  wishPool: [
+    { id: "radiant", emoji: "🌸", title: "Rạng rỡ", text: "Mỗi ngày bạn đều có năng lượng tích cực và tỏa sáng theo cách rất riêng.", rarity: "common", weight: 44 },
+    { id: "beloved", emoji: "💖", title: "Được yêu thương", text: "Bạn luôn gặp những người tử tế, biết trân trọng và nâng niu bạn.", rarity: "common", weight: 40 },
+    { id: "peace", emoji: "🌷", title: "Bình yên", text: "Lịch trình bận rộn vẫn có những khoảng lặng thật dễ chịu dành cho bạn.", rarity: "common", weight: 36 },
+    { id: "brave", emoji: "🫶", title: "Can đảm", text: "Mọi mục tiêu bạn theo đuổi đều có đủ kiên định và may mắn để đạt được thành công.", rarity: "rare", weight: 22 },
+    { id: "lucky", emoji: "✨", title: "May mắn", text: "Điều tốt đẹp luôn đến đúng lúc, đúng cách, đúng người.", rarity: "rare", weight: 18 },
+    { id: "joyful", emoji: "💐", title: "Hạnh phúc", text: "Nụ cười hôm nay sẽ kéo dài thật lâu và kéo sang cả những người xung quanh nhéeee.", rarity: "common", weight: 30 },
+    { id: "crown", emoji: "👑", title: "Legendary", text: "Bạn chính là phiên bản giới hạn: luôn tự tin, luôn xịn, luôn là nhân vật chính!", rarity: "legendary", weight: 6 },
   ],
+  gardenDailyLimit: 3,
+  gardenStorageKey: "wishGardenState_v2",
   typeSpeed: 28,
 };
 
@@ -77,9 +80,81 @@ let previousScreen = 1;
 let giftStep = 0;
 let stageParallaxBound = false;
 let floatingTimers = [];
+let gardenState = null;
 
 const rand = (min, max) => Math.random() * (max - min) + min;
 const isMobile = () => window.matchMedia("(max-width: 820px)").matches;
+
+
+const todayStamp = () => new Date().toISOString().slice(0, 10);
+
+const defaultGardenState = () => ({
+  day: todayStamp(),
+  openedToday: 0,
+  streak: 0,
+  lastDrawDay: "",
+  revealedIds: [],
+  drawHistory: [],
+  rareHits: 0,
+});
+
+function loadGardenState() {
+  try {
+    const raw = localStorage.getItem(CONFIG.gardenStorageKey);
+    if (!raw) return defaultGardenState();
+    const parsed = JSON.parse(raw);
+    return { ...defaultGardenState(), ...parsed };
+  } catch {
+    return defaultGardenState();
+  }
+}
+
+function saveGardenState() {
+  if (!gardenState) return;
+  localStorage.setItem(CONFIG.gardenStorageKey, JSON.stringify(gardenState));
+}
+
+function refreshGardenDay() {
+  const today = todayStamp();
+  if (gardenState.day === today) return;
+  gardenState.day = today;
+  gardenState.openedToday = 0;
+  gardenState.revealedIds = [];
+}
+
+function updateGardenMeta() {
+  if (!gardenState) return;
+  const daily = $("#wishDailyCount");
+  const streak = $("#wishStreak");
+  const rare = $("#wishRareCount");
+  if (daily) daily.textContent = `${gardenState.openedToday}/${CONFIG.gardenDailyLimit}`;
+  if (streak) streak.textContent = `${gardenState.streak} ngày`;
+  if (rare) rare.textContent = String(gardenState.rareHits);
+}
+
+function updateGardenTip(message = "") {
+  const tip = $("#gardenTip");
+  if (!tip) return;
+  tip.textContent = message || `Mỗi ngày bạn có thể mở tối đa ${CONFIG.gardenDailyLimit} bông hoa ✨`;
+}
+
+function drawWishFromPool() {
+  const unrevealed = CONFIG.wishPool.filter((wish) => !gardenState.revealedIds.includes(wish.id));
+  const pool = unrevealed.length ? unrevealed : CONFIG.wishPool;
+  const total = pool.reduce((sum, wish) => sum + wish.weight, 0);
+  let pick = rand(0, total);
+  for (const wish of pool) {
+    pick -= wish.weight;
+    if (pick <= 0) return wish;
+  }
+  return pool[pool.length - 1];
+}
+
+function cardMessageByRarity(rarity) {
+  if (rarity === "legendary") return "Trúng hoa legendary! 💥";
+  if (rarity === "rare") return "Một điều ước hiếm vừa nở ✨";
+  return "Một bông hoa tích cực cho hôm nay 🌸";
+}
 
 function showScreen(n) {
   $$(".screen").forEach((sec) => {
@@ -338,16 +413,73 @@ function handleGiftTap() {
   }
 }
 
-function renderWishCards() {
+function renderWishCards(lastWishId = "") {
   const target = $("#wishGrid");
+  if (!target || !gardenState) return;
   target.innerHTML = "";
-  CONFIG.wishes.forEach((wish) => {
+
+  CONFIG.wishPool.forEach((wish) => {
     const card = document.createElement("button");
-    card.className = "wish-card";
-    card.innerHTML = `<div class="wish-emoji">${wish.emoji}</div><div class="wish-title">${wish.title}</div><div class="wish-text">${wish.text}</div>`;
-    card.addEventListener("click", () => card.classList.toggle("revealed"));
+    const revealed = gardenState.revealedIds.includes(wish.id);
+    card.className = `wish-card ${revealed ? "revealed" : ""}`;
+    card.dataset.rarity = wish.rarity;
+    card.dataset.id = wish.id;
+    card.type = "button";
+    card.setAttribute("aria-pressed", revealed ? "true" : "false");
+    card.innerHTML = `<div class="wish-badge">${wish.rarity}</div><div class="wish-emoji">${wish.emoji}</div><div class="wish-title">${wish.title}</div><div class="wish-text">${wish.text}</div>`;
+    card.addEventListener("click", () => {
+      if (!card.classList.contains("revealed")) {
+        updateGardenTip("Bấm nút 'Nhận điều ước ngẫu nhiên' để mở hoa nha ✨");
+        return;
+      }
+      card.classList.toggle("focus");
+    });
+    if (lastWishId && lastWishId === wish.id) {
+      card.classList.add("just-unlocked");
+      card.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
     target.appendChild(card);
   });
+  updateGardenMeta();
+}
+
+function handleWishDraw() {
+  if (!gardenState) return;
+  refreshGardenDay();
+
+  if (gardenState.openedToday >= CONFIG.gardenDailyLimit) {
+    updateGardenTip("Bạn đã mở đủ quota hôm nay rồi. Mai quay lại nhận hoa mới nha 🌙");
+    updateGardenMeta();
+    return;
+  }
+
+  const wish = drawWishFromPool();
+  const isFirstOpenToday = gardenState.openedToday === 0;
+  gardenState.openedToday += 1;
+  if (!gardenState.revealedIds.includes(wish.id)) gardenState.revealedIds.push(wish.id);
+  gardenState.drawHistory = [wish.id, ...gardenState.drawHistory].slice(0, 20);
+  if (wish.rarity !== "common") gardenState.rareHits += 1;
+
+  const today = todayStamp();
+  if (isFirstOpenToday) {
+    const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+    gardenState.streak = gardenState.lastDrawDay === yesterday ? gardenState.streak + 1 : 1;
+    gardenState.lastDrawDay = today;
+  }
+
+  saveGardenState();
+  renderWishCards(wish.id);
+
+  const burst = wish.rarity === "legendary" ? 70 : wish.rarity === "rare" ? 44 : 28;
+  spawnConfettiBurst(burst, rand(30, 70), rand(34, 54));
+  updateGardenTip(`${cardMessageByRarity(wish.rarity)} (${gardenState.openedToday}/${CONFIG.gardenDailyLimit})`);
+}
+
+function resetGardenProgress() {
+  gardenState = defaultGardenState();
+  saveGardenState();
+  renderWishCards();
+  updateGardenTip("Đã reset vườn điều ước. Bắt đầu lại từ đầu nha 🌱");
 }
 
 function renderHeroBelts() {
@@ -373,7 +505,13 @@ function renderHeroBelts() {
   build(left, 0); build(right, Math.floor(allImages.length / 2));
 }
 
-function openGarden(fromScreen = 1) { previousScreen = fromScreen; $("#gardenName").textContent = currentGirl?.name ?? "Bạn"; renderWishCards(); showScreen(4); }
+function openGarden(fromScreen = 1) {
+  previousScreen = fromScreen;
+  $("#gardenName").textContent = currentGirl?.name ?? "Bạn";
+  refreshGardenDay();
+  renderWishCards();
+  showScreen(4);
+}
 
 function syncStageHint() {
   const hint = $(".stage-hint");
@@ -384,6 +522,9 @@ function syncStageHint() {
 function init() {
   renderHeroBelts();
   syncStageHint();
+  gardenState = loadGardenState();
+  refreshGardenDay();
+  saveGardenState();
   const savedTheme = localStorage.getItem("themeMode") || "auto";
   setTheme(savedTheme);
   $$(".theme-icon").forEach((btn) => {
@@ -409,6 +550,8 @@ function init() {
   $("#giftBox").addEventListener("click", handleGiftTap);
   $("#giftBox").addEventListener("keydown", (e) => (e.key === "Enter" || e.key === " ") && handleGiftTap());
   $("#againBtn").addEventListener("click", () => { stopTyping(); $("#envelope")?.classList.remove("open"); $("#typing").textContent = ""; showScreen(2); });
+  $("#drawWishBtn")?.addEventListener("click", handleWishDraw);
+  $("#resetGardenBtn")?.addEventListener("click", resetGardenProgress);
   window.addEventListener("resize", () => {
     syncStageHint();
     setupFloatingEffects();

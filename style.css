@@ -107,10 +107,25 @@ body[data-theme="night"] .theme-select{background:rgba(16,23,56,.8)}
 .envelope.open .env-flap{transform:rotateX(165deg)} .envelope.open .paper{translate:0 0;opacity:1}
 
 .garden-wrap{padding:clamp(14px,2.6vw,22px)} .garden-header{text-align:center}
-.garden-header p{color:var(--muted)} .wish-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
-.wish-card{padding:14px;border-radius:18px;border:1px solid rgba(255,255,255,.58);background:linear-gradient(180deg,rgba(255,255,255,.52),rgba(255,255,255,.2));min-height:132px;box-shadow:var(--shadow2);cursor:pointer}
+.garden-header p{color:var(--muted)}
+.garden-meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0}
+.garden-stat{padding:10px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.58);background:rgba(255,255,255,.3);display:flex;justify-content:space-between;align-items:center;gap:10px}
+.garden-stat span{font-size:12px;color:var(--muted);font-weight:700}
+.garden-stat strong{font-size:16px}
+.garden-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:8px 0 2px}
+.garden-draw-btn{padding:10px 16px;font-size:14px}
+.garden-reset-btn{padding:10px 14px}
+.garden-tip{text-align:center;color:var(--muted);font-size:13px;margin:8px 0 12px}
+.wish-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.wish-card{position:relative;text-align:left;padding:14px;border-radius:18px;border:1px solid rgba(255,255,255,.58);background:linear-gradient(180deg,rgba(255,255,255,.52),rgba(255,255,255,.2));min-height:150px;box-shadow:var(--shadow2);cursor:pointer;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
+.wish-card .wish-badge{text-transform:uppercase;letter-spacing:.08em;font-size:10px;font-weight:800;color:var(--muted)}
 .wish-card .wish-emoji{font-size:24px}.wish-card .wish-title{font-weight:800;margin-top:8px}.wish-card .wish-text{margin-top:8px;color:var(--muted)}
 .wish-card:not(.revealed) .wish-text{filter:blur(4px);opacity:.6}
+.wish-card.revealed{border-color:rgba(255,111,165,.42)}
+.wish-card.focus{transform:translateY(-2px)}
+.wish-card[data-rarity="rare"].revealed{background:linear-gradient(180deg,rgba(255,240,194,.65),rgba(255,255,255,.26));box-shadow:0 12px 26px rgba(255,196,110,.35)}
+.wish-card[data-rarity="legendary"].revealed{background:linear-gradient(140deg,rgba(255,229,160,.86),rgba(255,179,214,.64));border-color:rgba(255,176,44,.76);box-shadow:0 14px 30px rgba(255,173,76,.45)}
+.wish-card.just-unlocked{animation:wishPop .55s ease}
 
 .heart{position:absolute;opacity:.7;filter:drop-shadow(0 8px 18px rgba(255,105,180,.25));animation:floatUp linear forwards}
 .petal{position:absolute;width:10px;height:18px;border-radius:999px;background:rgba(255,111,165,.32);border:1px solid rgba(255,255,255,.55);opacity:.65;animation:fall linear forwards}
@@ -126,10 +141,11 @@ body[data-theme="night"] .theme-select{background:rgba(16,23,56,.8)}
 @keyframes fall{from{transform:translateY(-40px) translateX(0) rotate(0);opacity:0}15%{opacity:.65}to{transform:translateY(110vh) translateX(var(--drift)) rotate(540deg);opacity:0}}
 @keyframes floatFlower{from{transform:translateY(20px) scale(.8);opacity:0}8%{opacity:.55}to{transform:translateY(-108vh) translateX(var(--drift)) scale(1.1);opacity:0}}
 @keyframes confettiBlast{from{transform:translate3d(0,0,0) rotate(0);opacity:1}to{transform:translate3d(var(--dx),var(--dy),0) rotate(720deg);opacity:0}}
+@keyframes wishPop{0%{transform:scale(.92)}60%{transform:scale(1.04)}100%{transform:scale(1)}}
 
 @media (max-width:920px){.theme-switcher{top:10px;right:10px}.choice-grid{grid-template-columns:1fr}.center-btn__inner{width:148px;height:148px}.stage{height:min(78vh,640px)}.photo{max-width:32vw}.belt-item{width:74px}}
 @media (max-width:680px){.topbar{flex-wrap:wrap;justify-content:center}.who{order:-1}.stage-hint{display:none}.paper-footer{flex-direction:column;align-items:flex-start}.letter-wrap{height:min(88vh,820px)}.envelope{height:min(640px,82vh)}.paper{width:min(680px,92vw);height:min(520px,72vh)}}
-@media (max-width:480px){.theme-switcher{left:50%;right:auto;transform:translateX(-50%)}.theme-label{display:none}.title{letter-spacing:0}.subtitle{font-size:14px}.back-btn,.mute-btn,.garden-btn{width:38px;height:38px}.wish-grid{grid-template-columns:1fr}.photo{max-width:38vw}.center-btn__inner{width:132px;height:132px}.center-btn__icon{font-size:32px}.belt-item{width:62px}}
+@media (max-width:480px){.theme-switcher{left:50%;right:auto;transform:translateX(-50%)}.theme-label{display:none}.title{letter-spacing:0}.subtitle{font-size:14px}.back-btn,.mute-btn,.garden-btn{width:38px;height:38px}.garden-meta{grid-template-columns:1fr}.garden-actions{flex-direction:column}.garden-actions .garden-draw-btn,.garden-actions .garden-reset-btn{width:100%}.wish-grid{grid-template-columns:1fr}.photo{max-width:38vw}.center-btn__inner{width:132px;height:132px}.center-btn__icon{font-size:32px}.belt-item{width:62px}}
 
 /* ===== UI polish 8/3 update ===== */
 .theme-switcher {
@@ -522,4 +538,18 @@ body[data-theme="night"] .typing::-webkit-scrollbar-thumb {
   .flower {
     filter: none;
   }
+}
+
+
+body[data-theme="night"] .garden-stat {
+  background: rgba(14, 22, 58, 0.72);
+  border-color: rgba(176, 198, 255, 0.28);
+}
+
+body[data-theme="night"] .wish-card[data-rarity="rare"].revealed {
+  background: linear-gradient(160deg, rgba(53, 79, 167, 0.85), rgba(96, 126, 245, 0.7));
+}
+
+body[data-theme="night"] .wish-card[data-rarity="legendary"].revealed {
+  background: linear-gradient(145deg, rgba(87, 98, 187, 0.9), rgba(222, 128, 217, 0.75));
 }

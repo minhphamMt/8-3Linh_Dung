@@ -193,8 +193,18 @@
       <div class="garden-wrap card">
         <div class="garden-header">
           <h2>Gieo một điều ước hôm nay 🌷</h2>
-          <p>Chạm vào từng bông hoa để mở ra một lời chúc tích cực.</p>
+          <p>Không cần database đâu nè — tiến trình sẽ được lưu ngay trên trình duyệt của bạn.</p>
         </div>
+        <div class="garden-meta" aria-live="polite">
+          <div class="garden-stat"><span>🎯 Đã mở hôm nay</span><strong id="wishDailyCount">0/3</strong></div>
+          <div class="garden-stat"><span>🔥 Streak</span><strong id="wishStreak">0 ngày</strong></div>
+          <div class="garden-stat"><span>🏆 Hiếm đã mở</span><strong id="wishRareCount">0</strong></div>
+        </div>
+        <div class="garden-actions">
+          <button class="explore-btn garden-draw-btn" id="drawWishBtn">🎁 Nhận điều ước ngẫu nhiên</button>
+          <button class="again-btn garden-reset-btn" id="resetGardenBtn" type="button">Reset tiến trình</button>
+        </div>
+        <p class="garden-tip" id="gardenTip">Mỗi ngày bạn có thể mở tối đa 3 bông hoa ✨</p>
         <div class="wish-grid" id="wishGrid"></div>
       </div>
     </section>
