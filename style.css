@@ -127,6 +127,36 @@ body[data-theme="night"] .theme-select{background:rgba(16,23,56,.8)}
 .wish-card[data-rarity="legendary"].revealed{background:linear-gradient(140deg,rgba(255,229,160,.86),rgba(255,179,214,.64));border-color:rgba(255,176,44,.76);box-shadow:0 14px 30px rgba(255,173,76,.45)}
 .wish-card.just-unlocked{animation:wishPop .55s ease}
 
+.wish-card .wish-title,
+.wish-card .wish-text {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.wish-grid {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 111, 165, 0.8) rgba(255, 255, 255, 0.18);
+}
+
+.wish-grid::-webkit-scrollbar {
+  width: 10px;
+}
+
+.wish-grid::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+}
+
+.wish-grid::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255, 111, 165, 0.9), rgba(255, 146, 191, 0.82));
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.wish-grid::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(255, 79, 147, 0.95), rgba(255, 111, 165, 0.9));
+}
+
 .heart{position:absolute;opacity:.7;filter:drop-shadow(0 8px 18px rgba(255,105,180,.25));animation:floatUp linear forwards}
 .petal{position:absolute;width:10px;height:18px;border-radius:999px;background:rgba(255,111,165,.32);border:1px solid rgba(255,255,255,.55);opacity:.65;animation:fall linear forwards}
 .flower{position:absolute;opacity:.55;animation:floatFlower linear forwards;filter:drop-shadow(0 8px 16px rgba(255,111,165,.2))}
@@ -731,12 +761,59 @@ body[data-theme="night"] .wish-card[data-rarity="legendary"].revealed {
     margin-top: 10px;
     overflow: auto;
     padding-right: 4px;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
   }
 
   .screen-4 .wish-card {
-    min-height: 128px;
-    padding: 12px;
+    min-height: 190px;
+    padding: 14px;
   }
+}
+
+@media (max-height: 900px) {
+  .screen-2.active {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: calc(100svh - 16px);
+    gap: 10px;
+  }
+
+  .screen-2 .topbar {
+    margin-bottom: 0;
+  }
+
+  .screen-2 .stage {
+    width: min(100%, 1040px);
+    margin-inline: auto;
+    height: min(64vh, 560px);
+  }
+}
+
+@media (max-width: 680px) {
+  .screen-2 .stage {
+    height: min(72vh, 560px);
+  }
+
+  .screen-4 .wish-grid {
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  }
+
+  .screen-4 .wish-card {
+    min-height: 176px;
+  }
+}
+
+body[data-theme="night"] .wish-grid {
+  scrollbar-color: rgba(158, 193, 255, 0.9) rgba(16, 27, 70, 0.35);
+}
+
+body[data-theme="night"] .wish-grid::-webkit-scrollbar-track {
+  background: rgba(16, 27, 70, 0.35);
+}
+
+body[data-theme="night"] .wish-grid::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(158, 193, 255, 0.95), rgba(255, 135, 209, 0.82));
+  border-color: rgba(28, 38, 94, 0.65);
 }
