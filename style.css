@@ -205,6 +205,34 @@ body[data-theme="night"] .stage-hint {
   text-shadow: 0 2px 14px rgba(6, 10, 30, 0.6);
 }
 
+body[data-theme="night"] .badge,
+body[data-theme="night"] .belt,
+body[data-theme="night"] .choice-btn,
+body[data-theme="night"] .wish-card,
+body[data-theme="night"] .gift-tag {
+  background: linear-gradient(180deg, rgba(22, 32, 76, 0.88), rgba(13, 21, 58, 0.86));
+  border-color: rgba(176, 198, 255, 0.36);
+}
+
+body[data-theme="night"] .choice-name,
+body[data-theme="night"] .wish-title,
+body[data-theme="night"] .wish-emoji,
+body[data-theme="night"] .gift-tag {
+  color: #eff3ff;
+}
+
+body[data-theme="night"] .choice-hint,
+body[data-theme="night"] .wish-text,
+body[data-theme="night"] .garden-header p,
+body[data-theme="night"] .subtitle,
+body[data-theme="night"] .theme-label {
+  color: #c8d5ff;
+}
+
+body[data-theme="night"] .wish-card:not(.revealed) .wish-text {
+  opacity: 0.75;
+}
+
 .gift-sequence {
   background: radial-gradient(circle at center, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.12));
 }
