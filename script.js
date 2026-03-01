@@ -131,6 +131,7 @@ function createPhoto(imgSrc, slot, photoClass = "photo") {
   Object.assign(wrap.style, {
     left: `${slot.x}%`, top: `${slot.y}%`, width: `${slot.w}px`, height: `${slot.h}px`, transform: `translateZ(${Math.round(rand(8, 60))}px) rotate(${slot.r}deg)`,
   });
+  wrap.style.setProperty("--photo-url", `url('${imgSrc}')`);
   const img = document.createElement("img");
   img.src = imgSrc;
   img.alt = `${currentGirl?.name ?? "photo"} photo`;
