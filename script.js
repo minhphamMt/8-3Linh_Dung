@@ -5,16 +5,16 @@ const CONFIG = {
   fromName: "Minh",
   girls: {
     Dung: {
-      name: "Dung",
+      name: "Linh",
       images: [
         "./assets/Linh/Linh1.png",
-        "./assets/Linh/Linh2.png",
+        "./assets/Linh/linh2.png",
         "./assets/Linh/Linh3.png",
         "./assets/Linh/Linh4.png",
         "./assets/Linh/Linh5.png",
       ],
       letter: [
-        "Dung à,",
+        "Linh à,",
         "",
         "Chúc em một ngày 8/3 thật dịu dàng và rực rỡ 🌸",
         "Mong em luôn vui vẻ, được yêu thương đúng cách,",
@@ -27,7 +27,7 @@ const CONFIG = {
       ].join("\n"),
     },
     ha: {
-      name: "Linh",
+      name: "Dung",
       images: [
         "./assets/Dung/Dung1.png",
         "./assets/Dung/Dung2.png",
@@ -36,7 +36,7 @@ const CONFIG = {
         "./assets/Dung/Dung5.png",
       ],
       letter: [
-        "Linh yêu,",
+        "Dung yêu,",
         "",
         "Nhân ngày 8/3, chúc em luôn xinh đẹp,",
         "tươi tắn như những bông hoa mùa xuân 🌷",
@@ -52,44 +52,44 @@ const CONFIG = {
     },
   },
   layoutDesktop: [
-    { x: 10, y: 18, w: 190, h: 250, r: -6 },
-    { x: 28, y: 8, w: 220, h: 160, r: 4 },
-    { x: 66, y: 10, w: 210, h: 240, r: 8 },
-    { x: 78, y: 42, w: 180, h: 220, r: -8 },
-    { x: 16, y: 52, w: 240, h: 170, r: 10 },
-    { x: 40, y: 62, w: 210, h: 230, r: -4 },
-    { x: 56, y: 44, w: 160, h: 150, r: 6 },
-    { x: 6, y: 36, w: 170, h: 160, r: -10 },
+    { x: 6, y: 9, w: 176, h: 214, r: -7 },
+    { x: 29, y: 8, w: 198, h: 144, r: 4 },
+    { x: 61, y: 8, w: 184, h: 216, r: 6 },
+    { x: 78, y: 40, w: 166, h: 208, r: -7 },
+    { x: 11, y: 48, w: 208, h: 148, r: 8 },
+    { x: 34, y: 60, w: 192, h: 204, r: -4 },
+    { x: 54, y: 44, w: 150, h: 142, r: 5 },
+    { x: 2, y: 30, w: 148, h: 150, r: -9 },
   ],
   layoutDesktopBg: [
-    { x: -5, y: -6, w: 200, h: 160, r: -10 },
-    { x: 22, y: -8, w: 180, h: 150, r: 8 },
-    { x: 72, y: -5, w: 210, h: 170, r: -6 },
-    { x: 88, y: 14, w: 170, h: 210, r: 10 },
-    { x: 84, y: 62, w: 190, h: 180, r: -9 },
-    { x: 62, y: 82, w: 180, h: 150, r: 6 },
-    { x: 22, y: 82, w: 200, h: 160, r: -5 },
-    { x: -8, y: 70, w: 180, h: 190, r: 9 },
-    { x: -10, y: 30, w: 170, h: 180, r: -8 },
+    { x: -6, y: -8, w: 184, h: 142, r: -8 },
+    { x: 20, y: -10, w: 164, h: 132, r: 7 },
+    { x: 71, y: -8, w: 178, h: 142, r: -6 },
+    { x: 88, y: 16, w: 152, h: 186, r: 9 },
+    { x: 83, y: 63, w: 170, h: 154, r: -8 },
+    { x: 61, y: 82, w: 164, h: 132, r: 6 },
+    { x: 20, y: 84, w: 176, h: 142, r: -5 },
+    { x: -10, y: 72, w: 158, h: 174, r: 8 },
+    { x: -10, y: 30, w: 152, h: 162, r: -8 },
   ],
   layoutMobile: [
-    { x: 8, y: 14, w: 148, h: 192, r: -6 },
-    { x: 56, y: 12, w: 156, h: 116, r: 6 },
-    { x: 60, y: 34, w: 148, h: 186, r: 10 },
-    { x: 8, y: 40, w: 164, h: 130, r: -8 },
-    { x: 18, y: 62, w: 168, h: 184, r: 8 },
-    { x: 58, y: 64, w: 138, h: 148, r: -4 },
+    { x: 7, y: 10, w: 128, h: 162, r: -6 },
+    { x: 55, y: 10, w: 132, h: 98, r: 6 },
+    { x: 55, y: 32, w: 130, h: 162, r: 8 },
+    { x: 9, y: 34, w: 136, h: 106, r: -7 },
+    { x: 15, y: 58, w: 140, h: 162, r: 6 },
+    { x: 57, y: 58, w: 124, h: 132, r: -3 },
   ],
   layoutMobileBg: [
-    { x: -8, y: -6, w: 136, h: 104, r: -10 },
-    { x: 34, y: -6, w: 130, h: 106, r: 8 },
-    { x: 74, y: 0, w: 130, h: 96, r: -8 },
-    { x: 84, y: 28, w: 124, h: 146, r: 8 },
-    { x: 86, y: 68, w: 122, h: 118, r: -6 },
-    { x: 66, y: 88, w: 126, h: 96, r: 6 },
-    { x: 30, y: 88, w: 128, h: 104, r: -4 },
-    { x: -8, y: 78, w: 126, h: 132, r: 10 },
-    { x: -10, y: 38, w: 128, h: 126, r: -8 },
+    { x: -8, y: -6, w: 114, h: 92, r: -8 },
+    { x: 32, y: -7, w: 112, h: 92, r: 7 },
+    { x: 73, y: -1, w: 112, h: 88, r: -7 },
+    { x: 84, y: 26, w: 108, h: 126, r: 8 },
+    { x: 85, y: 64, w: 106, h: 106, r: -6 },
+    { x: 65, y: 83, w: 112, h: 86, r: 5 },
+    { x: 31, y: 84, w: 114, h: 94, r: -4 },
+    { x: -9, y: 74, w: 112, h: 122, r: 8 },
+    { x: -10, y: 36, w: 112, h: 118, r: -8 },
   ],
   wishes: [
     { emoji: "🌸", title: "Rạng rỡ", text: "Mỗi ngày bạn đều có năng lượng tích cực và tỏa sáng theo cách rất riêng." },
@@ -273,6 +273,28 @@ function setMusic(on) {
   $("#toggleMusic")?.classList.toggle("is-on", on);
 }
 
+function setupAutoMusic() {
+  const audio = $("#bgm");
+  if (!audio) return;
+
+  const tryPlay = () => {
+    setMusic(true);
+  };
+
+  tryPlay();
+
+  const unlock = () => {
+    if (!musicOn) {
+      tryPlay();
+    }
+    window.removeEventListener("pointerdown", unlock);
+    window.removeEventListener("keydown", unlock);
+  };
+
+  window.addEventListener("pointerdown", unlock, { once: true });
+  window.addEventListener("keydown", unlock, { once: true });
+}
+
 function openEnvelopeAndType() {
   const env = $("#envelope");
   const typing = $("#typing");
@@ -343,7 +365,7 @@ function init() {
     showScreen(2);
   });
 
-  $("#toggleMusic").addEventListener("click", () => setMusic(!musicOn));
+  $("#toggleMusic")?.addEventListener("click", () => setMusic(!musicOn));
 
   $("#openLetterBtn").addEventListener("click", () => {
     if (!currentGirl) return;
@@ -370,6 +392,8 @@ function init() {
       loadGallery();
     }
   });
+
+  setupAutoMusic();
 }
 
 init();
