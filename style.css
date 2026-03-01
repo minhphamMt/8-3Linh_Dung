@@ -385,3 +385,38 @@ body[data-theme="night"] .typing::-webkit-scrollbar-thumb {
     stroke-dashoffset: 0;
   }
 }
+
+/* nút */
+/* Nút giữ nguyên vị trí */
+.center-btn {
+  position: relative;
+  border-radius: 50%;
+  overflow: hidden; /* Quan trọng */
+}
+
+/* Không dùng translate / scale nữa */
+.center-btn:hover {
+  box-shadow: 0 12px 30px rgba(255, 105, 180, 0.35);
+  filter: brightness(1.05);
+}
+.center-btn__ring {
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.center-btn:hover .center-btn__ring {
+  transform: scale(1.15);
+  opacity: 0.7;
+}
+
+.center-btn__icon {
+  display: inline-block;
+}
+
+.center-btn:hover .center-btn__icon {
+  animation: shakeMail 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes shakeMail {
+  from { transform: rotate(-5deg); }
+  to { transform: rotate(5deg); }
+}
