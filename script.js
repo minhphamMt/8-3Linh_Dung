@@ -95,9 +95,9 @@ const CONFIG = {
     { emoji: "🌸", title: "Rạng rỡ", text: "Mỗi ngày bạn đều có năng lượng tích cực và tỏa sáng theo cách rất riêng." },
     { emoji: "💖", title: "Được yêu thương", text: "Bạn luôn gặp những người tử tế, biết trân trọng và nâng niu bạn." },
     { emoji: "🌷", title: "Bình yên", text: "Lịch trình bận rộn vẫn có những khoảng lặng thật dễ chịu dành cho bạn." },
-    { emoji: "🫶", title: "Can đảm", text: "Mọi mục tiêu bạn theo đuổi đều có đủ kiên định và may mắn để tLinhnh công." },
+    { emoji: "🫶", title: "Can đảm", text: "Mọi mục tiêu bạn theo đuổi đều có đủ kiên định và may mắn để đạt được thành công." },
     { emoji: "✨", title: "May mắn", text: "Điều tốt đẹp luôn đến đúng lúc, đúng cách, đúng người." },
-    { emoji: "💐", title: "Hạnh phúc", text: "Nụ cười hôm nay sẽ kéo dài thật lâu và Dung sang cả những người xung quanh." },
+    { emoji: "💐", title: "Hạnh phúc", text: "Nụ cười hôm nay sẽ kéo dài thật lâu và kéo sang cả những người xung quanh nhéeee." },
   ],
   typeSpeed: 28,
 };
@@ -325,6 +325,40 @@ function renderWishCards() {
   });
 }
 
+
+function renderHeroBelts() {
+  const left = $("#heroBeltLeft");
+  const right = $("#heroBeltRight");
+  if (!left || !right) return;
+
+  const allImages = [
+    ...CONFIG.girls.Dung.images,
+    ...CONFIG.girls.ha.images,
+  ];
+
+  const buildTrack = (target, offset = 0) => {
+    target.innerHTML = "";
+    const sequence = allImages.slice(offset).concat(allImages.slice(0, offset));
+
+    for (let clone = 0; clone < 2; clone++) {
+      const track = document.createElement("div");
+      track.className = "belt-track";
+
+      sequence.forEach((src, idx) => {
+        const item = document.createElement("div");
+        item.className = "belt-item";
+        item.innerHTML = `<img src="${src}" alt="Kỷ niệm ${idx + 1}" loading="lazy" />`;
+        track.appendChild(item);
+      });
+
+      target.appendChild(track);
+    }
+  };
+
+  buildTrack(left, 0);
+  buildTrack(right, Math.floor(allImages.length / 2));
+}
+
 function openGarden(fromScreen = 1) {
   previousScreen = fromScreen;
   $("#gardenName").textContent = currentGirl?.name ?? "Bạn";
@@ -334,6 +368,7 @@ function openGarden(fromScreen = 1) {
 
 function init() {
   $("#fromName").textContent = CONFIG.fromName;
+  renderHeroBelts();
 
   $$(".choice-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
