@@ -7,9 +7,20 @@ const CONFIG = {
       name: "Linh",
       images: ["./assets/Linh/Linh1.png", "./assets/Linh/linh2.png", "./assets/Linh/Linh3.png", "./assets/Linh/Linh4.png", "./assets/Linh/Linh5.png"],
       letter: [
-        "Linh ơi,", "", "Chúc bạn có ngày 8/3 vui như trúng sale 90% mà vẫn còn đúng size 🌸", "Tuổi mới của nhan sắc (à quên, ngày mới của nhan sắc) luôn ổn áp,",
-        "chụp góc nào cũng đẹp và cười phát là cả team có năng lượng.", "", "Cảm ơn Linh vì lúc nào cũng hòa đồng, nhiệt tình và nói chuyện siêu cuốn.",
-        "Nếu có hôm nào mệt thì cứ nghỉ xíu, để mai mình bung lụa tiếp nha 💗", "", "Chúc Linh luôn vui, khỏe, nhiều may mắn và ví tiền luôn không 'tụt mood'!",
+        "Linh ơi,",
+        "",
+        "8/3 chúc bạn xinh đẹp vượt KPI của chính mình 🌸",
+        "Chụp ảnh góc nào cũng “auto đẹp”,",
+        "và ra đường thì được ưu ái như nhân vật chính.",
+        "",
+        "Mong bạn luôn vui vẻ, ít drama, nhiều niềm vui,",
+        "deadline thì né bạn ra xa một chút 😆",
+        "",
+        "Cảm ơn vì đã luôn là một người bạn dễ thương và nói chuyện cực kỳ cuốn.",
+        "Giữ nguyên vibe đó nha, đừng có thay đổi gì hết đó!",
+        "",
+        "Chúc Linh một ngày 8/3 thiệt chill, thiệt vui",
+        "và thiệt nhiều quàaa 💗",
       ].join("\n"),
     },
     ha: {
@@ -24,12 +35,23 @@ const CONFIG = {
   },
   layouts: {
     desktop: [
-      { x: 6, y: 9, w: 176, h: 214, r: -7 }, { x: 29, y: 8, w: 198, h: 144, r: 4 }, { x: 61, y: 8, w: 184, h: 216, r: 6 },
-      { x: 78, y: 40, w: 166, h: 208, r: -7 }, { x: 11, y: 48, w: 208, h: 148, r: 8 }, { x: 34, y: 60, w: 192, h: 204, r: -4 },
+      { x: 4, y: 8, w: 170, h: 212, r: -6 },
+      { x: 24, y: 7, w: 188, h: 136, r: 4 },
+      { x: 50, y: 6, w: 176, h: 210, r: -5 },
+      { x: 70, y: 10, w: 182, h: 140, r: 6 },
+      { x: 77, y: 38, w: 168, h: 206, r: -6 },
+      { x: 57, y: 58, w: 184, h: 136, r: 4 },
+      { x: 30, y: 58, w: 172, h: 206, r: -4 },
+      { x: 7, y: 40, w: 184, h: 138, r: 7 },
     ],
     mobile: [
-      { x: 7, y: 10, w: 128, h: 162, r: -6 }, { x: 55, y: 10, w: 132, h: 98, r: 6 }, { x: 55, y: 32, w: 130, h: 162, r: 8 },
-      { x: 9, y: 34, w: 136, h: 106, r: -7 }, { x: 15, y: 58, w: 140, h: 162, r: 6 }, { x: 57, y: 58, w: 124, h: 132, r: -3 },
+      { x: 5, y: 8, w: 124, h: 158, r: -6 },
+      { x: 52, y: 8, w: 126, h: 94, r: 5 },
+      { x: 56, y: 29, w: 126, h: 158, r: 7 },
+      { x: 8, y: 35, w: 130, h: 98, r: -6 },
+      { x: 9, y: 58, w: 132, h: 158, r: 5 },
+      { x: 53, y: 58, w: 126, h: 122, r: -4 },
+      { x: 32, y: 76, w: 126, h: 108, r: 3 },
     ],
   },
   wishes: [
@@ -66,6 +88,7 @@ function setTheme(mode) {
   const theme = mode === "auto" ? auto : mode;
   document.body.dataset.theme = theme;
   localStorage.setItem("themeMode", mode);
+  $$(".theme-icon").forEach((btn) => btn.classList.toggle("is-active", btn.dataset.themeMode === mode));
 }
 
 function spawnFloating(icon, container, cls, dur) {
@@ -187,6 +210,7 @@ function startGiftSequence() {
   $("#giftText").textContent = "Bấm lần nữa để mở quà nha ✨";
   seq.classList.add("active");
   seq.setAttribute("aria-hidden", "false");
+  spawnConfettiBurst(24, 50, 50);
 }
 
 function finishGiftSequence() {
@@ -208,6 +232,9 @@ function handleGiftTap() {
     $("#giftBox")?.classList.add("open");
     $("#giftText").textContent = "Wowww! Quà bung rồi 💥";
     spawnConfettiBurst(55, 50, 45);
+    setTimeout(() => spawnConfettiBurst(36, 30, 32), 180);
+    setTimeout(() => spawnConfettiBurst(36, 70, 28), 280);
+    setTimeout(() => spawnConfettiBurst(42, 52, 22), 420);
     setTimeout(finishGiftSequence, 900);
   }
 }
@@ -252,9 +279,11 @@ function openGarden(fromScreen = 1) { previousScreen = fromScreen; $("#gardenNam
 function init() {
   renderHeroBelts();
   const savedTheme = localStorage.getItem("themeMode") || "auto";
-  $("#themeSelect").value = savedTheme;
   setTheme(savedTheme);
-  $("#themeSelect").addEventListener("change", (e) => setTheme(e.target.value));
+  $$(".theme-icon").forEach((btn) => {
+    btn.classList.toggle("is-active", btn.dataset.themeMode === savedTheme);
+    btn.addEventListener("click", () => setTheme(btn.dataset.themeMode));
+  });
 
   setInterval(() => spawnFloating(() => (Math.random() > 0.35 ? "💗" : "💖"), $("#hearts"), "heart", [6.5, 11.5]), 620);
   setInterval(() => spawnFloating(() => "", $("#petals"), "petal", [7.5, 14]), 900);

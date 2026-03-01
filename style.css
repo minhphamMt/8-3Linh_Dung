@@ -123,3 +123,177 @@ body[data-theme="night"] .theme-select{background:rgba(16,23,56,.8)}
 @media (max-width:920px){.theme-switcher{top:10px;right:10px}.choice-grid{grid-template-columns:1fr}.center-btn__inner{width:148px;height:148px}.stage{height:min(78vh,640px)}.photo{max-width:32vw}.belt-item{width:74px}}
 @media (max-width:680px){.topbar{flex-wrap:wrap;justify-content:center}.who{order:-1}.stage-hint{display:none}.paper-footer{flex-direction:column;align-items:flex-start}.letter-wrap{height:min(88vh,820px)}.envelope{height:min(640px,82vh)}.paper{width:min(680px,92vw);height:min(520px,72vh)}}
 @media (max-width:480px){.theme-switcher{left:50%;right:auto;transform:translateX(-50%)}.theme-label{display:none}.title{letter-spacing:0}.subtitle{font-size:14px}.back-btn,.mute-btn,.garden-btn{width:38px;height:38px}.wish-grid{grid-template-columns:1fr}.photo{max-width:38vw}.center-btn__inner{width:132px;height:132px}.center-btn__icon{font-size:32px}.belt-item{width:62px}}
+
+/* ===== UI polish 8/3 update ===== */
+.theme-switcher {
+  padding: 7px;
+  border-radius: 999px;
+}
+
+.theme-icon-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.theme-icon {
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(255, 255, 255, 0.56);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.36);
+  color: var(--ink);
+  font-size: 17px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.theme-icon:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.56);
+}
+
+.theme-icon.is-active {
+  background: linear-gradient(130deg, rgba(255, 111, 165, 0.45), rgba(255, 255, 255, 0.7));
+  box-shadow: 0 6px 16px rgba(255, 105, 180, 0.28);
+}
+
+body[data-theme="night"] .theme-icon {
+  background: rgba(14, 22, 58, 0.88);
+  border-color: rgba(190, 210, 255, 0.32);
+}
+
+body[data-theme="night"] .theme-icon.is-active {
+  background: linear-gradient(140deg, rgba(122, 146, 255, 0.56), rgba(255, 139, 214, 0.44));
+}
+
+.stage {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.12));
+}
+
+.photo {
+  backdrop-filter: blur(1.5px);
+}
+
+body[data-theme="night"] .paper,
+body[data-theme="night"] .env-back {
+  background: rgba(232, 238, 255, 0.95);
+  border-color: rgba(255, 255, 255, 0.72);
+}
+
+body[data-theme="night"] .paper-head,
+body[data-theme="night"] .to-line,
+body[data-theme="night"] .typing,
+body[data-theme="night"] .paper-title,
+body[data-theme="night"] .sig {
+  color: #2a355f;
+}
+
+body[data-theme="night"] .typing {
+  background: rgba(255, 255, 255, 0.72);
+  border-color: rgba(100, 127, 217, 0.26);
+}
+
+body[data-theme="night"] .letter-tip,
+body[data-theme="night"] .gift-text,
+body[data-theme="night"] .stage-hint {
+  color: #dbe6ff;
+  text-shadow: 0 2px 14px rgba(6, 10, 30, 0.6);
+}
+
+.gift-sequence {
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.12));
+}
+
+.gift-box {
+  width: 140px;
+  height: 140px;
+  animation: giftFloat 2.4s ease-in-out infinite;
+}
+
+.gift-body,
+.gift-lid {
+  background: linear-gradient(135deg, #ff77b4, #ff9bc9 55%, #ffc4dc);
+  border-color: rgba(255, 255, 255, 0.82);
+}
+
+.gift-ribbon {
+  background: linear-gradient(180deg, #fffce8, #ffe9a7 65%, #ffd779);
+}
+
+.gift-tag {
+  box-shadow: 0 4px 14px rgba(255, 105, 180, 0.22);
+}
+
+.gift-text {
+  font-size: clamp(16px, 2vw, 22px);
+}
+
+@keyframes giftFloat {
+  0%,
+  100% {
+    transform: rotateX(14deg) rotateY(-18deg) translateY(0);
+  }
+
+  50% {
+    transform: rotateX(16deg) rotateY(-20deg) translateY(-7px);
+  }
+}
+
+@media (max-width: 1024px) {
+  .stage {
+    height: min(78vh, 680px);
+  }
+
+  .photo {
+    max-width: 28vw;
+  }
+}
+
+@media (max-width: 820px) {
+  .topbar {
+    gap: 8px;
+  }
+
+  .stage {
+    height: min(76vh, 620px);
+  }
+
+  .theme-icon {
+    width: 34px;
+    height: 34px;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 560px) {
+  .app {
+    padding: 10px;
+  }
+
+  .stage {
+    height: min(74vh, 560px);
+  }
+
+  .photo {
+    max-width: 40vw;
+  }
+
+  .center-btn__inner {
+    width: 124px;
+    height: 124px;
+  }
+
+  .center-btn__text {
+    font-size: 15px;
+  }
+
+  .gift-box {
+    width: 120px;
+    height: 120px;
+  }
+
+  .theme-switcher {
+    top: 8px;
+  }
+}

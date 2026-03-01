@@ -24,13 +24,12 @@
   </div>
 
   <div class="theme-switcher card" aria-label="Tuỳ chọn giao diện theo thời gian">
-    <span class="theme-label">Giao diện</span>
-    <select id="themeSelect" class="theme-select">
-      <option value="auto">Tự động</option>
-      <option value="morning">Buổi sáng</option>
-      <option value="afternoon">Buổi chiều</option>
-      <option value="night">Buổi tối</option>
-    </select>
+    <div class="theme-icon-group" role="group" aria-label="Chọn giao diện nhanh">
+      <button class="theme-icon" data-theme-mode="auto" aria-label="Tự động">🪄</button>
+      <button class="theme-icon" data-theme-mode="morning" aria-label="Buổi sáng">🌤️</button>
+      <button class="theme-icon" data-theme-mode="afternoon" aria-label="Buổi chiều">🌇</button>
+      <button class="theme-icon" data-theme-mode="night" aria-label="Buổi tối">🌙</button>
+    </div>
   </div>
 
   <main class="app">
