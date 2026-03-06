@@ -8,9 +8,12 @@ function runIntro() {
     return;
   }
   intro.classList.add("is-visible");
-  setTimeout(() => intro.classList.add("is-reveal"), 260);
-  setTimeout(() => intro.classList.add("is-fade"), 1700);
-  setTimeout(() => intro.remove(), 2550);
+  const revealDelay = pickPerformanceValue(260, 220, 180);
+  const fadeDelay = pickPerformanceValue(1700, 1380, 1040);
+  const removeDelay = pickPerformanceValue(2550, 2080, 1540);
+  setTimeout(() => intro.classList.add("is-reveal"), revealDelay);
+  setTimeout(() => intro.classList.add("is-fade"), fadeDelay);
+  setTimeout(() => intro.remove(), removeDelay);
 }
 
 function spawnBackgroundItem(layerId, className, text, durationMin, durationMax) {
@@ -46,9 +49,10 @@ function spawnBackgroundItem(layerId, className, text, durationMin, durationMax)
   }
   item.style.setProperty("--dx", `${rand(-70, 70).toFixed(2)}px`);
   item.style.setProperty("--spin", `${rand(-240, 240).toFixed(1)}deg`);
-  item.style.animationDuration = `${rand(durationMin, durationMax).toFixed(2)}s`;
+  const duration = rand(durationMin, durationMax);
+  item.style.animationDuration = `${duration.toFixed(2)}s`;
   layer.appendChild(item);
-  setTimeout(() => item.remove(), 22000);
+  setTimeout(() => item.remove(), Math.round((duration * 1000) + (className.includes("fx-shooting") ? 320 : 1400)));
 }
 
 function spawnConstellation() {
@@ -243,34 +247,34 @@ function renderGalaxyBackgroundStars() {
     return;
   }
 
-  layer.style.backgroundImage = buildGalaxyDustMap(isMobile() ? 180 : 320, {
+  layer.style.backgroundImage = buildGalaxyDustMap(scalePerformanceCount(isMobile() ? 180 : 320, isMobile() ? 124 : 224, isMobile() ? 84 : 156), {
     minX: 0.5,
     maxX: 99.5,
     minY: 0.5,
     maxY: 99.5,
-    clusterCount: isMobile() ? 8 : 12,
-    clusterBias: isMobile() ? 0.6 : 0.74,
+    clusterCount: pickPerformanceValue(isMobile() ? 8 : 12, isMobile() ? 6 : 9, isMobile() ? 4 : 7),
+    clusterBias: pickPerformanceValue(isMobile() ? 0.6 : 0.74, isMobile() ? 0.58 : 0.68, isMobile() ? 0.54 : 0.62),
   });
   if (constellationLayer) {
-    constellationLayer.style.setProperty("--milky-dust-map", buildGalaxyDustMap(isMobile() ? 84 : 156, {
+    constellationLayer.style.setProperty("--milky-dust-map", buildGalaxyDustMap(scalePerformanceCount(isMobile() ? 84 : 156, isMobile() ? 56 : 108, isMobile() ? 38 : 72), {
       minX: 14,
       maxX: 86,
       minY: 18,
       maxY: 78,
-      clusterCount: isMobile() ? 5 : 8,
-      clusterBias: 0.82,
+      clusterCount: pickPerformanceValue(isMobile() ? 5 : 8, isMobile() ? 4 : 6, isMobile() ? 3 : 5),
+      clusterBias: pickPerformanceValue(0.82, 0.76, 0.7),
     }));
   }
 
-  const count = isMobile() ? 240 : 520;
+  const count = scalePerformanceCount(isMobile() ? 240 : 520, isMobile() ? 170 : 360, isMobile() ? 120 : 240);
   const points = generateGalaxyStarfield(count, {
     minX: 0.8,
     maxX: 99.2,
     minY: 0.8,
     maxY: 99.2,
-    clusterCount: isMobile() ? 8 : 12,
-    clusterBias: isMobile() ? 0.6 : 0.76,
-    minGap: isMobile() ? 0.34 : 0.44,
+    clusterCount: pickPerformanceValue(isMobile() ? 8 : 12, isMobile() ? 6 : 9, isMobile() ? 4 : 7),
+    clusterBias: pickPerformanceValue(isMobile() ? 0.6 : 0.76, isMobile() ? 0.58 : 0.7, isMobile() ? 0.52 : 0.64),
+    minGap: pickPerformanceValue(isMobile() ? 0.34 : 0.44, isMobile() ? 0.4 : 0.52, isMobile() ? 0.48 : 0.62),
   });
 
   points.forEach((point) => {
@@ -308,16 +312,16 @@ function renderStageStars() {
   layer.innerHTML = "";
 
   if (state.theme !== "cosmic" || state.screen !== 2) return;
-  const count = isMobile() ? 108 : 220;
-  const minCenterDistance = isMobile() ? 14 : 16;
+  const count = scalePerformanceCount(isMobile() ? 108 : 220, isMobile() ? 76 : 148, isMobile() ? 52 : 96);
+  const minCenterDistance = pickPerformanceValue(isMobile() ? 14 : 16, isMobile() ? 15 : 18, isMobile() ? 16 : 20);
   const points = generateGalaxyStarfield(count, {
     minX: 2,
     maxX: 98,
     minY: 4,
     maxY: 94,
-    clusterCount: isMobile() ? 7 : 10,
-    clusterBias: isMobile() ? 0.64 : 0.74,
-    minGap: isMobile() ? 0.48 : 0.6,
+    clusterCount: pickPerformanceValue(isMobile() ? 7 : 10, isMobile() ? 5 : 7, isMobile() ? 4 : 6),
+    clusterBias: pickPerformanceValue(isMobile() ? 0.64 : 0.74, isMobile() ? 0.6 : 0.68, isMobile() ? 0.56 : 0.62),
+    minGap: pickPerformanceValue(isMobile() ? 0.48 : 0.6, isMobile() ? 0.56 : 0.68, isMobile() ? 0.64 : 0.78),
     avoidCenterRadius: minCenterDistance,
   });
 
@@ -355,26 +359,36 @@ function clearBackgroundEffects() {
 function startBackgroundEffects() {
   clearBackgroundEffects();
 
-  const lowPower = prefersReducedMotion() || isMobile();
+  const profile = state.performance || buildPerformanceProfile();
+  const lowPower = profile.reduced || profile.level === "low";
   const sakura = state.theme === "sakura";
+  const intervalScale = profile.backgroundIntervalScale || 1;
   const recipes = [];
 
   if (sakura) {
-    recipes.push({ layer: "#bgSakura", className: "fx-petal", text: "🌸", min: 7.2, max: 11.8, interval: lowPower ? 900 : 520 });
-    recipes.push({ layer: "#bgParticles", className: "fx-leaf", text: "🍃", min: 9.2, max: 13.8, interval: lowPower ? 1450 : 860 });
-    recipes.push({ layer: "#bgStars", className: "fx-spark", text: "✨", min: 6.8, max: 10.6, interval: lowPower ? 1300 : 740 });
-    recipes.push({ layer: "#bgSakura", className: "fx-butterfly", text: "🦋", min: 8.8, max: 13.4, interval: lowPower ? 5200 : 3000 });
-    recipes.push({ layer: "#bgParticles", className: "fx-bee", text: "🐝", min: 7.6, max: 11.2, interval: lowPower ? 6800 : 3600 });
-    recipes.push({ layer: "#bgSakura", className: "fx-bird", text: "🐦", min: 10.4, max: 14.8, interval: lowPower ? 9200 : 5200 });
+    recipes.push({ layer: "#bgSakura", className: "fx-petal", text: "🌸", min: 7.2, max: 11.8, interval: Math.round((lowPower ? 900 : 520) * intervalScale) });
+    recipes.push({ layer: "#bgParticles", className: "fx-leaf", text: "🍃", min: 9.2, max: 13.8, interval: Math.round((lowPower ? 1450 : 860) * intervalScale) });
+    recipes.push({ layer: "#bgStars", className: "fx-spark", text: "✨", min: 6.8, max: 10.6, interval: Math.round((lowPower ? 1300 : 740) * intervalScale) });
+    if (profile.level !== "low") {
+      recipes.push({ layer: "#bgSakura", className: "fx-butterfly", text: "🦋", min: 8.8, max: 13.4, interval: Math.round((profile.level === "medium" ? 4200 : 3000) * intervalScale) });
+    }
+    if (profile.level === "high") {
+      recipes.push({ layer: "#bgParticles", className: "fx-bee", text: "🐝", min: 7.6, max: 11.2, interval: 3600 });
+      recipes.push({ layer: "#bgSakura", className: "fx-bird", text: "🐦", min: 10.4, max: 14.8, interval: 5200 });
+    }
   } else {
-    recipes.push({ layer: "#bgStars", className: "fx-star", text: "", min: 6.8, max: 10.4, interval: lowPower ? 640 : 300 });
-    recipes.push({ layer: "#bgParticles", className: "fx-soft", text: "", min: 8.2, max: 12.8, interval: lowPower ? 900 : 520 });
-    recipes.push({ layer: "#bgParticles", className: "fx-shooting", text: "", min: 1.5, max: 2.4, interval: lowPower ? 9800 : 5200 });
+    recipes.push({ layer: "#bgStars", className: "fx-star", text: "", min: 6.8, max: 10.4, interval: Math.round((lowPower ? 640 : 300) * intervalScale) });
+    recipes.push({ layer: "#bgParticles", className: "fx-soft", text: "", min: 8.2, max: 12.8, interval: Math.round((lowPower ? 900 : 520) * intervalScale) });
+    recipes.push({ layer: "#bgParticles", className: "fx-shooting", text: "", min: 1.5, max: 2.4, interval: Math.round((lowPower ? 9800 : 5200) * intervalScale) });
   }
 
   recipes.forEach((recipe) => {
     const isCreature = /fx-butterfly|fx-bee|fx-bird/.test(recipe.className);
-    const burst = lowPower ? (recipe.className.includes("fx-shooting") ? 0 : 1) : (recipe.className.includes("fx-shooting") ? 1 : (isCreature ? 1 : 3));
+    const burst = lowPower
+      ? (recipe.className.includes("fx-shooting") ? 0 : 1)
+      : performanceLevel() === "medium"
+        ? (recipe.className.includes("fx-shooting") ? 1 : (isCreature ? 1 : 2))
+        : (recipe.className.includes("fx-shooting") ? 1 : (isCreature ? 1 : 3));
     for (let i = 0; i < burst; i += 1) {
       spawnBackgroundItem(recipe.layer, recipe.className, recipe.text, recipe.min, recipe.max);
     }
@@ -385,7 +399,7 @@ function startBackgroundEffects() {
     state.backgroundIntervals.push(timer);
   });
 
-  if (!sakura && !lowPower) {
+  if (!sakura && profile.allowConstellation) {
     spawnConstellation();
     const constellationTimer = setInterval(spawnConstellation, 5600);
     state.backgroundIntervals.push(constellationTimer);

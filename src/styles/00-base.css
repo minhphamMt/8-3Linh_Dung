@@ -89,6 +89,10 @@ body {
 .site-cursor.is-hover { --cursor-scale: 1.18; }
 .site-cursor.is-pressed { --cursor-scale: .94; }
 
+html[data-performance="low"] .site-cursor {
+  display: none;
+}
+
 .site-cursor__halo,
 .site-cursor__glyph {
   position: absolute;
@@ -533,6 +537,14 @@ html[data-theme="sakura"] .bg-particles::after {
   filter: blur(24px);
 }
 
+html[data-performance="medium"] .bg-glow {
+  filter: blur(20px);
+}
+
+html[data-performance="low"] .bg-glow {
+  filter: blur(16px);
+}
+
 html[data-theme="sakura"] .bg-glow {
   background:
     radial-gradient(44% 42% at 12% 8%, rgba(255,225,177,.56), transparent 70%),
@@ -659,6 +671,14 @@ html[data-theme="sakura"] .bg-glow {
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-lg);
   backdrop-filter: blur(13px);
+}
+
+html[data-performance="medium"] .card {
+  backdrop-filter: blur(10px);
+}
+
+html[data-performance="low"] .card {
+  backdrop-filter: blur(7px);
 }
 
 .theme-switcher {

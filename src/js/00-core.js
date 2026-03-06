@@ -27,17 +27,23 @@ const CONFIG = {
         "./assets/Linh/Linh4.png",
         "./assets/Linh/Linh5.png",
       ],
-      letter: [
-        "Dear Linh,",
-        "",
-        "Happy Women's Day.",
-        "May you keep shining in your own calm and beautiful way, and may every little moment around you feel a bit softer and brighter.",
-        "",
-        "I hope your days bring you more joy, less stress, and many kind people who truly understand your heart.",
-        "Thank you for being gentle, lovely, and unforgettable in the way only you can be.",
-        "",
-        "Wishing you a day full of peace, laughter, and the sweetest smiles. 💖",
-      ].join("\n"),
+     letter: [
+  "Dear Linh,",
+  "",
+  "Happy Women's Day.",
+  "",
+  "I hope today feels a little softer and brighter for you. Like a quiet moment where everything slows down just enough for you to smile.",
+  "",
+  "May you keep shining in your own calm and beautiful way. The kind of light that doesn’t need to be loud, but somehow still makes the world around you feel warmer.",
+  "",
+  "I hope life brings you many peaceful days, kind people, and small moments that make your heart quietly happy.",
+  "",
+  "Thank you for being someone so gentle, lovely, and unforgettable in your own special way.",
+  "",
+  "Wishing you a day filled with warmth, laughter, and the sweetest smiles.",
+  "",
+  "And if this little universe brings you even a tiny smile today, then it was worth creating. ✨",
+].join("\n")
     },
     dung: {
       name: "Vân Dung",
@@ -50,74 +56,125 @@ const CONFIG = {
         "./assets/Dung/Dung5.png",
       ],
       letter: [
-        "Dear Dung,",
-        "",
-        "Happy Women's Day.",
-        "May you always stay bright, warm, and full of the energy that makes every space around you feel more alive.",
-        "",
-        "I hope life gives you more lucky moments, more quiet happiness, and more reasons to smile without holding back.",
-        "Thank you for making the world around you feel sweeter, lighter, and more beautiful.",
-        "",
-        "Wishing you a lovely day filled with peace, confidence, and joy. 🌸",
-      ].join("\n"),
+  "Dear Dung,",
+  "",
+  "Happy Women's Day.",
+  "",
+  "I hope today greets you like a warm spring morning — calm, bright, and full of gentle little joys.",
+  "",
+  "May you always stay cheerful, confident, and full of the energy that makes the space around you feel lighter and more alive.",
+  "",
+  "I hope life gives you many lucky moments, quiet happiness, and countless reasons to smile without hesitation.",
+  "",
+  "Thank you for bringing warmth and brightness to the people around you in your own beautiful way.",
+  "",
+  "Wishing you a day filled with peace, laughter, and the kind of happiness that stays with you long after today.",
+  "",
+  "And I hope this small sakura garden brings you a little smile. 🌸",
+].join("\n")
     },
   },
   themeCopy: {
-    cosmic: {
-      heroKicker: "08/03 Story Journey",
-      heroTitle: "Hai vì sao tỏa sáng trong khu vườn 8/3",
-      heroSubtitle: "Chọn một ngôi sao bắt đầu hành trình ký ức và lời chúc.",
-      choiceTagLinh: "STAR 01",
-      choiceTagDung: "STAR 02",
-      choiceHintLinh: "Chạm để mở hành trình",
-      choiceHintDung: "Đi vào khu vườn bí mật",
-      wishBtn: "Vào Wish Star Page",
-      heroCredit: "A small universe by <strong>Minh Phạm ✨</strong>",
-      stagePill: "Cosmic Receiver",
-      letterPill: "Space Letter",
-      wishPill: "Wish Star Page",
-      wishKicker: "Wish Constellation",
-      wishTitle: "Thả một điều ước vào dải ngân hà",
-      wishSubtitle: "Viết điều bạn muốn gửi, rồi để vì sao ấy neo lại trong bầu trời riêng của hai người.",
-      wishLabel: "Tin nhắn ánh sao",
-      wishPlaceholder: "Ví dụ: May you always shine",
-      wishAction: "Launch star wish",
-      wishNote: "Mỗi điều ước sẽ hóa thành một điểm sáng nhỏ trong bản đồ kỷ niệm.",
-      stageHint: "Di chuột để cảm nhận không gian • bấm vòng hoa để mở thư",
-      portalText: "Open Letter",
-      portalSub: "Tap to enter",
-      ending: "Hope this little universe made you smile ✨",
-      choiceMarks: ["✦", "✧"],
-      wishGlyph: "✦",
-    },
-    sakura: {
-      heroKicker: "08/03 Dreamy Sakura Garden",
-      heroTitle: "Hai cánh hoa rực rỡ trong khu vườn 8/3",
-      heroSubtitle: "Chọn bông hoa để dạo vào vườn sakura và mở lá thư mùa xuân.",
-      choiceTagLinh: "BLOOM 01",
-      choiceTagDung: "BLOOM 02",
-      choiceHintLinh: "Chạm để bước vào vườn hoa",
-      choiceHintDung: "Đi vào khu cây sakura bí mật",
-      wishBtn: "Vào Wish Blossom Page",
-      heroCredit: "A small sakura garden by <strong>Minh Phạm 🌸</strong>",
-      stagePill: "Petal Receiver",
-      letterPill: "Sakura Letter",
-      wishPill: "Wish Blossom Page",
-      wishKicker: "Wish Blossom Garden",
-      wishTitle: "Gieo một điều ước vào vườn sakura",
-      wishSubtitle: "Viết một lời mong muốn dịu dàng, rồi để cánh hoa mang nó bay lên giữa khu vườn mùa xuân.",
-      wishLabel: "Điều ước mùa xuân",
-      wishPlaceholder: "Ví dụ: Chúc bạn luôn rạng rỡ và bình yên",
-      wishAction: "Thả cánh hoa ước",
-      wishNote: "Mỗi điều ước sẽ nở thành một bông hoa nhỏ trong khu vườn này.",
-      stageHint: "Di chuột để cánh hoa bay • bấm vòng hoa để mở thư",
-      portalText: "Mở thư sakura",
-      portalSub: "Chạm để vào",
-      ending: "Hope this little garden made you smile 🌸",
-      choiceMarks: ["❀", "✿"],
-      wishGlyph: "🌸",
-    },
+  cosmic: {
+    heroKicker: "International Women's Day • 08/03",
+    heroTitle: "Hai vì sao tỏa sáng trong khu vườn của vũ trụ",
+    heroSubtitle:
+      "Mỗi vì sao là một hành trình nhỏ chứa những lời chúc và ký ức dành riêng cho bạn.",
+
+    choiceTagLinh: "STAR 01",
+    choiceTagDung: "STAR 02",
+
+    choiceHintLinh: "Chạm để mở hành trình ánh sao",
+    choiceHintDung: "Bước vào khu vườn sao bí mật",
+
+    wishBtn: "Gửi một điều ước",
+
+    heroCredit:
+      "A tiny universe made with care by <strong>Minh Phạm ✨</strong>",
+
+    stagePill: "Cosmic Receiver",
+    letterPill: "Space Letter",
+    wishPill: "Wish Star",
+
+    wishKicker: "Wish Constellation",
+
+    wishTitle: "Thả một điều ước vào dải ngân hà",
+
+    wishSubtitle:
+      "Viết một lời chúc nhỏ, rồi để vì sao ấy lặng lẽ tỏa sáng trong bầu trời kỷ niệm của hai người.",
+
+    wishLabel: "Tin nhắn ánh sao",
+
+    wishPlaceholder: "Ví dụ: May you always shine brightly",
+
+    wishAction: "Launch the star wish",
+
+    wishNote:
+      "Mỗi điều ước sẽ trở thành một vì sao nhỏ trong bản đồ kỷ niệm.",
+
+    stageHint:
+      "Di chuột để cảm nhận không gian • chạm vòng hoa để mở bức thư",
+
+    portalText: "Open the Letter",
+    portalSub: "Tap to enter",
+
+    ending: "Hope this little universe made your 8/3 brighter ✨",
+
+    choiceMarks: ["✦", "✧"],
+    wishGlyph: "✦",
   },
+
+  sakura: {
+    heroKicker: "International Women's Day • 08/03",
+
+    heroTitle: "Hai cánh hoa rực rỡ trong khu vườn mùa xuân",
+
+    heroSubtitle:
+      "Chọn một bông hoa để bước vào khu vườn sakura và mở những lời chúc dịu dàng dành cho bạn.",
+
+    choiceTagLinh: "BLOOM 01",
+    choiceTagDung: "BLOOM 02",
+
+    choiceHintLinh: "Chạm để bước vào vườn hoa",
+    choiceHintDung: "Đi vào khu sakura bí mật",
+
+    wishBtn: "Gửi một điều ước",
+
+    heroCredit:
+      "A small sakura garden by <strong>Minh Phạm 🌸</strong>",
+
+    stagePill: "Petal Receiver",
+    letterPill: "Sakura Letter",
+    wishPill: "Wish Blossom",
+
+    wishKicker: "Wish Blossom Garden",
+
+    wishTitle: "Gieo một điều ước vào vườn sakura",
+
+    wishSubtitle:
+      "Viết một lời mong ước dịu dàng, rồi để cánh hoa mang nó bay lên giữa khu vườn mùa xuân.",
+
+    wishLabel: "Điều ước mùa xuân",
+
+    wishPlaceholder: "Ví dụ: Chúc bạn luôn rạng rỡ và bình yên",
+
+    wishAction: "Thả cánh hoa ước",
+
+    wishNote:
+      "Mỗi điều ước sẽ nở thành một bông hoa nhỏ trong khu vườn này.",
+
+    stageHint:
+      "Di chuột để cánh hoa bay • chạm vòng hoa để mở thư",
+
+    portalText: "Mở lá thư sakura",
+    portalSub: "Chạm để vào",
+
+    ending: "Hope this little garden made your 8/3 sweeter 🌸",
+
+    choiceMarks: ["❀", "✿"],
+    wishGlyph: "🌸",
+  },
+}
 };
 
 const state = {
@@ -150,6 +207,8 @@ const state = {
   backgroundTimeouts: [],
   transitionBusy: false,
   constellationAnchors: [],
+  performance: null,
+  resizeTimer: null,
 };
 
 const rand = (min, max) => Math.random() * (max - min) + min;
@@ -159,6 +218,75 @@ const isCompactViewport = () => window.innerHeight <= 860;
 const isTightViewport = () => window.innerHeight <= 760;
 const supportsFinePointer = () => window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 const prefersReducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const readDeviceNumber = (key, fallback) => {
+  const value = Number(navigator?.[key]);
+  return Number.isFinite(value) && value > 0 ? value : fallback;
+};
+const performanceLevel = () => state.performance?.level || "high";
+const pickPerformanceValue = (high, medium = high, low = medium) => (
+  performanceLevel() === "low" ? low : performanceLevel() === "medium" ? medium : high
+);
+const scalePerformanceCount = (high, medium = high, low = medium) => Math.max(0, Math.round(pickPerformanceValue(high, medium, low)));
+
+function buildPerformanceProfile() {
+  const reduced = prefersReducedMotion();
+  const mobile = isMobile();
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+  const memory = readDeviceNumber("deviceMemory", mobile ? 4 : 8);
+  const cores = readDeviceNumber("hardwareConcurrency", mobile ? 4 : 8);
+  const verySmallScreen = width <= 420 || height <= 720;
+  const compactScreen = width <= 1366 || height <= 820;
+
+  let level = "high";
+  if (reduced || memory <= 4 || cores <= 4 || (mobile && verySmallScreen)) {
+    level = "low";
+  } else if (mobile || compactScreen || memory <= 8 || cores <= 8) {
+    level = "medium";
+  }
+  const pickLevelValue = (high, medium = high, low = medium) => (
+    level === "low" ? low : level === "medium" ? medium : high
+  );
+
+  return {
+    level,
+    reduced,
+    mobile,
+    memory,
+    cores,
+    allowCustomCursor: supportsFinePointer() && level !== "low",
+    allowHeroParallax: !mobile && !reduced && level !== "low" && supportsFinePointer(),
+    allowStageParallax: !mobile && !reduced && level !== "low" && supportsFinePointer(),
+    allowConstellation: !reduced && level === "high",
+    stageLinkRefreshMs: pickLevelValue(420, 620, 960),
+    heroHoverMs: pickLevelValue(48, 82, 132),
+    stageHoverMs: pickLevelValue(46, 76, 128),
+    resizeDebounceMs: pickLevelValue(120, 160, 220),
+    backgroundIntervalScale: pickLevelValue(1, 1.22, 1.58),
+  };
+}
+
+function refreshPerformanceProfile(force = false) {
+  const next = buildPerformanceProfile();
+  const prev = state.performance;
+  const changed = force
+    || !prev
+    || prev.level !== next.level
+    || prev.reduced !== next.reduced
+    || prev.allowCustomCursor !== next.allowCustomCursor;
+  state.performance = next;
+  document.documentElement.setAttribute("data-performance", next.level);
+  document.body.setAttribute("data-performance", next.level);
+  return changed;
+}
+
+function debounce(fn, wait) {
+  let timer = null;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), wait);
+  };
+}
 
 function getStageViewport() {
   const stage = $("#memoryStage");

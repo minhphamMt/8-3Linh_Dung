@@ -139,7 +139,7 @@ function createMemoryCard(src, slot, className = "") {
   card.style.transform = `translate3d(0,0,var(--depth-z)) rotate(var(--base-rotate))`;
   card.dataset.rotate = String(slot.r);
   card.dataset.depth = String(slot.z);
-  card.innerHTML = `<img src="${src}" alt="Memory photo" loading="lazy" />`;
+  card.innerHTML = `<img src="${src}" alt="Memory photo" loading="lazy" decoding="async" />`;
   return card;
 }
 
@@ -252,7 +252,9 @@ function spawnCardHoverBurst(stage, card) {
 
   const centerX = ((cardRect.left - stageRect.left) + (cardRect.width / 2)) / stageRect.width * 100;
   const centerY = ((cardRect.top - stageRect.top) + (cardRect.height / 2)) / stageRect.height * 100;
-  const burstCount = isMobile() ? 4 : 6;
+  const burstCount = isMobile()
+    ? scalePerformanceCount(4, 3, 2)
+    : scalePerformanceCount(6, 4, 3);
 
   for (let i = 0; i < burstCount; i += 1) {
     setTimeout(() => {
@@ -275,6 +277,17 @@ function renderGallery() {
   const sakuraMode = state.theme === "sakura";
   const compactStage = isCompactViewport();
   const tightStage = isTightViewport();
+  const level = performanceLevel();
+  const primaryEchoIndexes = level === "low"
+    ? [0, 2, 4]
+    : level === "medium"
+      ? [0, 1, 3, 4]
+      : [0, 1, 2, 3, 4];
+  const softEchoIndexes = level === "high"
+    ? [0, 1, 2, 3, 4]
+    : level === "medium"
+      ? [0, 2, 4]
+      : [];
 
   main.innerHTML = "";
   echo.innerHTML = "";
@@ -298,6 +311,7 @@ function renderGallery() {
 
   girl.images.slice(0, 5).forEach((src, index) => {
     const base = slots[index];
+    if (!primaryEchoIndexes.includes(index)) return;
     const dirX = Math.sign(base.x - 50) || (index % 2 ? 1 : -1);
     const dirY = Math.sign(base.y - 50) || (index < 2 ? -1 : 1);
     const slot = {
@@ -320,6 +334,7 @@ function renderGallery() {
 
   girl.images.slice(0, 5).forEach((src, index) => {
     const base = slots[index];
+    if (!softEchoIndexes.includes(index)) return;
     const dirX = Math.sign(base.x - 50) || (index % 2 ? 1 : -1);
     const dirY = Math.sign(base.y - 50) || (index < 2 ? -1 : 1);
     const slot = {
@@ -357,12 +372,14 @@ function renderGallery() {
       ? [{ x: 3, y: 27, w: 78, h: 100, r: -8, z: 4, orbit: 16.2 }, { x: 82, y: 27, w: 78, h: 100, r: 7, z: 4, orbit: 15.8 }]
       : [{ x: 3, y: 20, w: 96, h: 122, r: -8, z: 5, orbit: 17.4 }, { x: 81, y: 22, w: 96, h: 122, r: 8, z: 5, orbit: 16.8 }, { x: 43, y: 76, w: 96, h: 122, r: -6, z: 4, orbit: 18.2 }]));
 
-  sparse.forEach((slot, idx) => {
+  const sparseLimit = level === "low" ? Math.min(2, sparse.length) : level === "medium" ? Math.min(3, sparse.length) : sparse.length;
+  sparse.slice(0, sparseLimit).forEach((slot, idx) => {
     echo.appendChild(createMemoryCard(girl.images[idx % girl.images.length], slot, "memory-photo--echo memory-photo--echo-faint"));
   });
 
-  if (!isMobile()) {
-    const ringCount = sakuraMode ? (compactStage ? 5 : 6) : (tightStage ? 7 : compactStage ? 8 : 10);
+  if (!isMobile() && level !== "low") {
+    const baseRingCount = sakuraMode ? (compactStage ? 5 : 6) : (tightStage ? 7 : compactStage ? 8 : 10);
+    const ringCount = level === "medium" ? Math.max(3, Math.round(baseRingCount * 0.55)) : baseRingCount;
     for (let i = 0; i < ringCount; i += 1) {
       const angle = (Math.PI * 2 * i) / ringCount + rand(-0.18, 0.18);
       const slot = {
@@ -412,7 +429,7 @@ function startMemoryHighlight() {
   };
 
   highlight();
-  state.memoryInterval = setInterval(highlight, 4600);
+  state.memoryInterval = setInterval(highlight, pickPerformanceValue(4600, 5600, 6800));
 }
 
 function setupStageParallax() {
@@ -428,20 +445,38 @@ function setupStageParallax() {
   const motion = state.stageMotion;
   if (motion.raf) cancelAnimationFrame(motion.raf);
   let lastLinkTs = 0;
+  const resetStageTransforms = () => {
+    stage.classList.remove("is-pointer");
+    main.style.transform = "";
+    echo.style.transform = "";
+    cursorGlow.style.transform = "";
+    if (portal) {
+      portal.style.setProperty("--px", "0px");
+      portal.style.setProperty("--py", "0px");
+    }
+    $$(".memory-photo").forEach((card) => {
+      card.style.translate = "0 0";
+      card.classList.remove("is-magnetic");
+    });
+  };
+  const isStageInteractive = () => {
+    const transitioning = state.portalBusy || stage.classList.contains("is-portal-transition") || stage.classList.contains("is-blackhole-transition");
+    return state.screen === 2 && !transitioning && Boolean(state.performance?.allowStageParallax);
+  };
 
   const updateStageField = () => {
-    const transitioning = state.portalBusy || stage.classList.contains("is-portal-transition") || stage.classList.contains("is-blackhole-transition");
-    const active = state.screen === 2 && !isMobile() && !transitioning;
+    const active = isStageInteractive();
     if (active) {
       motion.wasActive = true;
       motion.x += (motion.targetX - motion.x) * 0.15;
       motion.y += (motion.targetY - motion.y) * 0.15;
-      const x = motion.x - 0.5;
-      const y = motion.y - 0.5;
+      const parallaxStrength = pickPerformanceValue(1, 0.76, 0.48);
+      const x = (motion.x - 0.5) * parallaxStrength;
+      const y = (motion.y - 0.5) * parallaxStrength;
       const t = performance.now() * 0.001;
-      const driftX = Math.sin(t * 0.45) * 2.4;
-      const driftY = Math.cos(t * 0.4) * 1.9;
-      const driftTilt = Math.sin(t * 0.24) * 0.9;
+      const driftX = Math.sin(t * 0.45) * pickPerformanceValue(2.4, 1.8, 1.2);
+      const driftY = Math.cos(t * 0.4) * pickPerformanceValue(1.9, 1.4, 1.1);
+      const driftTilt = Math.sin(t * 0.24) * pickPerformanceValue(0.9, 0.64, 0.42);
 
       stage.classList.add("is-pointer");
       stage.style.setProperty("--sx", `${(motion.x * 100).toFixed(2)}%`);
@@ -472,7 +507,12 @@ function setupStageParallax() {
         }
       });
 
-      $$(".memory-photo").forEach((card) => {
+      const cardsToMove = performanceLevel() === "high"
+        ? $$(".memory-photo")
+        : performanceLevel() === "medium"
+          ? $$(".memory-photo--main, .memory-photo--echo")
+          : $$(".memory-photo--main");
+      cardsToMove.forEach((card) => {
         const r = card.getBoundingClientRect();
         const cx = r.left + (r.width / 2);
         const cy = r.top + (r.height / 2);
@@ -480,22 +520,23 @@ function setupStageParallax() {
         const dy = pointerY - cy;
         const dist = Math.hypot(dx, dy);
         const isMain = card.classList.contains("memory-photo--main");
-        const radius = isMain ? 300 : 220;
+        const radius = isMain ? pickPerformanceValue(300, 250, 210) : pickPerformanceValue(220, 180, 140);
         const safeDist = dist || 0.001;
 
         let tx = 0;
         let ty = 0;
         if (dist < radius) {
           const force = 1 - (dist / radius);
-          const strength = isMain ? 10 : 6;
+          const strength = isMain ? pickPerformanceValue(10, 7.5, 5.5) : pickPerformanceValue(6, 4.2, 3);
           tx = (-dx / safeDist) * force * strength;
           ty = (-dy / safeDist) * force * strength;
         }
 
-        if (card === nearest && nearestDist < 260) {
-          const pullForce = 1 - (nearestDist / 260);
-          tx += (dx / safeDist) * pullForce * 7.5;
-          ty += (dy / safeDist) * pullForce * 7.5;
+        const magneticRadius = pickPerformanceValue(260, 220, 180);
+        if (card === nearest && nearestDist < magneticRadius) {
+          const pullForce = 1 - (nearestDist / magneticRadius);
+          tx += (dx / safeDist) * pullForce * pickPerformanceValue(7.5, 5.8, 4.4);
+          ty += (dy / safeDist) * pullForce * pickPerformanceValue(7.5, 5.8, 4.4);
           card.classList.add("is-magnetic");
         } else {
           card.classList.remove("is-magnetic");
@@ -505,47 +546,43 @@ function setupStageParallax() {
       });
 
       const now = performance.now();
-      if (now - lastLinkTs > 420) {
+      if (now - lastLinkTs > (state.performance?.stageLinkRefreshMs || 420)) {
         renderStageLinks();
         lastLinkTs = now;
       }
+      motion.raf = requestAnimationFrame(updateStageField);
     } else {
       if (motion.wasActive) {
-        stage.classList.remove("is-pointer");
-        main.style.transform = "";
-        echo.style.transform = "";
-        cursorGlow.style.transform = "";
-        if (portal) {
-          portal.style.setProperty("--px", "0px");
-          portal.style.setProperty("--py", "0px");
-        }
-        $$(".memory-photo").forEach((card) => {
-          card.style.translate = "0 0";
-          card.classList.remove("is-magnetic");
-        });
+        resetStageTransforms();
       }
       motion.wasActive = false;
       motion.targetX = 0.5;
       motion.targetY = 0.5;
-      motion.x += (0.5 - motion.x) * 0.2;
-      motion.y += (0.5 - motion.y) * 0.2;
+      motion.raf = null;
+      return;
     }
+  };
+
+  const ensureStageLoop = () => {
+    if (motion.raf || !isStageInteractive()) return;
     motion.raf = requestAnimationFrame(updateStageField);
   };
 
-  motion.raf = requestAnimationFrame(updateStageField);
+  ensureStageLoop();
 
   stage.addEventListener("mousemove", (event) => {
+    if (!isStageInteractive()) return;
     const rect = stage.getBoundingClientRect();
     motion.targetX = clamp((event.clientX - rect.left) / rect.width, 0, 1);
     motion.targetY = clamp((event.clientY - rect.top) / rect.height, 0, 1);
+    ensureStageLoop();
 
     const now = performance.now();
-    if (now - state.stageHoverTick > 46) {
+    if (now - state.stageHoverTick > (state.performance?.stageHoverMs || 46)) {
       spawnStageTrail(stage, motion.targetX * 100, motion.targetY * 100);
       state.stageHoverTick = now;
     }
-  });
+  }, { passive: true });
 
   stage.addEventListener("mouseleave", () => {
     motion.targetX = 0.5;

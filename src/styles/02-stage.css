@@ -732,6 +732,25 @@ html[data-theme="sakura"] .memory-photo--echo-soft {
   filter: blur(3.8px) saturate(.4);
 }
 
+html[data-performance="medium"] .memory-photo--echo {
+  filter: blur(2.2px) saturate(.68);
+}
+
+html[data-performance="medium"] .memory-photo--echo-soft {
+  opacity: .16;
+  filter: blur(2.8px) saturate(.62);
+}
+
+html[data-performance="medium"] .memory-photo--ambient {
+  opacity: .08;
+  filter: blur(3px) saturate(.42);
+}
+
+html[data-performance="low"] .memory-photo--echo-soft,
+html[data-performance="low"] .memory-photo--ambient {
+  display: none;
+}
+
 .memory-label {
   position: absolute;
   left: 8px;

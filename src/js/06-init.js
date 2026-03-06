@@ -72,17 +72,21 @@ function bindEvents() {
   });
   $("#toggleMusic")?.addEventListener("click", toggleMusic);
 
-  window.addEventListener("resize", () => {
+  const handleResize = debounce(() => {
+    refreshPerformanceProfile();
     renderGalaxyBackgroundStars();
     renderHeroPetalPreview();
     if (state.screen === 2 && state.currentGirlKey) renderGallery();
     renderStageStars();
     if (state.screen === 4) renderWishSky();
-  });
+  }, state.performance?.resizeDebounceMs || 160);
+
+  window.addEventListener("resize", handleResize, { passive: true });
 }
 
 function init() {
   state.wishes = loadWishes();
+  refreshPerformanceProfile(true);
 
   const savedTheme = localStorage.getItem(CONFIG.storageTheme);
   setTheme(savedTheme === "sakura" ? "sakura" : "cosmic", false);

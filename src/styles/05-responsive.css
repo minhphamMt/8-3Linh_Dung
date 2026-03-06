@@ -226,14 +226,35 @@
 
 @media (max-width: 760px) {
   .theme-switcher {
-    right: 8px;
-    top: 8px;
+    left: 50%;
+    right: auto;
+    top: auto;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
+    transform: translateX(-50%);
+    width: min(calc(100vw - 20px), 320px);
     padding: 6px;
+    border-radius: 999px;
+    z-index: 48;
+  }
+
+  .theme-switcher__group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
   }
 
   .theme-btn {
-    padding: 7px 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    padding: 7px 12px;
     font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .toast {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 72px);
   }
 
   .screen {
@@ -324,7 +345,7 @@
   .memory-caption {
     width: calc(100% - 24px);
     text-align: center;
-    bottom: 34px;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 84px);
   }
 
   .stage-links,
@@ -359,6 +380,7 @@
     width: calc(100% - 28px);
     text-align: center;
     font-size: 11px;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 54px);
   }
 
   .letter-vault-ring--one { width: min(92vw, 560px); }
@@ -413,7 +435,13 @@
     line-height: 1.5;
   }
 
-  .wish-wrap { padding: 10px; }
+  .letter-ending {
+    margin-bottom: calc(env(safe-area-inset-bottom, 0px) + 68px);
+  }
+
+  .wish-wrap {
+    padding: 10px 10px calc(env(safe-area-inset-bottom, 0px) + 78px);
+  }
   .wish-panel { padding: 14px; }
   .wish-head h2 { font-size: clamp(28px, 8.8vw, 42px); }
   .wish-head p { font-size: 13px; }

@@ -7,8 +7,16 @@ function renderHeroPetalPreview() {
 
   const allImages = [...CONFIG.girls.linh.images, ...CONFIG.girls.dung.images];
   const shuffled = allImages.slice().sort(() => Math.random() - 0.5);
-  const count = isMobile() ? 4 : (state.theme === "cosmic" ? 10 : 8);
-  const sparkCount = isMobile() ? 8 : (state.theme === "cosmic" ? 20 : 14);
+  const count = isMobile()
+    ? scalePerformanceCount(4, 4, 3)
+    : state.theme === "cosmic"
+      ? scalePerformanceCount(10, 7, 4)
+      : scalePerformanceCount(8, 6, 4);
+  const sparkCount = isMobile()
+    ? scalePerformanceCount(8, 6, 4)
+    : state.theme === "cosmic"
+      ? scalePerformanceCount(20, 14, 8)
+      : scalePerformanceCount(14, 10, 6);
 
   layer.innerHTML = "";
   sparkLayer.innerHTML = "";
@@ -22,32 +30,32 @@ function renderHeroPetalPreview() {
     card.style.setProperty("--drift-y", `${rand(-18, 18).toFixed(2)}px`);
     card.style.setProperty("--rot-start", `${rand(-18, 18).toFixed(1)}deg`);
     card.style.setProperty("--rot-end", `${rand(-16, 28).toFixed(1)}deg`);
-    card.innerHTML = `<img src="${shuffled[i % shuffled.length]}" alt="Memory petal ${i + 1}" loading="lazy" />`;
+    card.innerHTML = `<img src="${shuffled[i % shuffled.length]}" alt="Memory petal ${i + 1}" loading="lazy" decoding="async" />`;
     layer.appendChild(card);
   }
 
   if (state.theme === "cosmic") {
-    sparkLayer.style.backgroundImage = buildGalaxyDustMap(isMobile() ? 96 : 180, {
+    sparkLayer.style.backgroundImage = buildGalaxyDustMap(scalePerformanceCount(isMobile() ? 96 : 180, isMobile() ? 72 : 128, isMobile() ? 40 : 84), {
       minX: 2,
       maxX: 98,
       minY: 4,
       maxY: 94,
-      clusterCount: isMobile() ? 6 : 9,
-      clusterBias: 0.78,
+      clusterCount: pickPerformanceValue(isMobile() ? 6 : 9, isMobile() ? 5 : 7, isMobile() ? 4 : 5),
+      clusterBias: pickPerformanceValue(0.78, 0.72, 0.66),
       avoidRects: [
         { x1: 10, x2: 48, y1: 18, y2: 64, allowChance: 0.42 },
       ],
     });
 
-    const starCount = isMobile() ? 72 : 160;
+    const starCount = scalePerformanceCount(isMobile() ? 72 : 160, isMobile() ? 52 : 112, isMobile() ? 36 : 72);
     const stars = generateGalaxyStarfield(starCount, {
       minX: 2,
       maxX: 98,
       minY: 4,
       maxY: 94,
-      clusterCount: isMobile() ? 6 : 10,
-      clusterBias: isMobile() ? 0.66 : 0.8,
-      minGap: isMobile() ? 0.5 : 0.62,
+      clusterCount: pickPerformanceValue(isMobile() ? 6 : 10, isMobile() ? 5 : 7, isMobile() ? 4 : 5),
+      clusterBias: pickPerformanceValue(isMobile() ? 0.66 : 0.8, isMobile() ? 0.6 : 0.72, isMobile() ? 0.56 : 0.66),
+      minGap: pickPerformanceValue(isMobile() ? 0.5 : 0.62, isMobile() ? 0.58 : 0.72, isMobile() ? 0.7 : 0.86),
       avoidRects: [
         { x1: 12, x2: 50, y1: 16, y2: 64, allowChance: 0.48 },
       ],
@@ -119,10 +127,11 @@ function spawnCosmicLaunch(x, y) {
   ring.className = "cosmic-launch__ring";
   launch.appendChild(ring);
 
-  for (let i = 0; i < 18; i += 1) {
+  const particleCount = scalePerformanceCount(18, 12, 8);
+  for (let i = 0; i < particleCount; i += 1) {
     const p = document.createElement("span");
     p.className = "cosmic-launch__particle";
-    const angle = (Math.PI * 2 * i) / 18;
+    const angle = (Math.PI * 2 * i) / particleCount;
     const radius = rand(80, 210);
     p.style.setProperty("--tx", `${Math.cos(angle) * radius}px`);
     p.style.setProperty("--ty", `${Math.sin(angle) * radius}px`);
@@ -155,11 +164,12 @@ function spawnSakuraLaunch(x, y) {
   launch.appendChild(core);
 
   const petals = ["\u{1F338}", "\u2740", "\u273F"];
-  for (let i = 0; i < 16; i += 1) {
+  const petalCount = scalePerformanceCount(16, 12, 8);
+  for (let i = 0; i < petalCount; i += 1) {
     const petal = document.createElement("span");
     petal.className = "sakura-launch__petal";
     petal.textContent = petals[i % petals.length];
-    const angle = (Math.PI * 2 * i) / 16;
+    const angle = (Math.PI * 2 * i) / petalCount;
     const radius = rand(90, 220);
     petal.style.setProperty("--tx", `${Math.cos(angle) * radius}px`);
     petal.style.setProperty("--ty", `${Math.sin(angle) * radius}px`);
@@ -197,11 +207,12 @@ function spawnSakuraPortalSwirl(x, y) {
   swirl.appendChild(core);
 
   const petals = ["🌸", "❀", "✿"];
-  for (let i = 0; i < 18; i += 1) {
+  const petalCount = scalePerformanceCount(18, 13, 9);
+  for (let i = 0; i < petalCount; i += 1) {
     const petal = document.createElement("span");
     petal.className = "sakura-portal-swirl__petal";
     petal.textContent = petals[i % petals.length];
-    const angle = (Math.PI * 2 * i) / 18;
+    const angle = (Math.PI * 2 * i) / petalCount;
     const radius = rand(80, 240);
     petal.style.setProperty("--tx", `${Math.cos(angle) * radius}px`);
     petal.style.setProperty("--ty", `${Math.sin(angle) * radius}px`);
@@ -226,7 +237,7 @@ function setupHeroInteraction() {
   state.heroParallaxBound = true;
 
   hero.addEventListener("mousemove", (event) => {
-    if (state.screen !== 1 || isMobile()) return;
+    if (state.screen !== 1 || !state.performance?.allowHeroParallax) return;
     const rect = hero.getBoundingClientRect();
     const x = clamp(((event.clientX - rect.left) / rect.width) * 100, 0, 100);
     const y = clamp(((event.clientY - rect.top) / rect.height) * 100, 0, 100);
@@ -234,8 +245,9 @@ function setupHeroInteraction() {
     hero.style.setProperty("--my", `${y.toFixed(2)}%`);
     hero.classList.add("is-hovering");
 
-    const nx = (x / 100) - 0.5;
-    const ny = (y / 100) - 0.5;
+    const intensity = pickPerformanceValue(1, 0.72, 0.5);
+    const nx = ((x / 100) - 0.5) * intensity;
+    const ny = ((y / 100) - 0.5) * intensity;
     copy.style.transform = `translate3d(${(nx * -10).toFixed(2)}px, ${(ny * -8).toFixed(2)}px, 0)`;
     visual.style.transform = `translate3d(${(nx * 14).toFixed(2)}px, ${(ny * 10).toFixed(2)}px, 0)`;
     floatingDecor.forEach((node) => {
@@ -244,11 +256,11 @@ function setupHeroInteraction() {
     });
 
     const now = performance.now();
-    if (now - state.heroHoverTick > 48) {
+    if (now - state.heroHoverTick > (state.performance?.heroHoverMs || 48)) {
       spawnHeroHoverParticle(sparkLayer, x, y);
       state.heroHoverTick = now;
     }
-  });
+  }, { passive: true });
 
   hero.addEventListener("mouseleave", () => {
     hero.classList.remove("is-hovering");
@@ -270,7 +282,7 @@ function setupCustomCursor() {
 
   const root = document.documentElement;
   const syncCursorMode = () => {
-    const enabled = supportsFinePointer();
+    const enabled = Boolean(state.performance?.allowCustomCursor);
     root.classList.toggle("has-site-cursor", enabled);
     if (!enabled) {
       cursor.classList.remove("is-visible", "is-hover", "is-pressed");
@@ -285,14 +297,14 @@ function setupCustomCursor() {
 
   syncCursorMode();
 
-  window.addEventListener("resize", syncCursorMode);
+  window.addEventListener("resize", syncCursorMode, { passive: true });
   window.addEventListener("blur", hideCursor);
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) hideCursor();
   });
 
   window.addEventListener("pointermove", (event) => {
-    if (!supportsFinePointer() || (event.pointerType && event.pointerType !== "mouse")) return;
+    if (!state.performance?.allowCustomCursor || (event.pointerType && event.pointerType !== "mouse")) return;
     cursor.style.setProperty("--cursor-x", `${event.clientX}px`);
     cursor.style.setProperty("--cursor-y", `${event.clientY}px`);
     cursor.classList.add("is-visible");
@@ -300,10 +312,10 @@ function setupCustomCursor() {
       ? event.target.closest("button, a, input, textarea, select, label, [role='button']")
       : null;
     cursor.classList.toggle("is-hover", Boolean(interactive));
-  });
+  }, { passive: true });
 
   window.addEventListener("pointerdown", (event) => {
-    if (!supportsFinePointer() || (event.pointerType && event.pointerType !== "mouse")) return;
+    if (!state.performance?.allowCustomCursor || (event.pointerType && event.pointerType !== "mouse")) return;
     cursor.classList.add("is-visible", "is-pressed");
   });
 

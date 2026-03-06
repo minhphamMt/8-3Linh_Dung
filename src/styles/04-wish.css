@@ -379,6 +379,21 @@ html[data-theme="sakura"] .wish-cosmic-star {
   display: none;
 }
 
+html[data-performance="medium"] .wish-cosmic-nebula--two,
+html[data-performance="medium"] .wish-sakura-butterfly--two,
+html[data-performance="medium"] .wish-sakura-petal--four {
+  display: none;
+}
+
+html[data-performance="low"] .wish-cosmic-nebula--two,
+html[data-performance="low"] .wish-cosmic-orbit--two,
+html[data-performance="low"] .wish-sakura-canopy--three,
+html[data-performance="low"] .wish-sakura-butterfly,
+html[data-performance="low"] .wish-sakura-petal--three,
+html[data-performance="low"] .wish-sakura-petal--four {
+  display: none;
+}
+
 .wish-cosmic-nebula {
   border-radius: 999px;
   filter: blur(24px);

@@ -144,6 +144,20 @@ html[data-theme="cosmic"] .letter-sakura-petal {
   display: none;
 }
 
+html[data-performance="medium"] .letter-vault-ring--two,
+html[data-performance="medium"] .letter-planet--two {
+  display: none;
+}
+
+html[data-performance="low"] .letter-nebula--two,
+html[data-performance="low"] .letter-vault-ring--two,
+html[data-performance="low"] .letter-planet--two,
+html[data-performance="low"] .letter-sakura-canopy--right,
+html[data-performance="low"] .letter-sakura-petal--five,
+html[data-performance="low"] .letter-sakura-petal--six {
+  display: none;
+}
+
 .letter-nebula {
   border-radius: 50%;
   filter: blur(18px);
