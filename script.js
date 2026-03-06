@@ -991,31 +991,36 @@ function startHomeTransition(girlKey, sourceEl) {
     return;
   }
 
+  const hero = $(".screen-1 .hero");
   const bloom = document.createElement("span");
-  bloom.className = "transition-bloom";
+  bloom.className = "transition-bloom transition-bloom--cosmic";
   bloom.style.left = `${centerX}px`;
   bloom.style.top = `${centerY}px`;
   document.body.appendChild(bloom);
   spawnCosmicLaunch(centerX, centerY);
+  sourceEl.classList.add("is-cosmic-selected");
+  hero?.classList.add("is-cosmic-transition");
   requestAnimationFrame(() => bloom.classList.add("is-live"));
 
   setTimeout(() => {
     transitionToScreen(2, {
       effect: "quantum",
-      switchDelay: 360,
-      totalDuration: 980,
+      switchDelay: 240,
+      totalDuration: 820,
       onSwitched: () => {
         renderGallery();
         startMemoryHighlight();
         setupStageParallax();
+        sourceEl.classList.remove("is-cosmic-selected");
+        hero?.classList.remove("is-cosmic-transition");
+        state.homeBusy = false;
       },
     });
-  }, 620);
+  }, 300);
 
   setTimeout(() => {
     bloom.remove();
-    state.homeBusy = false;
-  }, 1300);
+  }, 1120);
 }
 
 function gallerySlots() {

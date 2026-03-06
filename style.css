@@ -1480,6 +1480,20 @@ html[data-theme="sakura"] .preview-petal {
   box-shadow: 0 0 34px rgba(255,189,215,.76);
 }
 
+.transition-bloom--cosmic {
+  width: 20px;
+  height: 20px;
+  background:
+    radial-gradient(circle, rgba(255,255,255,.98), rgba(189,231,255,.84) 28%, rgba(131,164,255,.54) 58%, rgba(255,172,226,.22) 76%, rgba(255,172,226,0) 100%);
+  box-shadow:
+    0 0 34px rgba(182,225,255,.82),
+    0 0 72px rgba(114,154,255,.3);
+}
+
+.transition-bloom--cosmic.is-live {
+  animation: cosmicBloomWarp .82s cubic-bezier(.22, .9, .26, 1) forwards;
+}
+
 .transition-bloom--sakura.is-live {
   animation: sakuraBloomWarp 1.02s var(--ease) forwards;
 }
@@ -1532,6 +1546,36 @@ html[data-theme="sakura"] .preview-petal {
 .cosmic-launch.is-live .cosmic-launch__core { animation: cosmicCore 1s var(--ease) forwards; }
 .cosmic-launch.is-live .cosmic-launch__ring { animation: cosmicRing 1.05s var(--ease) forwards; }
 .cosmic-launch.is-live .cosmic-launch__particle { animation: cosmicParticle .92s var(--ease) forwards; }
+
+html[data-theme="cosmic"] .hero.is-cosmic-transition {
+  animation: cosmicHeroDepart .74s cubic-bezier(.22, .88, .24, 1) forwards;
+}
+
+html[data-theme="cosmic"] .hero.is-cosmic-transition::before {
+  opacity: 1;
+}
+
+html[data-theme="cosmic"] .hero.is-cosmic-transition::after {
+  opacity: .88;
+}
+
+html[data-theme="cosmic"] .hero.is-cosmic-transition .hero-copy {
+  animation: cosmicHeroCopyDepart .7s cubic-bezier(.22, .88, .24, 1) forwards;
+}
+
+html[data-theme="cosmic"] .hero.is-cosmic-transition .hero-visual {
+  animation: cosmicHeroVisualDepart .7s cubic-bezier(.22, .88, .24, 1) forwards;
+}
+
+html[data-theme="cosmic"] .choice-card.is-cosmic-selected,
+html[data-theme="cosmic"] .hero-photo.is-cosmic-selected {
+  z-index: 12;
+  animation: cosmicSelectedLift .58s cubic-bezier(.18, .88, .24, 1) forwards;
+}
+
+html[data-theme="cosmic"] .choice-card.is-cosmic-selected::after {
+  opacity: .96;
+}
 
 .sakura-launch {
   position: fixed;
@@ -4026,6 +4070,13 @@ html[data-theme="sakura"] .wish-node__text { color: #704b5e; }
   100% { transform: translate(-50%, -50%) scale(16) rotate(18deg); opacity: 0; }
 }
 
+@keyframes cosmicBloomWarp {
+  0% { transform: translate(-50%, -50%) scale(.18); opacity: 0; }
+  18% { opacity: 1; }
+  62% { transform: translate(-50%, -50%) scale(7.8); opacity: .96; }
+  100% { transform: translate(-50%, -50%) scale(20); opacity: 0; }
+}
+
 @keyframes cosmicCore {
   0% { transform: translate(-50%, -50%) scale(.24); opacity: 0; }
   25% { opacity: 1; }
@@ -4047,6 +4098,45 @@ html[data-theme="sakura"] .wish-node__text { color: #704b5e; }
   100% {
     transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1.1);
     opacity: 0;
+  }
+}
+
+@keyframes cosmicHeroDepart {
+  0% {
+    transform: scale(1) translate3d(0, 0, 0);
+    filter: saturate(1) brightness(1);
+  }
+  100% {
+    transform: scale(1.035) translate3d(0, -6px, 0);
+    filter: saturate(1.08) brightness(1.08) blur(.8px);
+  }
+}
+
+@keyframes cosmicHeroCopyDepart {
+  0% { opacity: 1; transform: translate3d(0, 0, 0); }
+  100% { opacity: .16; transform: translate3d(-26px, 0, 0); }
+}
+
+@keyframes cosmicHeroVisualDepart {
+  0% { opacity: 1; transform: translate3d(0, 0, 0); }
+  100% { opacity: .34; transform: translate3d(28px, -10px, 0) scale(1.03); }
+}
+
+@keyframes cosmicSelectedLift {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(var(--tilt, 0deg)) scale(1);
+    box-shadow: 0 0 0 1px rgba(214,238,255,.36), 0 0 26px rgba(145,202,255,.24);
+    filter: saturate(1);
+  }
+  44% {
+    transform: translate3d(0, -8px, 0) rotate(var(--tilt, 0deg)) scale(1.04);
+    box-shadow: 0 0 0 1px rgba(226,242,255,.72), 0 0 54px rgba(156,213,255,.58);
+    filter: saturate(1.08);
+  }
+  100% {
+    transform: translate3d(0, -4px, 0) rotate(var(--tilt, 0deg)) scale(1.01);
+    box-shadow: 0 0 0 1px rgba(226,242,255,.48), 0 0 38px rgba(156,213,255,.42);
+    filter: saturate(1.04);
   }
 }
 
