@@ -87,7 +87,7 @@ const CONFIG = {
     choiceHintLinh: "Chạm để mở hành trình ánh sao",
     choiceHintDung: "Bước vào khu vườn sao bí mật",
 
-    wishBtn: "Gửi một điều ước",
+    wishBtn: "Gửi đi một ngôi sao",
 
     heroCredit:
       "A tiny universe made with care by <strong>Minh Phạm ✨</strong>",
@@ -138,7 +138,7 @@ const CONFIG = {
     choiceHintLinh: "Chạm để bước vào vườn hoa",
     choiceHintDung: "Đi vào khu sakura bí mật",
 
-    wishBtn: "Gửi một điều ước",
+    wishBtn: "Thả đi một cánh hoa",
 
     heroCredit:
       "A small sakura garden by <strong>Minh Phạm 🌸</strong>",
