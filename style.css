@@ -6338,18 +6338,18 @@ html[data-theme="sakura"] .wish-node.is-settled .wish-node__flower {
   .letter-sakura-petal { font-size: 18px; }
 
   .letter-scene {
-    padding: 10px;
+    padding: 8px;
     gap: 6px;
   }
 
   .envelope {
-    width: min(94vw, 680px);
-    height: min(560px, calc(100% - 24px));
+    width: min(680px, calc(100% - 2px));
+    height: min(560px, calc(100% - 20px));
   }
 
   .letter-paper {
-    width: min(94vw, 680px);
-    height: min(420px, calc(100% - 82px));
+    width: calc(100% - 12px);
+    height: min(420px, calc(100% - 74px));
     top: 8px;
   }
 
@@ -6452,6 +6452,53 @@ html[data-theme="sakura"] .wish-node.is-settled .wish-node__flower {
   .letter-planet--two { display: none; }
   .letter-vault-beam { width: 180px; }
   .letter-ending { padding-inline: 14px; font-size: 12px; }
+  .letter-scene {
+    padding: 6px;
+    gap: 4px;
+  }
+  .envelope {
+    width: calc(100% - 2px);
+    height: min(500px, calc(100% - 14px));
+  }
+  .letter-paper {
+    width: calc(100% - 8px);
+    height: min(390px, calc(100% - 68px));
+    border-radius: 16px;
+    top: 6px;
+  }
+  .letter-paper__head {
+    gap: 8px;
+    padding: 9px 10px;
+  }
+  .letter-paper__head strong {
+    min-width: 0;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .stamp {
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
+  }
+  .letter-paper__body {
+    padding: 9px 10px 10px;
+    gap: 7px;
+  }
+  .typing {
+    font-size: 12px;
+    line-height: 1.45;
+    padding: 9px;
+  }
+  .to-line { font-size: 13px; }
+  .letter-paper__foot {
+    gap: 8px;
+  }
+  .letter-paper__foot .secondary-btn {
+    padding: 9px 12px;
+    font-size: 12px;
+  }
   .letter-sakura-canopy--mid { width: 220px; height: 140px; left: 8%; }
   .letter-sakura-canopy--left,
   .letter-sakura-canopy--right { width: 170px; height: 110px; }
