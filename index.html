@@ -1,217 +1,188 @@
-<!doctype html>
-<html Dungg="vi">
+﻿<!doctype html>
+<html lang="vi" data-theme="cosmic">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Chúc mừng 8/3 💖</title>
+  <title>Cosmic Garden 8/3</title>
   <link rel="stylesheet" href="./style.css" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌸</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌸%3C/text%3E%3C/svg%3E" />
 </head>
-
 <body>
-  <div class="bg-layers">
-    <div class="grain"></div>
-    <div class="blobs">
-      <span class="blob b1"></span>
-      <span class="blob b2"></span>
-      <span class="blob b3"></span>
-    </div>
-    <div id="stars"></div>
-    <div id="sunGlow"></div>
-    <div id="hearts"></div>
-    <div id="petals"></div>
-    <div id="flowers"></div>
-    <div id="confettiLayer"></div>
+  <div class="intro-overlay" id="introOverlay" aria-hidden="true">
+    <div class="intro-overlay__glow"></div>
+    <p class="intro-overlay__text">A small universe for two special women ✨</p>
   </div>
 
-  <div class="theme-switcher card" aria-label="Tuỳ chọn giao diện theo thời gian">
-    <div class="theme-icon-group" role="group" aria-label="Chọn giao diện nhanh">
-      <button class="theme-icon" data-theme-mode="auto" aria-label="Tự động">🪄</button>
-      <button class="theme-icon" data-theme-mode="morning" aria-label="Buổi sáng">🌤️</button>
-      <button class="theme-icon" data-theme-mode="afternoon" aria-label="Buổi chiều">🌇</button>
-      <button class="theme-icon" data-theme-mode="night" aria-label="Buổi tối">🌙</button>
+  <div class="bg-layers" aria-hidden="true">
+    <div class="bg-stars" id="bgStars"></div>
+    <div class="bg-sakura" id="bgSakura"></div>
+    <div class="bg-particles" id="bgParticles"></div>
+    <div class="bg-glow"></div>
+  </div>
+
+  <div class="theme-switcher card" aria-label="Chuyển giao diện">
+    <div class="theme-switcher__group" role="group" aria-label="Galaxy hoặc Sakura">
+      <button class="theme-btn is-active" type="button" data-theme="cosmic">🌌 Galaxy</button>
+      <button class="theme-btn" type="button" data-theme="sakura">🌸 Sakura</button>
     </div>
   </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <main class="app">
-    <!-- Screen 1 -->
     <section class="screen screen-1 active" data-screen="1" aria-hidden="false">
       <div class="card hero">
-        <div class="badge">💐 08/03</div>
-        <h1 class="title">Chúc mừng ngày Quốc tế Phụ nữ</h1>
-        <p class="subtitle">
-          Một chút dịu dàng dành cho những người đặc biệt ✨<br/>
-          Chúc 2 bạn mùng 8/3 vui vẻ nhéeeeeee
-        </p>
-
-        <div class="photo-belts" aria-label="Dòng ảnh kỷ niệm">
-          <div class="belt belt--left" id="heroBeltLeft"></div>
-          <div class="choice-grid">
-          <button class="choice-btn" data-girl="Dung">
-            <span class="choice-emoji">🌸</span>
-            <span class="choice-name">Mỹ Linh</span>
-            <span class="choice-hint">click vô đây nè</span>
-          </button>
-
-          <button class="choice-btn" data-girl="ha">
-            <span class="choice-emoji">🌷</span>
-            <span class="choice-name">Vân Dung</span>
-            <span class="choice-hint">click vô đây nè</span>
-          </button>
-        </div>
-          <div class="belt belt--right" id="heroBeltRight"></div>
+        <div class="hero-decor" aria-hidden="true">
+          <span class="hero-ring"></span>
+          <span class="hero-nebula"></span>
+          <span class="hero-sunray"></span>
+          <span class="hero-tree"></span>
         </div>
 
-        
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <p class="hero-kicker">08/03 Story Journey</p>
+            <h1 class="hero-title">Hai vì sao tỏa sáng trong khu vườn 8/3</h1>
+            <p class="hero-subtitle">Chọn một người để bắt đầu hành trình ký ức và lời chúc.</p>
 
-        <button class="explore-btn" id="openGardenFromHero">🌺 Khám phá vườn điều ước</button>
+            <div class="choice-grid">
+              <button class="choice-card" type="button" data-girl="linh">
+                <span class="choice-tag">STAR 01</span>
+                <span class="choice-name">Mỹ Linh</span>
+                <span class="choice-hint">Chạm để mở hành trình</span>
+              </button>
+              <button class="choice-card" type="button" data-girl="dung">
+                <span class="choice-tag">STAR 02</span>
+                <span class="choice-name">Vân Dung</span>
+                <span class="choice-hint">Đi vào khu vườn bí mật</span>
+              </button>
+            </div>
 
-        <div class="tiny">
-          <span></span> Desigin and build by <code>Minh Phạm</code>
+            <button class="primary-btn" id="openWishFromHome" type="button">🌸 Vào Wish Star Page</button>
+            <p class="hero-credit">A small universe by <strong>Minh Phạm ✨</strong></p>
+          </div>
+
+          <div class="hero-visual">
+            <article class="hero-photo hero-photo--one" data-girl="linh" role="button" tabindex="0" aria-label="Chọn Mỹ Linh">
+              <img src="./assets/Linh/Linh1.png" alt="Mỹ Linh" loading="lazy" />
+              <p>MỸ LINH • STAR AURA</p>
+            </article>
+            <article class="hero-photo hero-photo--two" data-girl="dung" role="button" tabindex="0" aria-label="Chọn Vân Dung">
+              <img src="./assets/Dung/Dung1.png" alt="Vân Dung" loading="lazy" />
+              <p>VÂN DUNG • MOONLIGHT BLOOM</p>
+            </article>
+          </div>
         </div>
+
+        <div class="hero-petal-preview" id="heroPetalPreview" aria-hidden="true"></div>
+        <div class="hero-sparkles" id="heroSparkles" aria-hidden="true"></div>
       </div>
     </section>
 
-    <!-- Screen 2 -->
     <section class="screen screen-2" data-screen="2" aria-hidden="true">
-      <header class="topbar">
-        <button class="back-btn" id="backTo1" aria-label="Quay lại chọn tên">←</button>
-        <div class="who">
-          <span class="pill">Gửi đến</span>
-          <strong id="girlNameTop">...</strong>
+      <header class="topbar card">
+        <button class="icon-btn" id="backToHome" type="button" aria-label="Quay lại Home">←</button>
+        <div class="topbar-center">
+          <span class="pill">Cosmic Receiver</span>
+          <strong id="receiverName">...</strong>
         </div>
         <div class="topbar-actions">
-          <button class="garden-btn" id="openGardenBtn" aria-label="Mở vườn điều ước">🌺</button>
-          <button class="mute-btn" id="toggleMusic" aria-label="Bật/tắt nhạc">♪</button>
+          <button class="icon-btn" id="openWishFromStage" type="button" aria-label="Mở Wish Star Page">🌸</button>
+          <button class="icon-btn" id="toggleMusic" type="button" aria-label="Bật tắt nhạc">♪</button>
         </div>
       </header>
 
-      <div class="stage">
-        <div class="gallery gallery-bg" id="galleryBg" aria-hidden="true"></div>
-        <div class="gallery" id="gallery" aria-label="Bộ sưu tập ảnh"></div>
+      <div class="card memory-stage" id="memoryStage">
+        <div class="stage-orbits" aria-hidden="true">
+          <span class="orbit orbit-1"></span>
+          <span class="orbit orbit-2"></span>
+          <span class="tree-canopy"></span>
+        </div>
+        <div class="memory-gallery memory-gallery--echo" id="memoryGalleryEcho" aria-hidden="true"></div>
+        <div class="memory-gallery memory-gallery--main" id="memoryGallery"></div>
 
-        <button class="center-btn" id="openLetterBtn" aria-label="Nhận lời chúc">
-          <span class="center-btn__ring"></span>
-          <span class="center-btn__inner">
-            <span class="center-btn__icon">💌</span>
-            <span class="center-btn__text">Nhận lời chúc</span>
+        <button class="portal-btn" id="openLetterBtn" type="button" aria-label="Mở thư">
+          <span class="portal-btn__ring"></span>
+          <span class="portal-btn__inner">
+            <span class="portal-btn__icon">💌</span>
+            <span class="portal-btn__text">Open Letter</span>
           </span>
         </button>
 
-        <div class="gift-sequence" id="giftSequence" aria-hidden="true">
-          <div class="gift-box" id="giftBox" role="button" tabindex="0" aria-label="Mở hộp quà">
-            <div class="gift-lid"></div>
-            <div class="gift-body"></div>
-            <div class="gift-ribbon gift-ribbon--v"></div>
-            <div class="gift-ribbon gift-ribbon--h"></div>
-            <div class="gift-tag">🎁</div>
-          </div>
-          <p class="gift-text" id="giftText">Bấm lần nữa để mở quà nha ✨</p>
-        </div>
-
-        <div class="stage-hint">Di chuột để cảm nhận “không gian” ✨</div>
+        <p class="memory-caption" id="memoryCaption"></p>
+        <p class="stage-hint">Di chuột để cảm nhận không gian • bấm vòng hoa để mở thư</p>
       </div>
     </section>
 
-    <!-- Screen 3 -->
     <section class="screen screen-3" data-screen="3" aria-hidden="true">
-      <header class="topbar">
-        <button class="back-btn" id="backTo2" aria-label="Quay lại ảnh">←</button>
-        <div class="who">
-          <span class="pill">Thư gửi</span>
-          <strong id="girlNameLetter">...</strong>
+      <header class="topbar card">
+        <button class="icon-btn" id="backToStage" type="button" aria-label="Quay lại ảnh">←</button>
+        <div class="topbar-center">
+          <span class="pill">Love Letter</span>
+          <strong id="letterNameTop">...</strong>
         </div>
-        <div style="width:42px"></div>
+        <div class="topbar-actions topbar-actions--ghost"></div>
       </header>
 
-      <div class="letter-wrap">
+      <div class="card letter-scene" id="letterScene">
+        <div class="letter-scene-decor" aria-hidden="true">
+          <span class="letter-tree"></span>
+          <span class="letter-light"></span>
+        </div>
+
         <div class="envelope" id="envelope">
-          <div class="env-back"></div>
-          <div class="env-front"></div>
-          <div class="env-flap" id="flap"></div>
-
-          <div class="paper" id="paper">
-            <div class="paper-head">
-              <div class="stamp">💗</div>
-              <div class="paper-title">Happy Women’s Day</div>
-            </div>
-
-            <div class="paper-body">
-              <div class="to-line">
-                <span>Gửi</span>
-                <strong id="girlNameTo">...</strong>
-                <span>—</span>
-              </div>
-
+          <div class="envelope-back"></div>
+          <div class="envelope-front"></div>
+          <div class="envelope-flap" id="envelopeFlap"></div>
+          <article class="letter-paper" id="letterPaper">
+            <header class="letter-paper__head">
+              <span class="stamp">💗</span>
+              <strong>Happy Women’s Day</strong>
+            </header>
+            <div class="letter-paper__body">
+              <p class="to-line">Gửi <strong id="letterName">...</strong> —</p>
               <div class="typing" id="typing"></div>
-
-              <div class="paper-footer">
+              <footer class="letter-paper__foot">
                 <div class="signature">
-                  <span class="sig">— From</span>
-                  <svg 
-  class="signature-svg" 
-  id="signatureSvg" 
-  viewBox="0 0 500 120"
-  aria-label="Chữ ký Minh Phạm"
->
-  <text 
-    id="signatureText"
-    x="20" 
-    y="80"
-    font-size="64"
-    font-family="'Brush Script MT', cursive"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2.5"
-  >
-    Minh Phạm
-  </text>
-</svg>
+                  <span>— From</span>
+                  <strong>Minh Phạm</strong>
                 </div>
-                <button class="again-btn" id="againBtn">Xem lại ảnh ✨</button>
-              </div>
+                <button class="secondary-btn" id="againBtn" type="button">Về quỹ đạo ảnh ✨</button>
+              </footer>
             </div>
-          </div>
+          </article>
         </div>
 
-        <div class="letter-tip">
-          Thay lời muốn nói
-        </div>
+        <p class="letter-ending" id="letterEnding">Hope this little garden made you smile 🌸</p>
       </div>
     </section>
 
-    <!-- Screen 4 -->
     <section class="screen screen-4" data-screen="4" aria-hidden="true">
-      <header class="topbar">
-        <button class="back-btn" id="backFromGarden" aria-label="Quay lại">←</button>
-        <div class="who">
-          <span class="pill">Vườn điều ước</span>
-          <strong id="gardenName">Bạn</strong>
+      <header class="topbar card">
+        <button class="icon-btn" id="backFromWish" type="button" aria-label="Quay lại">←</button>
+        <div class="topbar-center">
+          <span class="pill">Wish Star Page</span>
+          <strong id="wishName">...</strong>
         </div>
-        <div style="width:42px"></div>
+        <div class="topbar-actions topbar-actions--ghost"></div>
       </header>
 
-      <div class="garden-wrap card">
-        <div class="garden-header">
-          <h2>Gieo một điều ước hôm nay 🌷</h2>
-          <p>Không cần database đâu nè — tiến trình sẽ được lưu ngay trên trình duyệt của bạn.</p>
+      <div class="card wish-wrap">
+        <div class="wish-head">
+          <h2>Make a wish</h2>
+          <p>Nhập điều ước, rồi để ngôi sao hoặc cánh hoa của bạn bay lên bầu trời.</p>
         </div>
-        <div class="garden-meta" aria-live="polite">
-          <div class="garden-stat"><span>🎯 Đã mở hôm nay</span><strong id="wishDailyCount">0/3</strong></div>
-          <div class="garden-stat"><span>🔥 Streak</span><strong id="wishStreak">0 ngày</strong></div>
-          <div class="garden-stat"><span>🏆 Hiếm đã mở</span><strong id="wishRareCount">0</strong></div>
+        <div class="wish-form">
+          <label for="wishInput">Điều ước của bạn</label>
+          <textarea id="wishInput" maxlength="140" placeholder="Ví dụ: May you always shine"></textarea>
+          <button class="primary-btn" id="makeWishBtn" type="button">Make a wish</button>
         </div>
-        <div class="garden-actions">
-          <button class="explore-btn garden-draw-btn" id="drawWishBtn">🎁 Nhận điều ước ngẫu nhiên</button>
-          <button class="again-btn garden-reset-btn" id="resetGardenBtn" type="button">Reset tiến trình</button>
-        </div>
-        <p class="garden-tip" id="gardenTip">Mỗi ngày bạn có thể mở tối đa 3 bông hoa ✨</p>
-        <div class="wish-grid" id="wishGrid"></div>
+        <div class="wish-sky" id="wishSky" aria-live="polite"></div>
       </div>
     </section>
   </main>
 
-  <audio id="bgm" preload="auto" loop autoplay>
+  <audio id="bgm" preload="auto" loop>
     <source src="./assets/mp3.mp3" type="audio/mpeg" />
   </audio>
 
