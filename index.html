@@ -14,8 +14,15 @@
   </div>
 
   <div class="bg-layers" aria-hidden="true">
+    <div class="bg-rays" id="bgRays"></div>
     <div class="bg-stars" id="bgStars"></div>
+    <div class="bg-constellation" id="bgConstellation"></div>
     <div class="bg-sakura" id="bgSakura"></div>
+    <div class="bg-streams" id="bgStreams">
+      <span class="bg-stream bg-stream--one"></span>
+      <span class="bg-stream bg-stream--two"></span>
+      <span class="bg-stream bg-stream--three"></span>
+    </div>
     <div class="bg-particles" id="bgParticles"></div>
     <div class="bg-glow"></div>
   </div>
@@ -28,6 +35,7 @@
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="screen-transition" id="screenTransition" aria-hidden="true"></div>
 
   <main class="app">
     <section class="screen screen-1 active" data-screen="1" aria-hidden="false">
@@ -36,30 +44,44 @@
           <span class="hero-ring"></span>
           <span class="hero-nebula"></span>
           <span class="hero-sunray"></span>
-          <span class="hero-tree"></span>
+          <span class="hero-planet hero-planet--one" data-float="1.2"></span>
+          <span class="hero-planet hero-planet--two" data-float="0.9"></span>
+          <span class="hero-planet hero-planet--three" data-float="0.65"></span>
+          <span class="hero-tree" data-float="0.32"></span>
+          <span class="hero-branch" data-float="0.42"></span>
+          <span class="hero-grass" data-float="0.25"></span>
+          <span class="hero-blossom hero-blossom--one" data-float="0.68">🌸</span>
+          <span class="hero-blossom hero-blossom--two" data-float="0.82">❀</span>
+          <span class="hero-blossom hero-blossom--three" data-float="0.74">✿</span>
+          <span class="hero-butterfly hero-butterfly--one" data-float="1.06">🦋</span>
+          <span class="hero-butterfly hero-butterfly--two" data-float="0.92">🦋</span>
+          <span class="hero-bee hero-bee--one" data-float="1.12">🐝</span>
+          <span class="hero-bird hero-bird--one" data-float="0.96">🐦</span>
         </div>
 
         <div class="hero-grid">
           <div class="hero-copy">
-            <p class="hero-kicker">08/03 Story Journey</p>
-            <h1 class="hero-title">Hai vì sao tỏa sáng trong khu vườn 8/3</h1>
-            <p class="hero-subtitle">Chọn một người để bắt đầu hành trình ký ức và lời chúc.</p>
+            <p class="hero-kicker" id="heroKicker">08/03 Story Journey</p>
+            <h1 class="hero-title" id="heroTitle">Hai vì sao tỏa sáng trong khu vườn 8/3</h1>
+            <p class="hero-subtitle" id="heroSubtitle">Chọn một người để bắt đầu hành trình ký ức và lời chúc.</p>
 
             <div class="choice-grid">
               <button class="choice-card" type="button" data-girl="linh">
-                <span class="choice-tag">STAR 01</span>
+                <span class="choice-stars" aria-hidden="true"><i>✦</i><i>✧</i></span>
+                <span class="choice-tag" id="choiceTagLinh">STAR 01</span>
                 <span class="choice-name">Mỹ Linh</span>
-                <span class="choice-hint">Chạm để mở hành trình</span>
+                <span class="choice-hint" id="choiceHintLinh">Chạm để mở hành trình</span>
               </button>
               <button class="choice-card" type="button" data-girl="dung">
-                <span class="choice-tag">STAR 02</span>
+                <span class="choice-stars" aria-hidden="true"><i>✦</i><i>✧</i></span>
+                <span class="choice-tag" id="choiceTagDung">STAR 02</span>
                 <span class="choice-name">Vân Dung</span>
-                <span class="choice-hint">Đi vào khu vườn bí mật</span>
+                <span class="choice-hint" id="choiceHintDung">Đi vào khu vườn bí mật</span>
               </button>
             </div>
 
             <button class="primary-btn" id="openWishFromHome" type="button">🌸 Vào Wish Star Page</button>
-            <p class="hero-credit">A small universe by <strong>Minh Phạm ✨</strong></p>
+            <p class="hero-credit" id="heroCredit">A small universe by <strong>Minh Phạm ✨</strong></p>
           </div>
 
           <div class="hero-visual">
@@ -83,7 +105,7 @@
       <header class="topbar card">
         <button class="icon-btn" id="backToHome" type="button" aria-label="Quay lại Home">←</button>
         <div class="topbar-center">
-          <span class="pill">Cosmic Receiver</span>
+          <span class="pill" id="stagePill">Cosmic Receiver</span>
           <strong id="receiverName">...</strong>
         </div>
         <div class="topbar-actions">
@@ -96,21 +118,70 @@
         <div class="stage-orbits" aria-hidden="true">
           <span class="orbit orbit-1"></span>
           <span class="orbit orbit-2"></span>
+          <span class="orbit orbit-3"></span>
+          <span class="orbit orbit-4"></span>
           <span class="tree-canopy"></span>
         </div>
+        <div class="stage-cosmic-decor" aria-hidden="true">
+          <span class="stage-milkyway stage-milkyway--one"></span>
+          <span class="stage-milkyway stage-milkyway--two"></span>
+          <span class="stage-planet stage-planet--one"></span>
+          <span class="stage-planet stage-planet--two"></span>
+          <span class="stage-planet stage-planet--three"></span>
+        </div>
+        <div class="stage-sakura-decor" aria-hidden="true">
+          <span class="sakura-sun-glow"></span>
+          <span class="sakura-ground-glow"></span>
+          <span class="sakura-trunk sakura-trunk--left"></span>
+          <span class="sakura-trunk sakura-trunk--back"></span>
+          <span class="sakura-canopy sakura-canopy--left"></span>
+          <span class="sakura-canopy sakura-canopy--mid"></span>
+          <span class="sakura-canopy sakura-canopy--right"></span>
+          <span class="sakura-branch sakura-branch--one"></span>
+          <span class="sakura-branch sakura-branch--two"></span>
+          <span class="sakura-branch sakura-branch--three"></span>
+          <span class="sakura-grass"></span>
+          <span class="sakura-petal-haze sakura-petal-haze--one"></span>
+          <span class="sakura-petal-haze sakura-petal-haze--two"></span>
+          <span class="sakura-petal-haze sakura-petal-haze--three"></span>
+          <span class="sakura-petal-haze sakura-petal-haze--four"></span>
+          <span class="sakura-shrub sakura-shrub--left"></span>
+          <span class="sakura-shrub sakura-shrub--center"></span>
+          <span class="sakura-shrub sakura-shrub--right"></span>
+          <span class="sakura-spray sakura-spray--one"></span>
+          <span class="sakura-spray sakura-spray--two"></span>
+          <span class="sakura-spray sakura-spray--three"></span>
+          <span class="sakura-spray sakura-spray--four"></span>
+          <span class="sakura-spray sakura-spray--five"></span>
+          <span class="sakura-spray sakura-spray--six"></span>
+          <span class="sakura-bloom sakura-bloom--one"></span>
+          <span class="sakura-bloom sakura-bloom--two"></span>
+          <span class="sakura-bloom sakura-bloom--three"></span>
+          <span class="sakura-bloom sakura-bloom--four"></span>
+          <span class="sakura-bloom sakura-bloom--five"></span>
+          <span class="sakura-bloom sakura-bloom--six"></span>
+          <span class="sakura-bloom sakura-bloom--seven"></span>
+          <span class="sakura-bloom sakura-bloom--eight"></span>
+        </div>
+        <div class="stage-stars" id="stageStars" aria-hidden="true"></div>
+        <svg class="stage-links" id="stageLinks" aria-hidden="true"></svg>
+        <div class="stage-cursor-glow" id="stageCursorGlow" aria-hidden="true"></div>
         <div class="memory-gallery memory-gallery--echo" id="memoryGalleryEcho" aria-hidden="true"></div>
         <div class="memory-gallery memory-gallery--main" id="memoryGallery"></div>
 
         <button class="portal-btn" id="openLetterBtn" type="button" aria-label="Mở thư">
+          <span class="portal-btn__glyph" aria-hidden="true"></span>
+          <span class="portal-btn__rays" aria-hidden="true"></span>
           <span class="portal-btn__ring"></span>
           <span class="portal-btn__inner">
             <span class="portal-btn__icon">💌</span>
             <span class="portal-btn__text">Open Letter</span>
+            <span class="portal-btn__sub">Tap to enter</span>
           </span>
         </button>
 
         <p class="memory-caption" id="memoryCaption"></p>
-        <p class="stage-hint">Di chuột để cảm nhận không gian • bấm vòng hoa để mở thư</p>
+        <p class="stage-hint" id="stageHint">Di chuột để cảm nhận không gian • bấm vòng hoa để mở thư</p>
       </div>
     </section>
 
@@ -118,7 +189,7 @@
       <header class="topbar card">
         <button class="icon-btn" id="backToStage" type="button" aria-label="Quay lại ảnh">←</button>
         <div class="topbar-center">
-          <span class="pill">Love Letter</span>
+          <span class="pill" id="letterPill">Love Letter</span>
           <strong id="letterNameTop">...</strong>
         </div>
         <div class="topbar-actions topbar-actions--ghost"></div>
@@ -161,7 +232,7 @@
       <header class="topbar card">
         <button class="icon-btn" id="backFromWish" type="button" aria-label="Quay lại">←</button>
         <div class="topbar-center">
-          <span class="pill">Wish Star Page</span>
+          <span class="pill" id="wishPill">Wish Star Page</span>
           <strong id="wishName">...</strong>
         </div>
         <div class="topbar-actions topbar-actions--ghost"></div>

@@ -64,6 +64,46 @@ const CONFIG = {
       ].join("\n"),
     },
   },
+  themeCopy: {
+    cosmic: {
+      heroKicker: "08/03 Story Journey",
+      heroTitle: "Hai vì sao tỏa sáng trong khu vườn 8/3",
+      heroSubtitle: "Chọn một người để bắt đầu hành trình ký ức và lời chúc.",
+      choiceTagLinh: "STAR 01",
+      choiceTagDung: "STAR 02",
+      choiceHintLinh: "Chạm để mở hành trình",
+      choiceHintDung: "Đi vào khu vườn bí mật",
+      wishBtn: "🌸 Vào Wish Star Page",
+      heroCredit: "A small universe by <strong>Minh Phạm ✨</strong>",
+      stagePill: "Cosmic Receiver",
+      letterPill: "Love Letter",
+      wishPill: "Wish Star Page",
+      stageHint: "Di chuột để cảm nhận không gian • bấm vòng hoa để mở thư",
+      portalText: "Open Letter",
+      portalSub: "Tap to enter",
+      ending: "Hope this little universe made you smile ✨",
+      choiceMarks: ["✦", "✧"],
+    },
+    sakura: {
+      heroKicker: "08/03 Dreamy Sakura Garden",
+      heroTitle: "Hai cánh hoa rực rỡ trong khu vườn 8/3",
+      heroSubtitle: "Chọn một người để dạo vào vườn sakura và mở lá thư mùa xuân.",
+      choiceTagLinh: "BLOOM 01",
+      choiceTagDung: "BLOOM 02",
+      choiceHintLinh: "Chạm để bước vào vườn hoa",
+      choiceHintDung: "Đi vào khu cây sakura bí mật",
+      wishBtn: "🌸 Bước vào Wish Blossom Page",
+      heroCredit: "A small sakura garden by <strong>Minh Phạm 🌸</strong>",
+      stagePill: "Petal Receiver",
+      letterPill: "Sakura Letter",
+      wishPill: "Wish Blossom Page",
+      stageHint: "Di chuột để cánh hoa bay • bấm vòng hoa để mở thư",
+      portalText: "Mở thư sakura",
+      portalSub: "Chạm để vào",
+      ending: "Hope this little garden made you smile 🌸",
+      choiceMarks: ["❀", "✿"],
+    },
+  },
 };
 
 const state = {
@@ -81,6 +121,20 @@ const state = {
   wishes: [],
   musicOn: false,
   stageParallaxBound: false,
+  stageHoverTick: 0,
+  stageMotion: {
+    targetX: 0.5,
+    targetY: 0.5,
+    x: 0.5,
+    y: 0.5,
+    raf: null,
+    wasActive: false,
+  },
+  heroParallaxBound: false,
+  heroHoverTick: 0,
+  backgroundTimeouts: [],
+  transitionBusy: false,
+  constellationAnchors: [],
 };
 
 const rand = (min, max) => Math.random() * (max - min) + min;
@@ -112,6 +166,8 @@ function showScreen(screenId) {
   }
 
   startBackgroundEffects();
+  applyStageTheme();
+  renderStageStars();
   if (screenId === 1) {
     renderHeroPetalPreview();
   }
@@ -122,6 +178,42 @@ function showScreen(screenId) {
   if (screenId === 4) {
     renderWishSky();
   }
+}
+
+function transitionToScreen(screenId, options = {}) {
+  const {
+    effect = "warp",
+    onSwitched,
+    switchDelay = 300,
+    totalDuration = 840,
+  } = options;
+  const layer = $("#screenTransition");
+  if (!layer || prefersReducedMotion()) {
+    showScreen(screenId);
+    onSwitched?.();
+    return;
+  }
+  if (state.transitionBusy) return;
+
+  state.transitionBusy = true;
+  layer.className = "screen-transition";
+  layer.dataset.effect = effect;
+  layer.dataset.theme = state.theme;
+  requestAnimationFrame(() => layer.classList.add("is-active", "is-enter"));
+
+  setTimeout(() => {
+    showScreen(screenId);
+    onSwitched?.();
+    layer.classList.remove("is-enter");
+    layer.classList.add("is-exit");
+  }, switchDelay);
+
+  setTimeout(() => {
+    layer.className = "screen-transition";
+    layer.removeAttribute("data-effect");
+    layer.removeAttribute("data-theme");
+    state.transitionBusy = false;
+  }, totalDuration);
 }
 
 function currentGirl() {
@@ -137,17 +229,56 @@ function setTheme(theme, persist = true) {
   if (persist) localStorage.setItem(CONFIG.storageTheme, normalized);
 
   $$(".theme-btn").forEach((btn) => btn.classList.toggle("is-active", btn.dataset.theme === normalized));
-  const portalText = $(".portal-btn__text");
-  if (portalText) portalText.textContent = normalized === "sakura" ? "Open Letter" : "Open Letter";
-  const ending = $("#letterEnding");
-  if (ending) ending.textContent = normalized === "sakura"
-    ? "Hope this little garden made you smile 🌸"
-    : "Hope this little universe made you smile ✨";
-
+  applyThemeCopy();
+  applyStageTheme();
   renderHeroPetalPreview();
   renderWishSky();
   if (state.screen === 2 && state.currentGirlKey) renderGallery();
+  renderStageStars();
   startBackgroundEffects();
+}
+
+function applyThemeCopy() {
+  const copy = CONFIG.themeCopy[state.theme] || CONFIG.themeCopy.cosmic;
+  const map = [
+    ["heroKicker", "heroKicker", false],
+    ["heroTitle", "heroTitle", false],
+    ["heroSubtitle", "heroSubtitle", false],
+    ["choiceTagLinh", "choiceTagLinh", false],
+    ["choiceTagDung", "choiceTagDung", false],
+    ["choiceHintLinh", "choiceHintLinh", false],
+    ["choiceHintDung", "choiceHintDung", false],
+    ["openWishFromHome", "wishBtn", false],
+    ["heroCredit", "heroCredit", true],
+    ["stagePill", "stagePill", false],
+    ["letterPill", "letterPill", false],
+    ["wishPill", "wishPill", false],
+    ["stageHint", "stageHint", false],
+  ];
+
+  map.forEach(([id, key, asHtml]) => {
+    const node = $(`#${id}`);
+    if (!node) return;
+    if (asHtml) {
+      node.innerHTML = copy[key];
+    } else {
+      node.textContent = copy[key];
+    }
+  });
+
+  const portalText = $(".portal-btn__text");
+  if (portalText) portalText.textContent = copy.portalText;
+  const portalSub = $(".portal-btn__sub");
+  if (portalSub) portalSub.textContent = copy.portalSub;
+  const ending = $("#letterEnding");
+  if (ending) ending.textContent = copy.ending;
+
+  const marks = copy.choiceMarks || ["✦", "✧"];
+  $$(".choice-stars").forEach((group) => {
+    const icons = group.querySelectorAll("i");
+    if (icons[0]) icons[0].textContent = marks[0];
+    if (icons[1]) icons[1].textContent = marks[1];
+  });
 }
 
 function runIntro() {
@@ -158,8 +289,9 @@ function runIntro() {
     return;
   }
   intro.classList.add("is-visible");
-  setTimeout(() => intro.classList.add("is-hidden"), 1700);
-  setTimeout(() => intro.remove(), 2300);
+  setTimeout(() => intro.classList.add("is-reveal"), 260);
+  setTimeout(() => intro.classList.add("is-fade"), 1700);
+  setTimeout(() => intro.remove(), 2550);
 }
 
 function spawnBackgroundItem(layerId, className, text, durationMin, durationMax) {
@@ -168,8 +300,27 @@ function spawnBackgroundItem(layerId, className, text, durationMin, durationMax)
   const item = document.createElement("span");
   item.className = `fx-item ${className}`;
   if (text) item.textContent = text;
-  item.style.setProperty("--x", `${rand(2, 98).toFixed(2)}%`);
-  item.style.setProperty("--y", `${rand(-16, 0).toFixed(2)}%`);
+
+  if (className.includes("fx-shooting")) {
+    item.style.setProperty("--x", `${rand(-10, 18).toFixed(2)}%`);
+    item.style.setProperty("--y", `${rand(2, 48).toFixed(2)}%`);
+    item.style.setProperty("--shoot-angle", `${rand(-36, -14).toFixed(2)}deg`);
+  } else if (className.includes("fx-butterfly")) {
+    item.style.setProperty("--x", `${rand(-8, 10).toFixed(2)}%`);
+    item.style.setProperty("--y", `${rand(18, 66).toFixed(2)}%`);
+    item.style.animationName = "fxFlutter";
+  } else if (className.includes("fx-bee")) {
+    item.style.setProperty("--x", `${rand(-8, 12).toFixed(2)}%`);
+    item.style.setProperty("--y", `${rand(20, 72).toFixed(2)}%`);
+    item.style.animationName = "fxBuzz";
+  } else if (className.includes("fx-bird")) {
+    item.style.setProperty("--x", `${rand(-12, 8).toFixed(2)}%`);
+    item.style.setProperty("--y", `${rand(8, 42).toFixed(2)}%`);
+    item.style.animationName = "fxBirdGlide";
+  } else {
+    item.style.setProperty("--x", `${rand(2, 98).toFixed(2)}%`);
+    item.style.setProperty("--y", `${rand(-16, 0).toFixed(2)}%`);
+  }
   item.style.setProperty("--dx", `${rand(-70, 70).toFixed(2)}px`);
   item.style.setProperty("--spin", `${rand(-240, 240).toFixed(1)}deg`);
   item.style.animationDuration = `${rand(durationMin, durationMax).toFixed(2)}s`;
@@ -177,10 +328,118 @@ function spawnBackgroundItem(layerId, className, text, durationMin, durationMax)
   setTimeout(() => item.remove(), 22000);
 }
 
+function spawnConstellation() {
+  if (state.theme !== "cosmic" || prefersReducedMotion()) return;
+  const layer = $("#bgConstellation");
+  if (!layer) return;
+
+  const group = document.createElement("span");
+  group.className = "fx-constellation";
+  group.style.left = `${rand(8, 88)}%`;
+  group.style.top = `${rand(10, 58)}%`;
+
+  const points = Array.from({ length: 4 }, (_, index) => ({
+    x: 12 + index * rand(20, 34),
+    y: rand(8, 48),
+  }));
+
+  points.forEach((point) => {
+    const star = document.createElement("span");
+    star.className = "fx-constellation__star";
+    star.style.left = `${point.x}%`;
+    star.style.top = `${point.y}%`;
+    group.appendChild(star);
+  });
+
+  for (let i = 0; i < points.length - 1; i += 1) {
+    const from = points[i];
+    const to = points[i + 1];
+    const dx = to.x - from.x;
+    const dy = to.y - from.y;
+    const line = document.createElement("span");
+    line.className = "fx-constellation__line";
+    line.style.left = `${from.x}%`;
+    line.style.top = `${from.y}%`;
+    line.style.width = `${Math.hypot(dx, dy)}%`;
+    line.style.transform = `rotate(${Math.atan2(dy, dx)}rad)`;
+    group.appendChild(line);
+  }
+
+  layer.appendChild(group);
+  const center = {
+    x: parseFloat(group.style.left),
+    y: parseFloat(group.style.top),
+  };
+  state.constellationAnchors.push(center);
+  if (state.constellationAnchors.length > 6) state.constellationAnchors.shift();
+
+  if (state.constellationAnchors.length >= 2 && Math.random() > 0.35) {
+    const from = state.constellationAnchors[state.constellationAnchors.length - 2];
+    const to = state.constellationAnchors[state.constellationAnchors.length - 1];
+    const bridge = document.createElement("span");
+    bridge.className = "fx-constellation-bridge";
+    bridge.style.left = `${from.x}%`;
+    bridge.style.top = `${from.y}%`;
+    const dx = to.x - from.x;
+    const dy = to.y - from.y;
+    bridge.style.width = `${Math.hypot(dx, dy)}%`;
+    bridge.style.transform = `rotate(${Math.atan2(dy, dx)}rad)`;
+    layer.appendChild(bridge);
+    setTimeout(() => bridge.remove(), 7600);
+  }
+
+  setTimeout(() => group.remove(), 7200);
+}
+
+function applyStageTheme() {
+  const stage = $("#memoryStage");
+  if (!stage) return;
+  stage.dataset.themeMode = state.theme;
+}
+
+function renderStageStars() {
+  const layer = $("#stageStars");
+  if (!layer) return;
+  layer.innerHTML = "";
+
+  if (state.theme !== "cosmic" || state.screen !== 2) return;
+  const count = isMobile() ? 42 : 86;
+  const minCenterDistance = isMobile() ? 14 : 16;
+
+  for (let i = 0; i < count; i += 1) {
+    let x = rand(2, 98);
+    let y = rand(4, 94);
+    const dx = x - 50;
+    const dy = y - 50;
+    const dist = Math.hypot(dx, dy);
+    if (dist < minCenterDistance) {
+      const angle = Math.atan2(dy || rand(-1, 1), dx || rand(-1, 1));
+      const r = minCenterDistance + rand(0, 12);
+      x = clamp(50 + (Math.cos(angle) * r), 2, 98);
+      y = clamp(50 + (Math.sin(angle) * r), 4, 94);
+    }
+
+    const star = document.createElement("span");
+    star.className = `stage-star${Math.random() > 0.74 ? " stage-star--bright" : ""}`;
+    star.style.left = `${x.toFixed(2)}%`;
+    star.style.top = `${y.toFixed(2)}%`;
+    star.style.setProperty("--size", `${rand(1.2, 3.4).toFixed(2)}px`);
+    star.style.setProperty("--dur", `${rand(2.2, 5.4).toFixed(2)}s`);
+    star.style.setProperty("--delay", `${rand(0, 4.6).toFixed(2)}s`);
+    star.style.setProperty("--blur", `${rand(0, 1.25).toFixed(2)}px`);
+    layer.appendChild(star);
+  }
+}
+
 function clearBackgroundEffects() {
   state.backgroundIntervals.forEach((timer) => clearInterval(timer));
+  state.backgroundTimeouts.forEach((timer) => clearTimeout(timer));
   state.backgroundIntervals = [];
+  state.backgroundTimeouts = [];
+  state.constellationAnchors = [];
   $$(".fx-item").forEach((node) => node.remove());
+  $$(".fx-constellation").forEach((node) => node.remove());
+  $$(".fx-constellation-bridge").forEach((node) => node.remove());
 }
 
 function startBackgroundEffects() {
@@ -191,23 +450,37 @@ function startBackgroundEffects() {
   const recipes = [];
 
   if (sakura) {
-    recipes.push({ layer: "#bgSakura", className: "fx-petal", text: "🌸", min: 8.2, max: 13.6, interval: lowPower ? 1300 : 760 });
-    recipes.push({ layer: "#bgParticles", className: "fx-leaf", text: "🍃", min: 10, max: 15.4, interval: lowPower ? 1800 : 1100 });
-    recipes.push({ layer: "#bgStars", className: "fx-spark", text: "✨", min: 7.8, max: 11.4, interval: lowPower ? 1400 : 880 });
+    recipes.push({ layer: "#bgSakura", className: "fx-petal", text: "🌸", min: 7.2, max: 11.8, interval: lowPower ? 900 : 520 });
+    recipes.push({ layer: "#bgParticles", className: "fx-leaf", text: "🍃", min: 9.2, max: 13.8, interval: lowPower ? 1450 : 860 });
+    recipes.push({ layer: "#bgStars", className: "fx-spark", text: "✨", min: 6.8, max: 10.6, interval: lowPower ? 1300 : 740 });
+    recipes.push({ layer: "#bgSakura", className: "fx-butterfly", text: "🦋", min: 8.8, max: 13.4, interval: lowPower ? 5200 : 3000 });
+    recipes.push({ layer: "#bgParticles", className: "fx-bee", text: "🐝", min: 7.6, max: 11.2, interval: lowPower ? 6800 : 3600 });
+    recipes.push({ layer: "#bgSakura", className: "fx-bird", text: "🐦", min: 10.4, max: 14.8, interval: lowPower ? 9200 : 5200 });
   } else {
-    recipes.push({ layer: "#bgStars", className: "fx-star", text: "", min: 7.5, max: 12.2, interval: lowPower ? 900 : 430 });
-    recipes.push({ layer: "#bgParticles", className: "fx-soft", text: "", min: 8.8, max: 14, interval: lowPower ? 1200 : 620 });
-    recipes.push({ layer: "#bgSakura", className: "fx-petal fx-petal--faint", text: "🌸", min: 9.8, max: 15.6, interval: lowPower ? 2200 : 1300 });
+    recipes.push({ layer: "#bgStars", className: "fx-star", text: "", min: 6.8, max: 10.4, interval: lowPower ? 640 : 300 });
+    recipes.push({ layer: "#bgParticles", className: "fx-soft", text: "", min: 8.2, max: 12.8, interval: lowPower ? 900 : 520 });
+    recipes.push({ layer: "#bgParticles", className: "fx-shooting", text: "", min: 1.4, max: 2.2, interval: lowPower ? 16000 : 9000 });
   }
 
   recipes.forEach((recipe) => {
-    spawnBackgroundItem(recipe.layer, recipe.className, recipe.text, recipe.min, recipe.max);
+    const isCreature = /fx-butterfly|fx-bee|fx-bird/.test(recipe.className);
+    const burst = lowPower ? 1 : (recipe.className.includes("fx-shooting") ? 0 : (isCreature ? 1 : 3));
+    for (let i = 0; i < burst; i += 1) {
+      spawnBackgroundItem(recipe.layer, recipe.className, recipe.text, recipe.min, recipe.max);
+    }
     const timer = setInterval(
       () => spawnBackgroundItem(recipe.layer, recipe.className, recipe.text, recipe.min, recipe.max),
       recipe.interval
     );
     state.backgroundIntervals.push(timer);
   });
+
+  if (!sakura && !lowPower) {
+    spawnConstellation();
+    const constellationTimer = setInterval(spawnConstellation, 5600);
+    state.backgroundIntervals.push(constellationTimer);
+    state.backgroundTimeouts.push(setTimeout(spawnConstellation, 1800));
+  }
 }
 
 function renderHeroPetalPreview() {
@@ -217,8 +490,8 @@ function renderHeroPetalPreview() {
 
   const allImages = [...CONFIG.girls.linh.images, ...CONFIG.girls.dung.images];
   const shuffled = allImages.slice().sort(() => Math.random() - 0.5);
-  const count = isMobile() ? 4 : 8;
-  const sparkCount = isMobile() ? 7 : 14;
+  const count = isMobile() ? 4 : (state.theme === "cosmic" ? 10 : 8);
+  const sparkCount = isMobile() ? 8 : (state.theme === "cosmic" ? 20 : 14);
 
   layer.innerHTML = "";
   sparkLayer.innerHTML = "";
@@ -247,6 +520,101 @@ function renderHeroPetalPreview() {
   }
 }
 
+function spawnHeroHoverParticle(container, x, y) {
+  const node = document.createElement("span");
+  const sakura = state.theme === "sakura";
+  node.className = sakura ? "hero-hover-petal" : "hero-hover-star";
+  if (sakura) {
+    const petals = ["🌸", "❀", "✿"];
+    node.textContent = petals[Math.floor(rand(0, petals.length))];
+    node.style.setProperty("--rot", `${rand(-130, 130).toFixed(2)}deg`);
+  }
+  node.style.left = `${x}%`;
+  node.style.top = `${y}%`;
+  node.style.setProperty("--dx", `${rand(-32, 32).toFixed(2)}px`);
+  node.style.setProperty("--dy", `${rand(-42, 24).toFixed(2)}px`);
+  node.style.animationDuration = `${rand(0.7, 1.35).toFixed(2)}s`;
+  container.appendChild(node);
+  setTimeout(() => node.remove(), 1450);
+}
+
+function spawnCosmicLaunch(x, y) {
+  const launch = document.createElement("div");
+  launch.className = "cosmic-launch";
+  launch.style.left = `${x}px`;
+  launch.style.top = `${y}px`;
+
+  const core = document.createElement("span");
+  core.className = "cosmic-launch__core";
+  launch.appendChild(core);
+
+  const ring = document.createElement("span");
+  ring.className = "cosmic-launch__ring";
+  launch.appendChild(ring);
+
+  for (let i = 0; i < 18; i += 1) {
+    const p = document.createElement("span");
+    p.className = "cosmic-launch__particle";
+    const angle = (Math.PI * 2 * i) / 18;
+    const radius = rand(80, 210);
+    p.style.setProperty("--tx", `${Math.cos(angle) * radius}px`);
+    p.style.setProperty("--ty", `${Math.sin(angle) * radius}px`);
+    p.style.animationDelay = `${(i * 0.012).toFixed(3)}s`;
+    launch.appendChild(p);
+  }
+
+  document.body.appendChild(launch);
+  requestAnimationFrame(() => launch.classList.add("is-live"));
+  setTimeout(() => launch.remove(), 1280);
+}
+
+function setupHeroInteraction() {
+  if (state.heroParallaxBound) return;
+  const hero = $(".screen-1 .hero");
+  const sparkLayer = $("#heroSparkles");
+  const copy = $(".hero-copy");
+  const visual = $(".hero-visual");
+  const floatingDecor = $$(".hero-decor [data-float]");
+  if (!hero || !sparkLayer || !copy || !visual) return;
+  state.heroParallaxBound = true;
+
+  hero.addEventListener("mousemove", (event) => {
+    if (state.screen !== 1 || isMobile()) return;
+    const rect = hero.getBoundingClientRect();
+    const x = clamp(((event.clientX - rect.left) / rect.width) * 100, 0, 100);
+    const y = clamp(((event.clientY - rect.top) / rect.height) * 100, 0, 100);
+    hero.style.setProperty("--mx", `${x.toFixed(2)}%`);
+    hero.style.setProperty("--my", `${y.toFixed(2)}%`);
+    hero.classList.add("is-hovering");
+
+    const nx = (x / 100) - 0.5;
+    const ny = (y / 100) - 0.5;
+    copy.style.transform = `translate3d(${(nx * -10).toFixed(2)}px, ${(ny * -8).toFixed(2)}px, 0)`;
+    visual.style.transform = `translate3d(${(nx * 14).toFixed(2)}px, ${(ny * 10).toFixed(2)}px, 0)`;
+    floatingDecor.forEach((node) => {
+      const factor = Number(node.dataset.float || 0.8);
+      node.style.transform = `translate3d(${(nx * -24 * factor).toFixed(2)}px, ${(ny * -16 * factor).toFixed(2)}px, 0)`;
+    });
+
+    const now = performance.now();
+    if (now - state.heroHoverTick > 48) {
+      spawnHeroHoverParticle(sparkLayer, x, y);
+      state.heroHoverTick = now;
+    }
+  });
+
+  hero.addEventListener("mouseleave", () => {
+    hero.classList.remove("is-hovering");
+    hero.style.removeProperty("--mx");
+    hero.style.removeProperty("--my");
+    copy.style.transform = "";
+    visual.style.transform = "";
+    floatingDecor.forEach((node) => {
+      node.style.transform = "";
+    });
+  });
+}
+
 function setCurrentGirl(girlKey) {
   state.currentGirlKey = girlKey;
   const girl = currentGirl();
@@ -266,18 +634,27 @@ function startHomeTransition(girlKey, sourceEl) {
   setCurrentGirl(girlKey);
 
   const rect = sourceEl.getBoundingClientRect();
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
   const bloom = document.createElement("span");
   bloom.className = "transition-bloom";
-  bloom.style.left = `${rect.left + rect.width / 2}px`;
-  bloom.style.top = `${rect.top + rect.height / 2}px`;
+  bloom.style.left = `${centerX}px`;
+  bloom.style.top = `${centerY}px`;
   document.body.appendChild(bloom);
+  spawnCosmicLaunch(centerX, centerY);
   requestAnimationFrame(() => bloom.classList.add("is-live"));
 
   setTimeout(() => {
-    showScreen(2);
-    renderGallery();
-    startMemoryHighlight();
-    setupStageParallax();
+    transitionToScreen(2, {
+      effect: "quantum",
+      switchDelay: 360,
+      totalDuration: 980,
+      onSwitched: () => {
+        renderGallery();
+        startMemoryHighlight();
+        setupStageParallax();
+      },
+    });
   }, 620);
 
   setTimeout(() => {
@@ -287,36 +664,182 @@ function startHomeTransition(girlKey, sourceEl) {
 }
 
 function gallerySlots() {
+  if (state.theme === "sakura") {
+    if (isMobile()) {
+      return [
+        { x: 8, y: 18, w: 108, h: 142, r: -6, z: 50, orbit: 10.8 },
+        { x: 39, y: 10, w: 108, h: 142, r: 3, z: 38, orbit: 12.6 },
+        { x: 68, y: 18, w: 108, h: 142, r: 6, z: 50, orbit: 10.8 },
+        { x: 12, y: 55, w: 108, h: 142, r: -5, z: 42, orbit: 13.4 },
+        { x: 66, y: 55, w: 108, h: 142, r: 5, z: 42, orbit: 13.2 },
+      ];
+    }
+    return [
+      { x: 10, y: 17, w: 198, h: 248, r: -6, z: 58, orbit: 12.4 },
+      { x: 39, y: 8, w: 186, h: 234, r: 3, z: 40, orbit: 13.8 },
+      { x: 67, y: 17, w: 198, h: 248, r: 6, z: 58, orbit: 12.6 },
+      { x: 14, y: 54, w: 186, h: 236, r: -5, z: 46, orbit: 14.2 },
+      { x: 62, y: 54, w: 186, h: 236, r: 5, z: 46, orbit: 14.2 },
+    ];
+  }
   if (isMobile()) {
     return [
-      { x: 12, y: 16, w: 118, h: 152, r: -7, z: 34 },
-      { x: 39, y: 10, w: 116, h: 148, r: 6, z: 36 },
-      { x: 64, y: 18, w: 116, h: 148, r: -6, z: 34 },
-      { x: 63, y: 48, w: 118, h: 152, r: 7, z: 33 },
-      { x: 12, y: 48, w: 118, h: 152, r: -7, z: 33 },
+      { x: 9, y: 14, w: 116, h: 150, r: -8, z: 50, orbit: 10.2 },
+      { x: 40, y: 8, w: 110, h: 146, r: 6, z: 36, orbit: 12.2 },
+      { x: 68, y: 14, w: 116, h: 150, r: -7, z: 50, orbit: 10.8 },
+      { x: 65, y: 51, w: 116, h: 150, r: 8, z: 42, orbit: 11.6 },
+      { x: 10, y: 51, w: 116, h: 150, r: -8, z: 42, orbit: 12.6 },
     ];
   }
   return [
-    { x: 10, y: 14, w: 168, h: 214, r: -8, z: 36 },
-    { x: 32, y: 8, w: 174, h: 220, r: 6, z: 40 },
-    { x: 56, y: 13, w: 168, h: 214, r: -6, z: 35 },
-    { x: 64, y: 42, w: 170, h: 218, r: 7, z: 34 },
-    { x: 26, y: 44, w: 170, h: 218, r: -7, z: 34 },
+    { x: 11, y: 15, w: 208, h: 258, r: -9, z: 58, orbit: 12.4 },
+    { x: 39, y: 8, w: 188, h: 236, r: 5, z: 40, orbit: 14.2 },
+    { x: 67, y: 15, w: 208, h: 258, r: -8, z: 58, orbit: 12.8 },
+    { x: 63, y: 51, w: 194, h: 244, r: 7, z: 48, orbit: 13.6 },
+    { x: 15, y: 51, w: 194, h: 244, r: -7, z: 48, orbit: 14.4 },
   ];
 }
 
 function createMemoryCard(src, slot, className = "") {
   const card = document.createElement("article");
-  card.className = `memory-photo ${className}`.trim();
+  card.className = `memory-photo ${className}${state.theme === "sakura" ? " memory-photo--sakura" : ""}`.trim();
   card.style.left = `${slot.x}%`;
   card.style.top = `${slot.y}%`;
   card.style.width = `${slot.w}px`;
   card.style.height = `${slot.h}px`;
-  card.style.transform = `translate3d(0,0,${slot.z}px) rotate(${slot.r}deg)`;
+  card.style.setProperty("--base-rotate", `${slot.r}deg`);
+  card.style.setProperty("--depth-z", `${slot.z}px`);
+  card.style.setProperty("--orbit-duration", `${slot.orbit || rand(10.5, 14.8)}s`);
+  card.style.setProperty("--orbit-delay", `${rand(-8, 0).toFixed(2)}s`);
+  card.style.setProperty("--orbit-x", `${rand(-9, 9).toFixed(2)}px`);
+  card.style.setProperty("--orbit-y", `${rand(-8, 8).toFixed(2)}px`);
+  card.style.transform = `translate3d(0,0,var(--depth-z)) rotate(var(--base-rotate))`;
   card.dataset.rotate = String(slot.r);
   card.dataset.depth = String(slot.z);
   card.innerHTML = `<img src="${src}" alt="Memory photo" loading="lazy" />`;
   return card;
+}
+
+function renderStageLinks() {
+  const stage = $("#memoryStage");
+  const svg = $("#stageLinks");
+  const portal = $("#openLetterBtn");
+  if (!stage || !svg || !portal || !["cosmic", "sakura"].includes(state.theme)) {
+    if (svg) svg.innerHTML = "";
+    return;
+  }
+
+  const stageRect = stage.getBoundingClientRect();
+  if (!stageRect.width || !stageRect.height) return;
+  const portalRect = portal.getBoundingClientRect();
+  const portalX = portalRect.left - stageRect.left + (portalRect.width / 2);
+  const portalY = portalRect.top - stageRect.top + (portalRect.height / 2);
+
+  svg.setAttribute("viewBox", `0 0 ${stageRect.width} ${stageRect.height}`);
+  svg.innerHTML = "";
+  const cards = $$(".memory-photo--main");
+
+  if (state.theme === "sakura") {
+    const branchBaseY = stageRect.height * (isMobile() ? 0.2 : 0.15);
+    cards.forEach((card, index) => {
+      const rect = card.getBoundingClientRect();
+      const cardX = rect.left - stageRect.left + (rect.width / 2);
+      const cardTopY = rect.top - stageRect.top + 8;
+      const cardBottomY = rect.bottom - stageRect.top - 10;
+      const wave = Math.sin((cardX / stageRect.width) * Math.PI * 1.12);
+      const anchorX = clamp(cardX + (index % 2 ? -18 : 16), 42, stageRect.width - 42);
+      const anchorY = clamp(
+        branchBaseY + (wave * stageRect.height * 0.065) + (index < 2 ? -8 : 10),
+        38,
+        stageRect.height * 0.34
+      );
+
+      const hang = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      hang.setAttribute(
+        "d",
+        `M ${anchorX} ${anchorY} Q ${anchorX + (index % 2 ? -8 : 8)} ${(anchorY + cardTopY) / 2} ${cardX} ${cardTopY}`
+      );
+      hang.setAttribute("class", "stage-link stage-link--hang");
+      svg.appendChild(hang);
+
+      const thread = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      const ctrlX = ((cardX + portalX) / 2) + (cardX < portalX ? -54 : 54);
+      const ctrlY = ((cardBottomY + portalY) / 2) + (index < 2 ? 26 : -2);
+      thread.setAttribute("d", `M ${cardX} ${cardBottomY} Q ${ctrlX} ${ctrlY} ${portalX} ${portalY}`);
+      thread.setAttribute("class", "stage-link stage-link--wish");
+      thread.style.animationDelay = `${(index * 0.18).toFixed(2)}s`;
+      svg.appendChild(thread);
+
+      const blossom = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      blossom.setAttribute("cx", anchorX);
+      blossom.setAttribute("cy", anchorY);
+      blossom.setAttribute("r", "4.2");
+      blossom.setAttribute("class", "stage-anchor");
+      svg.appendChild(blossom);
+    });
+    return;
+  }
+
+  cards.forEach((card, index) => {
+    const rect = card.getBoundingClientRect();
+    const cardX = rect.left - stageRect.left + (rect.width / 2);
+    const cardY = rect.top - stageRect.top + (rect.height / 2);
+    const ctrlX = ((cardX + portalX) / 2) + (index % 2 ? 34 : -34);
+    const ctrlY = ((cardY + portalY) / 2) + (index < 2 ? -30 : 26);
+
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("d", `M ${cardX} ${cardY} Q ${ctrlX} ${ctrlY} ${portalX} ${portalY}`);
+    path.setAttribute("class", "stage-link");
+    path.style.animationDelay = `${(index * 0.22).toFixed(2)}s`;
+    svg.appendChild(path);
+  });
+}
+
+function spawnStageTrail(stage, xPercent, yPercent) {
+  const node = document.createElement("span");
+  const sakura = state.theme === "sakura";
+  node.className = sakura ? "stage-dust stage-dust--petal" : "stage-dust";
+  if (sakura) node.textContent = Math.random() > 0.5 ? "🌸" : "❀";
+  node.style.left = `${xPercent}%`;
+  node.style.top = `${yPercent}%`;
+  node.style.setProperty("--dx", `${rand(-18, 18).toFixed(2)}px`);
+  node.style.setProperty("--dy", `${rand(-26, 18).toFixed(2)}px`);
+  stage.appendChild(node);
+  setTimeout(() => node.remove(), 1100);
+}
+
+function moveSlotAwayFromCore(slot, minDistance = 24) {
+  const dx = slot.x - 50;
+  const dy = slot.y - 50;
+  const dist = Math.hypot(dx, dy) || 0.001;
+  if (dist >= minDistance) return slot;
+  const scale = minDistance / dist;
+  return {
+    ...slot,
+    x: clamp(50 + (dx * scale), 1, 90),
+    y: clamp(50 + (dy * scale), 2, 88),
+  };
+}
+
+function spawnCardHoverBurst(stage, card) {
+  if (!stage || !card) return;
+  const stageRect = stage.getBoundingClientRect();
+  const cardRect = card.getBoundingClientRect();
+  if (!stageRect.width || !stageRect.height) return;
+
+  const centerX = ((cardRect.left - stageRect.left) + (cardRect.width / 2)) / stageRect.width * 100;
+  const centerY = ((cardRect.top - stageRect.top) + (cardRect.height / 2)) / stageRect.height * 100;
+  const burstCount = isMobile() ? 4 : 6;
+
+  for (let i = 0; i < burstCount; i += 1) {
+    setTimeout(() => {
+      spawnStageTrail(
+        stage,
+        clamp(centerX + rand(-5, 5), 1, 99),
+        clamp(centerY + rand(-5, 5), 1, 99)
+      );
+    }, i * 34);
+  }
 }
 
 function renderGallery() {
@@ -324,7 +847,9 @@ function renderGallery() {
   if (!girl) return;
   const main = $("#memoryGallery");
   const echo = $("#memoryGalleryEcho");
+  const stage = $("#memoryStage");
   if (!main || !echo) return;
+  const sakuraMode = state.theme === "sakura";
 
   main.innerHTML = "";
   echo.innerHTML = "";
@@ -336,8 +861,12 @@ function renderGallery() {
       ...slot,
       r: slot.r + rand(-1.2, 1.2),
       z: slot.z + rand(-1, 2),
-    }, "memory-photo--main");
+    }, `memory-photo--main${sakuraMode ? " memory-photo--hung" : ""}`);
     card.dataset.index = String(index);
+    if (stage) {
+      card.addEventListener("mouseenter", () => spawnCardHoverBurst(stage, card));
+      card.addEventListener("focus", () => spawnCardHoverBurst(stage, card));
+    }
     card.insertAdjacentHTML("beforeend", `<span class="memory-label">${CONFIG.memoryCaptions[index % CONFIG.memoryCaptions.length]}</span>`);
     main.appendChild(card);
   });
@@ -353,17 +882,84 @@ function renderGallery() {
       h: Math.round(base.h * rand(0.74, 0.86)),
       r: base.r + rand(-11, 11),
       z: Math.max(2, base.z - rand(16, 22)),
+      orbit: base.orbit + rand(1.1, 2.8),
     };
-    echo.appendChild(createMemoryCard(src, slot, "memory-photo--echo"));
+    echo.appendChild(
+      createMemoryCard(
+        src,
+        moveSlotAwayFromCore(slot, isMobile() ? (sakuraMode ? 30 : 20) : (sakuraMode ? 34 : 25)),
+        "memory-photo--echo"
+      )
+    );
   });
 
-  const sparse = isMobile()
-    ? [{ x: 4, y: 28, w: 78, h: 100, r: -8, z: 4 }, { x: 80, y: 26, w: 78, h: 100, r: 7, z: 4 }]
-    : [{ x: 4, y: 20, w: 92, h: 118, r: -9, z: 4 }, { x: 78, y: 20, w: 92, h: 118, r: 8, z: 4 }, { x: 41, y: 74, w: 92, h: 118, r: -6, z: 3 }];
+  girl.images.slice(0, 5).forEach((src, index) => {
+    const base = slots[index];
+    const dirX = Math.sign(base.x - 50) || (index % 2 ? 1 : -1);
+    const dirY = Math.sign(base.y - 50) || (index < 2 ? -1 : 1);
+    const slot = {
+      x: clamp(base.x - dirX * rand(9, 14), 2, 86),
+      y: clamp(base.y - dirY * rand(9, 14), 3, 86),
+      w: Math.round(base.w * rand(0.62, 0.72)),
+      h: Math.round(base.h * rand(0.62, 0.72)),
+      r: base.r + rand(-14, 14),
+      z: Math.max(1, base.z - rand(24, 30)),
+      orbit: base.orbit + rand(2.2, 4.8),
+    };
+    echo.appendChild(
+      createMemoryCard(
+        src,
+        moveSlotAwayFromCore(slot, isMobile() ? (sakuraMode ? 34 : 24) : (sakuraMode ? 38 : 30)),
+        "memory-photo--echo memory-photo--echo-soft"
+      )
+    );
+  });
+
+  const sparse = sakuraMode
+    ? (isMobile()
+      ? [
+        { x: 2, y: 28, w: 74, h: 96, r: -6, z: 4, orbit: 16.8 },
+        { x: 84, y: 24, w: 74, h: 96, r: 7, z: 4, orbit: 16.2 },
+        { x: 44, y: 80, w: 72, h: 92, r: -4, z: 3, orbit: 17.4 },
+      ]
+      : [
+        { x: 3, y: 24, w: 88, h: 112, r: -7, z: 5, orbit: 18.2 },
+        { x: 84, y: 22, w: 88, h: 112, r: 8, z: 5, orbit: 17.8 },
+        { x: 5, y: 73, w: 88, h: 112, r: -6, z: 4, orbit: 18.8 },
+        { x: 84, y: 72, w: 88, h: 112, r: 7, z: 4, orbit: 18.4 },
+      ])
+    : (isMobile()
+      ? [{ x: 3, y: 27, w: 78, h: 100, r: -8, z: 4, orbit: 16.2 }, { x: 82, y: 27, w: 78, h: 100, r: 7, z: 4, orbit: 15.8 }]
+      : [{ x: 3, y: 20, w: 96, h: 122, r: -8, z: 5, orbit: 17.4 }, { x: 81, y: 22, w: 96, h: 122, r: 8, z: 5, orbit: 16.8 }, { x: 43, y: 76, w: 96, h: 122, r: -6, z: 4, orbit: 18.2 }]);
 
   sparse.forEach((slot, idx) => {
     echo.appendChild(createMemoryCard(girl.images[idx % girl.images.length], slot, "memory-photo--echo memory-photo--echo-faint"));
   });
+
+  if (!isMobile()) {
+    const ringCount = sakuraMode ? 6 : 10;
+    for (let i = 0; i < ringCount; i += 1) {
+      const angle = (Math.PI * 2 * i) / ringCount + rand(-0.18, 0.18);
+      const slot = {
+        x: clamp(50 + (Math.cos(angle) * rand(sakuraMode ? 38 : 31, sakuraMode ? 46 : 42)), 1, 89),
+        y: clamp(50 + (Math.sin(angle) * rand(sakuraMode ? 30 : 24, sakuraMode ? 40 : 36)), 2, 88),
+        w: Math.round(rand(sakuraMode ? 78 : 86, sakuraMode ? 96 : 104)),
+        h: Math.round(rand(sakuraMode ? 100 : 110, sakuraMode ? 122 : 130)),
+        r: rand(-12, 12),
+        z: rand(2, 8),
+        orbit: rand(16, 21),
+      };
+      echo.appendChild(
+        createMemoryCard(
+          girl.images[i % girl.images.length],
+          moveSlotAwayFromCore(slot, sakuraMode ? 40 : 34),
+          "memory-photo--echo memory-photo--echo-faint memory-photo--ambient"
+        )
+      );
+    }
+  }
+
+  requestAnimationFrame(() => renderStageLinks());
 }
 
 function clearMemoryHighlight() {
@@ -399,21 +995,135 @@ function setupStageParallax() {
   const stage = $("#memoryStage");
   const main = $("#memoryGallery");
   const echo = $("#memoryGalleryEcho");
-  if (!stage || !main || !echo) return;
+  const cursorGlow = $("#stageCursorGlow");
+  const portal = $("#openLetterBtn");
+  if (!stage || !main || !echo || !cursorGlow) return;
   state.stageParallaxBound = true;
 
+  const motion = state.stageMotion;
+  if (motion.raf) cancelAnimationFrame(motion.raf);
+  let lastLinkTs = 0;
+
+  const updateStageField = () => {
+    const active = state.screen === 2 && !isMobile();
+    if (active) {
+      motion.wasActive = true;
+      motion.x += (motion.targetX - motion.x) * 0.15;
+      motion.y += (motion.targetY - motion.y) * 0.15;
+      const x = motion.x - 0.5;
+      const y = motion.y - 0.5;
+      const t = performance.now() * 0.001;
+      const driftX = Math.sin(t * 0.45) * 2.4;
+      const driftY = Math.cos(t * 0.4) * 1.9;
+      const driftTilt = Math.sin(t * 0.24) * 0.9;
+
+      stage.classList.add("is-pointer");
+      stage.style.setProperty("--sx", `${(motion.x * 100).toFixed(2)}%`);
+      stage.style.setProperty("--sy", `${(motion.y * 100).toFixed(2)}%`);
+      cursorGlow.style.transform = `translate3d(${((motion.x - 0.5) * 18).toFixed(2)}px, ${((motion.y - 0.5) * 18).toFixed(2)}px, 0)`;
+
+      main.style.transform = `rotateY(${(x * 7.4).toFixed(2)}deg) rotateX(${(-y * 7.4).toFixed(2)}deg) rotateZ(${driftTilt.toFixed(2)}deg) translate3d(${((x * 10) + driftX).toFixed(2)}px, ${((y * 10) + driftY).toFixed(2)}px, 0)`;
+      echo.style.transform = `rotateY(${(x * 4.8).toFixed(2)}deg) rotateX(${(-y * 4.8).toFixed(2)}deg) rotateZ(${(-driftTilt * 0.66).toFixed(2)}deg) translate3d(${((x * 16) - (driftX * 0.5)).toFixed(2)}px, ${((y * 16) - (driftY * 0.5)).toFixed(2)}px, 0)`;
+      if (portal) {
+        portal.style.setProperty("--px", `${((x * 7) + (driftX * 0.3)).toFixed(2)}px`);
+        portal.style.setProperty("--py", `${((-y * 7) + (driftY * 0.3)).toFixed(2)}px`);
+      }
+
+      const stageRect = stage.getBoundingClientRect();
+      const pointerX = stageRect.left + (motion.x * stageRect.width);
+      const pointerY = stageRect.top + (motion.y * stageRect.height);
+      let nearest = null;
+      let nearestDist = Number.POSITIVE_INFINITY;
+      const mainCards = $$(".memory-photo--main");
+      mainCards.forEach((card) => {
+        const r = card.getBoundingClientRect();
+        const cx = r.left + (r.width / 2);
+        const cy = r.top + (r.height / 2);
+        const d = Math.hypot(pointerX - cx, pointerY - cy);
+        if (d < nearestDist) {
+          nearest = card;
+          nearestDist = d;
+        }
+      });
+
+      $$(".memory-photo").forEach((card) => {
+        const r = card.getBoundingClientRect();
+        const cx = r.left + (r.width / 2);
+        const cy = r.top + (r.height / 2);
+        const dx = pointerX - cx;
+        const dy = pointerY - cy;
+        const dist = Math.hypot(dx, dy);
+        const isMain = card.classList.contains("memory-photo--main");
+        const radius = isMain ? 300 : 220;
+        const safeDist = dist || 0.001;
+
+        let tx = 0;
+        let ty = 0;
+        if (dist < radius) {
+          const force = 1 - (dist / radius);
+          const strength = isMain ? 10 : 6;
+          tx = (-dx / safeDist) * force * strength;
+          ty = (-dy / safeDist) * force * strength;
+        }
+
+        if (card === nearest && nearestDist < 260) {
+          const pullForce = 1 - (nearestDist / 260);
+          tx += (dx / safeDist) * pullForce * 7.5;
+          ty += (dy / safeDist) * pullForce * 7.5;
+          card.classList.add("is-magnetic");
+        } else {
+          card.classList.remove("is-magnetic");
+        }
+
+        card.style.translate = `${tx.toFixed(2)}px ${ty.toFixed(2)}px`;
+      });
+
+      const now = performance.now();
+      if (now - lastLinkTs > 420) {
+        renderStageLinks();
+        lastLinkTs = now;
+      }
+    } else {
+      if (motion.wasActive) {
+        stage.classList.remove("is-pointer");
+        main.style.transform = "";
+        echo.style.transform = "";
+        cursorGlow.style.transform = "";
+        if (portal) {
+          portal.style.setProperty("--px", "0px");
+          portal.style.setProperty("--py", "0px");
+        }
+        $$(".memory-photo").forEach((card) => {
+          card.style.translate = "0 0";
+          card.classList.remove("is-magnetic");
+        });
+      }
+      motion.wasActive = false;
+      motion.targetX = 0.5;
+      motion.targetY = 0.5;
+      motion.x += (0.5 - motion.x) * 0.2;
+      motion.y += (0.5 - motion.y) * 0.2;
+    }
+    motion.raf = requestAnimationFrame(updateStageField);
+  };
+
+  motion.raf = requestAnimationFrame(updateStageField);
+
   stage.addEventListener("mousemove", (event) => {
-    if (state.screen !== 2 || isMobile()) return;
     const rect = stage.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / rect.width - 0.5;
-    const y = (event.clientY - rect.top) / rect.height - 0.5;
-    main.style.transform = `rotateY(${(x * 7).toFixed(2)}deg) rotateX(${(-y * 7).toFixed(2)}deg) translate3d(${(x * 10).toFixed(2)}px, ${(y * 10).toFixed(2)}px, 0)`;
-    echo.style.transform = `rotateY(${(x * 4).toFixed(2)}deg) rotateX(${(-y * 4).toFixed(2)}deg) translate3d(${(x * 14).toFixed(2)}px, ${(y * 14).toFixed(2)}px, 0)`;
+    motion.targetX = clamp((event.clientX - rect.left) / rect.width, 0, 1);
+    motion.targetY = clamp((event.clientY - rect.top) / rect.height, 0, 1);
+
+    const now = performance.now();
+    if (now - state.stageHoverTick > 46) {
+      spawnStageTrail(stage, motion.targetX * 100, motion.targetY * 100);
+      state.stageHoverTick = now;
+    }
   });
 
   stage.addEventListener("mouseleave", () => {
-    main.style.transform = "";
-    echo.style.transform = "";
+    motion.targetX = 0.5;
+    motion.targetY = 0.5;
   });
 }
 
@@ -428,11 +1138,15 @@ function startPortalTransition() {
   $$(".memory-photo--echo").forEach((card) => card.classList.add("to-portal"));
 
   setTimeout(() => {
-    showScreen(3);
-    startLetterSequence();
-    stage.classList.remove("is-portal-transition");
-    $$(".memory-photo.to-portal").forEach((card) => card.classList.remove("to-portal"));
-    state.portalBusy = false;
+    transitionToScreen(3, {
+      effect: "portal",
+      onSwitched: () => {
+        startLetterSequence();
+        stage.classList.remove("is-portal-transition");
+        $$(".memory-photo.to-portal").forEach((card) => card.classList.remove("to-portal"));
+        state.portalBusy = false;
+      },
+    });
   }, 980);
 }
 
@@ -534,9 +1248,13 @@ function startLetterSequence() {
 }
 
 function backToStage() {
-  showScreen(2);
-  renderGallery();
-  startMemoryHighlight();
+  transitionToScreen(2, {
+    effect: "drift",
+    onSwitched: () => {
+      renderGallery();
+      startMemoryHighlight();
+    },
+  });
 }
 
 function loadWishes() {
@@ -625,8 +1343,10 @@ function makeWish() {
 
 function openWishScreen(fromScreen) {
   state.previousScreen = fromScreen;
-  showScreen(4);
-  setTimeout(() => $("#wishInput")?.focus({ preventScroll: true }), 120);
+  transitionToScreen(4, {
+    effect: "petal",
+    onSwitched: () => setTimeout(() => $("#wishInput")?.focus({ preventScroll: true }), 120),
+  });
 }
 
 function toggleMusic() {
@@ -678,12 +1398,16 @@ function bindEvents() {
     });
   });
 
-  $("#backToHome")?.addEventListener("click", () => showScreen(1));
+  $("#backToHome")?.addEventListener("click", () => transitionToScreen(1, { effect: "drift" }));
   $("#openWishFromHome")?.addEventListener("click", () => openWishScreen(1));
   $("#openWishFromStage")?.addEventListener("click", () => openWishScreen(2));
   $("#backFromWish")?.addEventListener("click", () => {
-    showScreen(state.previousScreen || 1);
-    if (state.previousScreen === 2) startMemoryHighlight();
+    transitionToScreen(state.previousScreen || 1, {
+      effect: "drift",
+      onSwitched: () => {
+        if (state.previousScreen === 2) startMemoryHighlight();
+      },
+    });
   });
   $("#openLetterBtn")?.addEventListener("click", startPortalTransition);
   $("#backToStage")?.addEventListener("click", backToStage);
@@ -700,6 +1424,7 @@ function bindEvents() {
   window.addEventListener("resize", () => {
     renderHeroPetalPreview();
     if (state.screen === 2 && state.currentGirlKey) renderGallery();
+    renderStageStars();
     if (state.screen === 4) renderWishSky();
   });
 }
@@ -711,6 +1436,7 @@ function init() {
   setTheme(savedTheme === "sakura" ? "sakura" : "cosmic", false);
   showScreen(1);
   bindEvents();
+  setupHeroInteraction();
   runIntro();
 
   if (localStorage.getItem(CONFIG.storageMusic) === "1") {
