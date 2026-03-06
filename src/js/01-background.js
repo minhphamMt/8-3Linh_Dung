@@ -247,7 +247,7 @@ function renderGalaxyBackgroundStars() {
     return;
   }
 
-  layer.style.backgroundImage = buildGalaxyDustMap(scalePerformanceCount(isMobile() ? 180 : 320, isMobile() ? 124 : 224, isMobile() ? 84 : 156), {
+  layer.style.backgroundImage = buildGalaxyDustMap(scalePerformanceCount(isMobile() ? 150 : 260, isMobile() ? 102 : 184, isMobile() ? 72 : 132), {
     minX: 0.5,
     maxX: 99.5,
     minY: 0.5,
@@ -256,25 +256,25 @@ function renderGalaxyBackgroundStars() {
     clusterBias: pickPerformanceValue(isMobile() ? 0.6 : 0.74, isMobile() ? 0.58 : 0.68, isMobile() ? 0.54 : 0.62),
   });
   if (constellationLayer) {
-    constellationLayer.style.setProperty("--milky-dust-map", buildGalaxyDustMap(scalePerformanceCount(isMobile() ? 84 : 156, isMobile() ? 56 : 108, isMobile() ? 38 : 72), {
+    constellationLayer.style.setProperty("--milky-dust-map", buildGalaxyDustMap(scalePerformanceCount(isMobile() ? 68 : 128, isMobile() ? 44 : 86, isMobile() ? 28 : 54), {
       minX: 14,
       maxX: 86,
       minY: 18,
       maxY: 78,
-      clusterCount: pickPerformanceValue(isMobile() ? 5 : 8, isMobile() ? 4 : 6, isMobile() ? 3 : 5),
-      clusterBias: pickPerformanceValue(0.82, 0.76, 0.7),
+      clusterCount: pickPerformanceValue(isMobile() ? 5 : 7, isMobile() ? 3 : 5, isMobile() ? 2 : 4),
+      clusterBias: pickPerformanceValue(0.8, 0.72, 0.66),
     }));
   }
 
-  const count = scalePerformanceCount(isMobile() ? 240 : 520, isMobile() ? 170 : 360, isMobile() ? 120 : 240);
+  const count = scalePerformanceCount(isMobile() ? 160 : 300, isMobile() ? 104 : 190, isMobile() ? 64 : 120);
   const points = generateGalaxyStarfield(count, {
     minX: 0.8,
     maxX: 99.2,
     minY: 0.8,
     maxY: 99.2,
-    clusterCount: pickPerformanceValue(isMobile() ? 8 : 12, isMobile() ? 6 : 9, isMobile() ? 4 : 7),
-    clusterBias: pickPerformanceValue(isMobile() ? 0.6 : 0.76, isMobile() ? 0.58 : 0.7, isMobile() ? 0.52 : 0.64),
-    minGap: pickPerformanceValue(isMobile() ? 0.34 : 0.44, isMobile() ? 0.4 : 0.52, isMobile() ? 0.48 : 0.62),
+    clusterCount: pickPerformanceValue(isMobile() ? 7 : 10, isMobile() ? 5 : 7, isMobile() ? 4 : 5),
+    clusterBias: pickPerformanceValue(isMobile() ? 0.58 : 0.72, isMobile() ? 0.54 : 0.66, isMobile() ? 0.48 : 0.6),
+    minGap: pickPerformanceValue(isMobile() ? 0.42 : 0.54, isMobile() ? 0.56 : 0.72, isMobile() ? 0.74 : 0.94),
   });
 
   points.forEach((point) => {
@@ -312,16 +312,16 @@ function renderStageStars() {
   layer.innerHTML = "";
 
   if (state.theme !== "cosmic" || state.screen !== 2) return;
-  const count = scalePerformanceCount(isMobile() ? 108 : 220, isMobile() ? 76 : 148, isMobile() ? 52 : 96);
+  const count = scalePerformanceCount(isMobile() ? 72 : 140, isMobile() ? 48 : 92, isMobile() ? 28 : 54);
   const minCenterDistance = pickPerformanceValue(isMobile() ? 14 : 16, isMobile() ? 15 : 18, isMobile() ? 16 : 20);
   const points = generateGalaxyStarfield(count, {
     minX: 2,
     maxX: 98,
     minY: 4,
     maxY: 94,
-    clusterCount: pickPerformanceValue(isMobile() ? 7 : 10, isMobile() ? 5 : 7, isMobile() ? 4 : 6),
-    clusterBias: pickPerformanceValue(isMobile() ? 0.64 : 0.74, isMobile() ? 0.6 : 0.68, isMobile() ? 0.56 : 0.62),
-    minGap: pickPerformanceValue(isMobile() ? 0.48 : 0.6, isMobile() ? 0.56 : 0.68, isMobile() ? 0.64 : 0.78),
+    clusterCount: pickPerformanceValue(isMobile() ? 6 : 8, isMobile() ? 4 : 5, isMobile() ? 3 : 4),
+    clusterBias: pickPerformanceValue(isMobile() ? 0.6 : 0.7, isMobile() ? 0.56 : 0.64, isMobile() ? 0.5 : 0.58),
+    minGap: pickPerformanceValue(isMobile() ? 0.6 : 0.72, isMobile() ? 0.76 : 0.94, isMobile() ? 0.92 : 1.1),
     avoidCenterRadius: minCenterDistance,
   });
 
@@ -377,18 +377,23 @@ function startBackgroundEffects() {
       recipes.push({ layer: "#bgSakura", className: "fx-bird", text: "🐦", min: 10.4, max: 14.8, interval: 5200 });
     }
   } else {
-    recipes.push({ layer: "#bgStars", className: "fx-star", text: "", min: 6.8, max: 10.4, interval: Math.round((lowPower ? 640 : 300) * intervalScale) });
-    recipes.push({ layer: "#bgParticles", className: "fx-soft", text: "", min: 8.2, max: 12.8, interval: Math.round((lowPower ? 900 : 520) * intervalScale) });
-    recipes.push({ layer: "#bgParticles", className: "fx-shooting", text: "", min: 1.5, max: 2.4, interval: Math.round((lowPower ? 9800 : 5200) * intervalScale) });
+    recipes.push({ layer: "#bgStars", className: "fx-star", text: "", min: 7.8, max: 11.8, interval: Math.round((profile.level === "low" ? 1800 : profile.level === "medium" ? 1200 : 760) * intervalScale) });
+    recipes.push({ layer: "#bgParticles", className: "fx-soft", text: "", min: 9.4, max: 14.8, interval: Math.round((profile.level === "low" ? 2200 : profile.level === "medium" ? 1500 : 900) * intervalScale) });
+    recipes.push({ layer: "#bgParticles", className: "fx-shooting", text: "", min: 1.3, max: 2.1, interval: Math.round((profile.level === "low" ? 16800 : profile.level === "medium" ? 12200 : 8600) * intervalScale) });
   }
 
   recipes.forEach((recipe) => {
     const isCreature = /fx-butterfly|fx-bee|fx-bird/.test(recipe.className);
-    const burst = lowPower
+    let burst = lowPower
       ? (recipe.className.includes("fx-shooting") ? 0 : 1)
       : performanceLevel() === "medium"
         ? (recipe.className.includes("fx-shooting") ? 1 : (isCreature ? 1 : 2))
         : (recipe.className.includes("fx-shooting") ? 1 : (isCreature ? 1 : 3));
+    if (!sakura) {
+      if (recipe.className.includes("fx-shooting")) burst = 0;
+      if (recipe.className.includes("fx-star")) burst = performanceLevel() === "high" ? 1 : 0;
+      if (recipe.className.includes("fx-soft")) burst = performanceLevel() === "low" ? 0 : 1;
+    }
     for (let i = 0; i < burst; i += 1) {
       spawnBackgroundItem(recipe.layer, recipe.className, recipe.text, recipe.min, recipe.max);
     }
@@ -401,9 +406,9 @@ function startBackgroundEffects() {
 
   if (!sakura && profile.allowConstellation) {
     spawnConstellation();
-    const constellationTimer = setInterval(spawnConstellation, 5600);
+    const constellationTimer = setInterval(spawnConstellation, 7600);
     state.backgroundIntervals.push(constellationTimer);
-    state.backgroundTimeouts.push(setTimeout(spawnConstellation, 1800));
+    state.backgroundTimeouts.push(setTimeout(spawnConstellation, 2600));
   }
 }
 

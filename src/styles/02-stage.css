@@ -465,27 +465,27 @@ html[data-theme="cosmic"] .stage-sakura-decor { display: none; }
   height: var(--size, 2px);
   border-radius: 50%;
   background: radial-gradient(circle, rgba(255,255,255,.98), rgba(173,221,255,.4));
-  box-shadow: 0 0 8px rgba(170,222,255,.62);
+  box-shadow: 0 0 5px rgba(170,222,255,.34);
   opacity: var(--opacity, .26);
   filter: blur(var(--blur, 0px));
-  animation: stageStarTwinkle var(--dur, 3.2s) ease-in-out infinite;
+  animation: stageStarTwinkle var(--dur, 5.8s) ease-in-out infinite;
   animation-delay: var(--delay, 0s);
 }
 
 .stage-star--bright {
   opacity: .4;
-  box-shadow: 0 0 12px rgba(188,230,255,.82);
+  box-shadow: 0 0 8px rgba(188,230,255,.46);
 }
 
 .stage-star--giant {
   box-shadow:
     0 0 0 1px rgba(255,255,255,.08),
-    0 0 16px rgba(196,234,255,.8);
+    0 0 10px rgba(196,234,255,.44);
 }
 
 .stage-star--warm {
   background: radial-gradient(circle, rgba(255,250,244,.98), rgba(255,218,200,.42));
-  box-shadow: 0 0 10px rgba(255,224,206,.44);
+  box-shadow: 0 0 7px rgba(255,224,206,.26);
 }
 
 .stage-star--cool {

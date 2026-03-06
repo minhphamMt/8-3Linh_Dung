@@ -10,7 +10,7 @@ function renderHeroPetalPreview() {
   const count = isMobile()
     ? scalePerformanceCount(4, 4, 3)
     : state.theme === "cosmic"
-      ? scalePerformanceCount(10, 7, 4)
+      ? scalePerformanceCount(8, 5, 3)
       : scalePerformanceCount(8, 6, 4);
   const sparkCount = isMobile()
     ? scalePerformanceCount(8, 6, 4)
@@ -35,27 +35,27 @@ function renderHeroPetalPreview() {
   }
 
   if (state.theme === "cosmic") {
-    sparkLayer.style.backgroundImage = buildGalaxyDustMap(scalePerformanceCount(isMobile() ? 96 : 180, isMobile() ? 72 : 128, isMobile() ? 40 : 84), {
+    sparkLayer.style.backgroundImage = buildGalaxyDustMap(scalePerformanceCount(isMobile() ? 76 : 144, isMobile() ? 54 : 96, isMobile() ? 30 : 62), {
       minX: 2,
       maxX: 98,
       minY: 4,
       maxY: 94,
-      clusterCount: pickPerformanceValue(isMobile() ? 6 : 9, isMobile() ? 5 : 7, isMobile() ? 4 : 5),
-      clusterBias: pickPerformanceValue(0.78, 0.72, 0.66),
+      clusterCount: pickPerformanceValue(isMobile() ? 5 : 8, isMobile() ? 4 : 6, isMobile() ? 3 : 4),
+      clusterBias: pickPerformanceValue(0.74, 0.68, 0.62),
       avoidRects: [
         { x1: 10, x2: 48, y1: 18, y2: 64, allowChance: 0.42 },
       ],
     });
 
-    const starCount = scalePerformanceCount(isMobile() ? 72 : 160, isMobile() ? 52 : 112, isMobile() ? 36 : 72);
+    const starCount = scalePerformanceCount(isMobile() ? 42 : 92, isMobile() ? 28 : 56, isMobile() ? 16 : 28);
     const stars = generateGalaxyStarfield(starCount, {
       minX: 2,
       maxX: 98,
       minY: 4,
       maxY: 94,
-      clusterCount: pickPerformanceValue(isMobile() ? 6 : 10, isMobile() ? 5 : 7, isMobile() ? 4 : 5),
-      clusterBias: pickPerformanceValue(isMobile() ? 0.66 : 0.8, isMobile() ? 0.6 : 0.72, isMobile() ? 0.56 : 0.66),
-      minGap: pickPerformanceValue(isMobile() ? 0.5 : 0.62, isMobile() ? 0.58 : 0.72, isMobile() ? 0.7 : 0.86),
+      clusterCount: pickPerformanceValue(isMobile() ? 5 : 8, isMobile() ? 4 : 6, isMobile() ? 3 : 4),
+      clusterBias: pickPerformanceValue(isMobile() ? 0.62 : 0.74, isMobile() ? 0.58 : 0.66, isMobile() ? 0.52 : 0.6),
+      minGap: pickPerformanceValue(isMobile() ? 0.66 : 0.82, isMobile() ? 0.84 : 1, isMobile() ? 1.02 : 1.18),
       avoidRects: [
         { x1: 12, x2: 50, y1: 16, y2: 64, allowChance: 0.48 },
       ],
@@ -76,7 +76,7 @@ function renderHeroPetalPreview() {
       spark.style.setProperty("--opacity", `${(point.giant ? rand(0.68, 0.96) : point.bright ? rand(0.34, 0.78) : rand(0.14, 0.48)).toFixed(2)}`);
       spark.style.setProperty("--blur", `${(point.giant ? rand(0, 0.28) : rand(0, 0.9)).toFixed(2)}px`);
       spark.style.animationDelay = `${rand(0, 6.2).toFixed(2)}s`;
-      spark.style.animationDuration = `${rand(2.4, 6.2).toFixed(2)}s`;
+      spark.style.animationDuration = `${rand(4.8, 8.4).toFixed(2)}s`;
       sparkLayer.appendChild(spark);
     });
     return;

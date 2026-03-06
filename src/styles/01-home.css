@@ -887,19 +887,19 @@ html[data-theme="sakura"] .preview-petal {
   background: radial-gradient(circle, rgba(255,255,255,.98), rgba(187,226,255,.35));
   opacity: var(--opacity, .65);
   filter: blur(var(--blur, 0px));
-  box-shadow: 0 0 8px rgba(188,228,255,.24);
-  animation: sparkTwinkle 3s ease-in-out infinite;
+  box-shadow: 0 0 5px rgba(188,228,255,.18);
+  animation: sparkTwinkle 5.6s ease-in-out infinite;
 }
 
 .hero-spark--bright {
   background: radial-gradient(circle, rgba(255,255,255,1), rgba(196,231,255,.48));
-  box-shadow: 0 0 14px rgba(194,232,255,.46);
+  box-shadow: 0 0 9px rgba(194,232,255,.28);
 }
 
 .hero-spark--giant {
   box-shadow:
     0 0 0 1px rgba(255,255,255,.08),
-    0 0 18px rgba(202,236,255,.56);
+    0 0 12px rgba(202,236,255,.34);
 }
 
 .hero-spark--warm {

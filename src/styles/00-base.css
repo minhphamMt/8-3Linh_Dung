@@ -360,31 +360,29 @@ html[data-theme="cosmic"] .bg-constellation::after {
   opacity: var(--opacity, .32);
   filter: blur(var(--blur, 0px));
   background: radial-gradient(circle, rgba(255,255,255,.98), rgba(173,221,255,.26));
-  box-shadow: 0 0 8px rgba(178,224,255,.34);
-  animation:
-    galaxySkyTwinkle var(--dur, 4.8s) ease-in-out infinite,
-    galaxySkyFloat calc(var(--dur, 4.8s) * 2.4) ease-in-out infinite;
-  animation-delay: var(--delay, 0s), var(--delay, 0s);
+  box-shadow: 0 0 5px rgba(178,224,255,.22);
+  animation: galaxySkyTwinkle var(--dur, 7.2s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
 }
 
 .bg-starfield__star--bright {
   background: radial-gradient(circle, rgba(255,255,255,1), rgba(200,231,255,.48));
-  box-shadow: 0 0 12px rgba(194,232,255,.5);
+  box-shadow: 0 0 8px rgba(194,232,255,.34);
 }
 
 .bg-starfield__star--giant {
   box-shadow:
     0 0 0 1px rgba(255,255,255,.1),
-    0 0 18px rgba(208,237,255,.62);
+    0 0 12px rgba(208,237,255,.4);
 }
 
 .bg-starfield__star--dim {
-  box-shadow: 0 0 4px rgba(174,220,255,.18);
+  box-shadow: 0 0 3px rgba(174,220,255,.12);
 }
 
 .bg-starfield__star--warm {
   background: radial-gradient(circle, rgba(255,252,245,.98), rgba(255,212,198,.34));
-  box-shadow: 0 0 10px rgba(255,220,198,.34);
+  box-shadow: 0 0 7px rgba(255,220,198,.22);
 }
 
 .bg-starfield__star--cool {
@@ -560,27 +558,28 @@ html[data-theme="sakura"] .bg-glow {
 }
 
 .fx-star, .fx-soft, .fx-spark {
-  width: 7px;
-  height: 7px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(255,255,255,.96), rgba(163,210,255,.38));
-  box-shadow: 0 0 12px rgba(185,228,255,.78);
+  opacity: .72;
+  box-shadow: 0 0 8px rgba(185,228,255,.46);
 }
 
 .fx-soft {
-  width: 10px;
-  height: 10px;
-  opacity: .8;
+  width: 7px;
+  height: 7px;
+  opacity: .56;
   background: radial-gradient(circle, rgba(255,184,235,.9), rgba(168,206,255,.28));
 }
 
 .fx-shooting {
-  width: 132px;
-  height: 2.4px;
+  width: 96px;
+  height: 2px;
   border-radius: 999px;
-  opacity: .9;
-  background: linear-gradient(90deg, rgba(255,255,255,0), rgba(173,214,255,.14) 32%, rgba(237,247,255,.98) 76%, rgba(161,206,255,.08) 100%);
-  box-shadow: 0 0 14px rgba(156,208,255,.72);
+  opacity: .68;
+  background: linear-gradient(90deg, rgba(255,255,255,0), rgba(173,214,255,.1) 34%, rgba(237,247,255,.88) 76%, rgba(161,206,255,.06) 100%);
+  box-shadow: 0 0 10px rgba(156,208,255,.44);
   animation: shooting linear forwards;
   transform-origin: 100% 50%;
 }
