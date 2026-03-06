@@ -466,14 +466,14 @@ html[data-theme="sakura"] .bg-glow {
 }
 
 .fx-shooting {
-  width: 120px;
-  height: 2px;
+  width: 132px;
+  height: 2.4px;
   border-radius: 999px;
   opacity: .9;
-  background: linear-gradient(90deg, rgba(255,255,255,0), rgba(227,243,255,.95), rgba(161,206,255,.45));
-  box-shadow: 0 0 12px rgba(156,208,255,.72);
+  background: linear-gradient(90deg, rgba(255,255,255,0), rgba(173,214,255,.14) 32%, rgba(237,247,255,.98) 76%, rgba(161,206,255,.08) 100%);
+  box-shadow: 0 0 14px rgba(156,208,255,.72);
   animation: shooting linear forwards;
-  transform: rotate(var(--shoot-angle, -22deg));
+  transform-origin: 100% 50%;
 }
 
 .fx-petal, .fx-leaf {
@@ -3922,12 +3922,13 @@ html[data-theme="sakura"] .wish-node__text { color: #704b5e; }
 
 @keyframes shooting {
   0% {
-    transform: translate3d(-6vw, -2vh, 0) rotate(var(--shoot-angle, -22deg)) scale(.55);
+    transform: translate3d(0, 0, 0) rotate(var(--shoot-angle, 34deg)) scale(var(--shoot-scale-start, .52));
     opacity: 0;
   }
-  12% { opacity: .92; }
+  14% { opacity: .96; }
+  62% { opacity: .82; }
   100% {
-    transform: translate3d(128vw, 34vh, 0) rotate(var(--shoot-angle, -22deg)) scale(1);
+    transform: translate3d(var(--shoot-dx, 36vw), var(--shoot-dy, 46vh), 0) rotate(var(--shoot-angle, 34deg)) scale(var(--shoot-scale-end, 1));
     opacity: 0;
   }
 }

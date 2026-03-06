@@ -303,9 +303,13 @@ function spawnBackgroundItem(layerId, className, text, durationMin, durationMax)
   if (text) item.textContent = text;
 
   if (className.includes("fx-shooting")) {
-    item.style.setProperty("--x", `${rand(-10, 18).toFixed(2)}%`);
-    item.style.setProperty("--y", `${rand(2, 48).toFixed(2)}%`);
-    item.style.setProperty("--shoot-angle", `${rand(-36, -14).toFixed(2)}deg`);
+    item.style.setProperty("--x", `${rand(-8, 82).toFixed(2)}%`);
+    item.style.setProperty("--y", `${rand(-16, 8).toFixed(2)}%`);
+    item.style.setProperty("--shoot-angle", `${rand(28, 42).toFixed(2)}deg`);
+    item.style.setProperty("--shoot-dx", `${rand(24, 46).toFixed(2)}vw`);
+    item.style.setProperty("--shoot-dy", `${rand(34, 56).toFixed(2)}vh`);
+    item.style.setProperty("--shoot-scale-start", `${rand(0.46, 0.62).toFixed(2)}`);
+    item.style.setProperty("--shoot-scale-end", `${rand(0.92, 1.08).toFixed(2)}`);
   } else if (className.includes("fx-butterfly")) {
     item.style.setProperty("--x", `${rand(-8, 10).toFixed(2)}%`);
     item.style.setProperty("--y", `${rand(18, 66).toFixed(2)}%`);
@@ -647,12 +651,12 @@ function startBackgroundEffects() {
   } else {
     recipes.push({ layer: "#bgStars", className: "fx-star", text: "", min: 6.8, max: 10.4, interval: lowPower ? 640 : 300 });
     recipes.push({ layer: "#bgParticles", className: "fx-soft", text: "", min: 8.2, max: 12.8, interval: lowPower ? 900 : 520 });
-    recipes.push({ layer: "#bgParticles", className: "fx-shooting", text: "", min: 1.4, max: 2.2, interval: lowPower ? 16000 : 9000 });
+    recipes.push({ layer: "#bgParticles", className: "fx-shooting", text: "", min: 1.5, max: 2.4, interval: lowPower ? 9800 : 5200 });
   }
 
   recipes.forEach((recipe) => {
     const isCreature = /fx-butterfly|fx-bee|fx-bird/.test(recipe.className);
-    const burst = lowPower ? 1 : (recipe.className.includes("fx-shooting") ? 0 : (isCreature ? 1 : 3));
+    const burst = lowPower ? (recipe.className.includes("fx-shooting") ? 0 : 1) : (recipe.className.includes("fx-shooting") ? 1 : (isCreature ? 1 : 3));
     for (let i = 0; i < burst; i += 1) {
       spawnBackgroundItem(recipe.layer, recipe.className, recipe.text, recipe.min, recipe.max);
     }
