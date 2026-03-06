@@ -96,7 +96,11 @@
               </button>
             </div>
 
-            <button class="primary-btn" id="openWishFromHome" type="button">🌸 Vào Wish Star Page</button>
+            <button class="primary-btn wish-entry-btn" id="openWishFromHome" type="button">
+              <span class="wish-entry-btn__glow" aria-hidden="true"></span>
+              <span class="wish-entry-btn__icon" id="wishEntryIcon" aria-hidden="true">✦</span>
+              <span class="wish-entry-btn__label" id="wishEntryLabel">Vào Wish Star Page</span>
+            </button>
             <p class="hero-credit" id="heroCredit">A small universe by <strong>Minh Phạm ✨</strong></p>
           </div>
 
@@ -125,7 +129,10 @@
           <strong id="receiverName">...</strong>
         </div>
         <div class="topbar-actions">
-          <button class="icon-btn" id="openWishFromStage" type="button" aria-label="Mở Wish Star Page">🌸</button>
+          <button class="icon-btn wish-shortcut-btn" id="openWishFromStage" type="button" aria-label="Mở Wish Star Page">
+            <span class="wish-shortcut-btn__glow" aria-hidden="true"></span>
+            <span class="wish-shortcut-btn__glyph" id="wishShortcutGlyph" aria-hidden="true">✦</span>
+          </button>
           <button class="icon-btn" id="toggleMusic" type="button" aria-label="Bật tắt nhạc">♪</button>
         </div>
       </header>
@@ -281,16 +288,66 @@
       </header>
 
       <div class="card wish-wrap">
-        <div class="wish-head">
-          <h2>Make a wish</h2>
-          <p>Nhập điều ước, rồi để ngôi sao hoặc cánh hoa của bạn bay lên bầu trời.</p>
+        <div class="wish-layout">
+          <section class="wish-panel">
+            <div class="wish-head">
+              <span class="wish-kicker" id="wishKicker">Wish Constellation</span>
+              <h2 id="wishTitle">Make a wish</h2>
+              <p id="wishSubtitle">Nhập điều ước, rồi để ngôi sao hoặc cánh hoa của bạn bay lên bầu trời.</p>
+            </div>
+            <div class="wish-form">
+              <label for="wishInput" id="wishLabel">Điều ước của bạn</label>
+              <textarea id="wishInput" maxlength="140" placeholder="Ví dụ: May you always shine"></textarea>
+              <div class="wish-actions">
+                <button class="primary-btn primary-btn--wish" id="makeWishBtn" type="button">
+                  <span class="wish-action-btn__glow" aria-hidden="true"></span>
+                  <span class="wish-action-btn__icon" id="makeWishIcon" aria-hidden="true">✦</span>
+                  <span class="wish-action-btn__text" id="makeWishBtnText">Make a wish</span>
+                </button>
+                <p class="wish-note" id="wishNote">Thả điều ước vào bầu trời và giữ nó lại như một dấu mốc dịu dàng.</p>
+              </div>
+            </div>
+          </section>
+          <section class="wish-scene">
+            <div class="wish-scene-decor" aria-hidden="true">
+              <span class="wish-cosmic-nebula wish-cosmic-nebula--one"></span>
+              <span class="wish-cosmic-nebula wish-cosmic-nebula--two"></span>
+              <span class="wish-cosmic-orbit wish-cosmic-orbit--one"></span>
+              <span class="wish-cosmic-orbit wish-cosmic-orbit--two"></span>
+              <span class="wish-cosmic-planet wish-cosmic-planet--one"></span>
+              <span class="wish-cosmic-planet wish-cosmic-planet--two"></span>
+              <span class="wish-cosmic-star wish-cosmic-star--one"></span>
+              <span class="wish-cosmic-star wish-cosmic-star--two"></span>
+              <span class="wish-cosmic-star wish-cosmic-star--three"></span>
+              <span class="wish-sakura-sun"></span>
+              <span class="wish-sakura-canopy wish-sakura-canopy--one"></span>
+              <span class="wish-sakura-canopy wish-sakura-canopy--two"></span>
+              <span class="wish-sakura-canopy wish-sakura-canopy--three"></span>
+              <span class="wish-sakura-tree wish-sakura-tree--left"></span>
+              <span class="wish-sakura-tree wish-sakura-tree--right"></span>
+              <span class="wish-sakura-branch wish-sakura-branch--one"></span>
+              <span class="wish-sakura-branch wish-sakura-branch--two"></span>
+              <span class="wish-sakura-ground"></span>
+              <span class="wish-sakura-flowerbed wish-sakura-flowerbed--one"></span>
+              <span class="wish-sakura-flowerbed wish-sakura-flowerbed--two"></span>
+              <span class="wish-sakura-flowerbed wish-sakura-flowerbed--three"></span>
+              <span class="wish-sakura-bloom wish-sakura-bloom--one">🌸</span>
+              <span class="wish-sakura-bloom wish-sakura-bloom--two">🌸</span>
+              <span class="wish-sakura-bloom wish-sakura-bloom--three">🌸</span>
+              <span class="wish-sakura-bloom wish-sakura-bloom--four">🌸</span>
+              <span class="wish-sakura-bloom wish-sakura-bloom--five">🌸</span>
+              <span class="wish-sakura-butterfly wish-sakura-butterfly--one">🦋</span>
+              <span class="wish-sakura-butterfly wish-sakura-butterfly--two">🦋</span>
+              <span class="wish-sakura-petal wish-sakura-petal--one">🌸</span>
+              <span class="wish-sakura-petal wish-sakura-petal--two">🌸</span>
+              <span class="wish-sakura-petal wish-sakura-petal--three">🌸</span>
+              <span class="wish-sakura-petal wish-sakura-petal--four">🌸</span>
+            </div>
+            <div class="wish-sky" id="wishSky" aria-live="polite">
+              <div class="wish-sky__nodes" id="wishSkyNodes"></div>
+            </div>
+          </section>
         </div>
-        <div class="wish-form">
-          <label for="wishInput">Điều ước của bạn</label>
-          <textarea id="wishInput" maxlength="140" placeholder="Ví dụ: May you always shine"></textarea>
-          <button class="primary-btn" id="makeWishBtn" type="button">Make a wish</button>
-        </div>
-        <div class="wish-sky" id="wishSky" aria-live="polite"></div>
       </div>
     </section>
   </main>

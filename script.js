@@ -73,16 +73,24 @@ const CONFIG = {
       choiceTagDung: "STAR 02",
       choiceHintLinh: "Chạm để mở hành trình",
       choiceHintDung: "Đi vào khu vườn bí mật",
-      wishBtn: "🌸 Vào Wish Star Page",
+      wishBtn: "Vào Wish Star Page",
       heroCredit: "A small universe by <strong>Minh Phạm ✨</strong>",
       stagePill: "Cosmic Receiver",
       letterPill: "Space Letter",
       wishPill: "Wish Star Page",
+      wishKicker: "Wish Constellation",
+      wishTitle: "Thả một điều ước vào dải ngân hà",
+      wishSubtitle: "Viết điều bạn muốn gửi, rồi để vì sao ấy neo lại trong bầu trời riêng của hai người.",
+      wishLabel: "Tin nhắn ánh sao",
+      wishPlaceholder: "Ví dụ: May you always shine",
+      wishAction: "Launch star wish",
+      wishNote: "Mỗi điều ước sẽ hóa thành một điểm sáng nhỏ trong bản đồ kỷ niệm.",
       stageHint: "Di chuột để cảm nhận không gian • bấm vòng hoa để mở thư",
       portalText: "Open Letter",
       portalSub: "Tap to enter",
       ending: "Hope this little universe made you smile ✨",
       choiceMarks: ["✦", "✧"],
+      wishGlyph: "✦",
     },
     sakura: {
       heroKicker: "08/03 Dreamy Sakura Garden",
@@ -92,16 +100,24 @@ const CONFIG = {
       choiceTagDung: "BLOOM 02",
       choiceHintLinh: "Chạm để bước vào vườn hoa",
       choiceHintDung: "Đi vào khu cây sakura bí mật",
-      wishBtn: "🌸 Bước vào Wish Blossom Page",
+      wishBtn: "Vào Wish Blossom Page",
       heroCredit: "A small sakura garden by <strong>Minh Phạm 🌸</strong>",
       stagePill: "Petal Receiver",
       letterPill: "Sakura Letter",
       wishPill: "Wish Blossom Page",
+      wishKicker: "Wish Blossom Garden",
+      wishTitle: "Gieo một điều ước vào vườn sakura",
+      wishSubtitle: "Viết một lời mong muốn dịu dàng, rồi để cánh hoa mang nó bay lên giữa khu vườn mùa xuân.",
+      wishLabel: "Điều ước mùa xuân",
+      wishPlaceholder: "Ví dụ: Chúc bạn luôn rạng rỡ và bình yên",
+      wishAction: "Thả cánh hoa ước",
+      wishNote: "Mỗi điều ước sẽ nở thành một bông hoa nhỏ trong khu vườn này.",
       stageHint: "Di chuột để cánh hoa bay • bấm vòng hoa để mở thư",
       portalText: "Mở thư sakura",
       portalSub: "Chạm để vào",
       ending: "Hope this little garden made you smile 🌸",
       choiceMarks: ["❀", "✿"],
+      wishGlyph: "🌸",
     },
   },
 };
@@ -141,8 +157,49 @@ const state = {
 const rand = (min, max) => Math.random() * (max - min) + min;
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 const isMobile = () => window.matchMedia("(max-width: 820px)").matches;
+const isCompactViewport = () => window.innerHeight <= 860;
+const isTightViewport = () => window.innerHeight <= 760;
 const supportsFinePointer = () => window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 const prefersReducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function getStageViewport() {
+  const stage = $("#memoryStage");
+  return {
+    width: stage?.clientWidth || window.innerWidth,
+    height: stage?.clientHeight || Math.round(window.innerHeight * (isMobile() ? 0.64 : 0.72)),
+  };
+}
+
+function normalizeGallerySlots(slots) {
+  const mobile = isMobile();
+  const { width, height } = getStageViewport();
+  const targetWidth = mobile ? 390 : 1120;
+  const targetHeight = mobile ? 640 : 720;
+  const fitScale = Math.min(width / targetWidth, height / targetHeight);
+  const roomyBoost = !mobile && width > 1480 && height > 900 ? 1.03 : 1;
+  const sizeScale = clamp(fitScale * roomyBoost, mobile ? 0.74 : 0.68, 1.02);
+  const bottomShift = height < (mobile ? 560 : 650) ? -3 : height < (mobile ? 620 : 720) ? -2 : 0;
+  const topShift = height < (mobile ? 560 : 650) ? 1 : 0;
+  const sideShift = !mobile && width < 1160 ? 1.4 : 0;
+
+  return slots.map((slot) => {
+    const shiftedX = sideShift
+      ? clamp(slot.x + (slot.x < 50 ? -sideShift : sideShift), 2, 88)
+      : slot.x;
+    const shiftedY = slot.y > 48
+      ? clamp(slot.y + bottomShift, 4, 84)
+      : clamp(slot.y + topShift, 4, 84);
+
+    return {
+      ...slot,
+      x: shiftedX,
+      y: shiftedY,
+      w: Math.round(slot.w * sizeScale),
+      h: Math.round(slot.h * sizeScale),
+      orbit: slot.orbit + (height < (mobile ? 560 : 650) ? 0.9 : 0),
+    };
+  });
+}
 
 function showToast(message) {
   const toast = $("#toast");
@@ -251,11 +308,16 @@ function applyThemeCopy() {
     ["choiceTagDung", "choiceTagDung", false],
     ["choiceHintLinh", "choiceHintLinh", false],
     ["choiceHintDung", "choiceHintDung", false],
-    ["openWishFromHome", "wishBtn", false],
     ["heroCredit", "heroCredit", true],
     ["stagePill", "stagePill", false],
     ["letterPill", "letterPill", false],
     ["wishPill", "wishPill", false],
+    ["wishKicker", "wishKicker", false],
+    ["wishTitle", "wishTitle", false],
+    ["wishSubtitle", "wishSubtitle", false],
+    ["wishLabel", "wishLabel", false],
+    ["makeWishBtnText", "wishAction", false],
+    ["wishNote", "wishNote", false],
     ["stageHint", "stageHint", false],
   ];
 
@@ -275,6 +337,20 @@ function applyThemeCopy() {
   if (portalSub) portalSub.textContent = copy.portalSub;
   const ending = $("#letterEnding");
   if (ending) ending.textContent = copy.ending;
+  const wishInput = $("#wishInput");
+  if (wishInput) wishInput.placeholder = copy.wishPlaceholder;
+  const wishEntryLabel = $("#wishEntryLabel");
+  if (wishEntryLabel) wishEntryLabel.textContent = copy.wishBtn;
+  const wishEntryIcon = $("#wishEntryIcon");
+  if (wishEntryIcon) wishEntryIcon.textContent = copy.wishGlyph || "✦";
+  const makeWishIcon = $("#makeWishIcon");
+  if (makeWishIcon) makeWishIcon.textContent = copy.wishGlyph || "✦";
+  const wishShortcutGlyph = $("#wishShortcutGlyph");
+  if (wishShortcutGlyph) wishShortcutGlyph.textContent = copy.wishGlyph || "✦";
+  const wishShortcutBtn = $("#openWishFromStage");
+  if (wishShortcutBtn) {
+    wishShortcutBtn.setAttribute("aria-label", copy.wishBtn);
+  }
 
   const marks = copy.choiceMarks || ["✦", "✧"];
   $$(".choice-stars").forEach((group) => {
@@ -1079,38 +1155,38 @@ function startHomeTransition(girlKey, sourceEl) {
 function gallerySlots() {
   if (state.theme === "sakura") {
     if (isMobile()) {
-      return [
+      return normalizeGallerySlots([
         { x: 8, y: 18, w: 108, h: 142, r: -6, z: 50, orbit: 10.8 },
         { x: 39, y: 10, w: 108, h: 142, r: 3, z: 38, orbit: 12.6 },
         { x: 68, y: 18, w: 108, h: 142, r: 6, z: 50, orbit: 10.8 },
         { x: 12, y: 55, w: 108, h: 142, r: -5, z: 42, orbit: 13.4 },
         { x: 66, y: 55, w: 108, h: 142, r: 5, z: 42, orbit: 13.2 },
-      ];
+      ]);
     }
-    return [
+    return normalizeGallerySlots([
       { x: 10, y: 17, w: 198, h: 248, r: -6, z: 58, orbit: 12.4 },
       { x: 39, y: 8, w: 186, h: 234, r: 3, z: 40, orbit: 13.8 },
       { x: 67, y: 17, w: 198, h: 248, r: 6, z: 58, orbit: 12.6 },
       { x: 14, y: 54, w: 186, h: 236, r: -5, z: 46, orbit: 14.2 },
       { x: 62, y: 54, w: 186, h: 236, r: 5, z: 46, orbit: 14.2 },
-    ];
+    ]);
   }
   if (isMobile()) {
-    return [
+    return normalizeGallerySlots([
       { x: 9, y: 14, w: 116, h: 150, r: -8, z: 50, orbit: 10.2 },
       { x: 40, y: 8, w: 110, h: 146, r: 6, z: 36, orbit: 12.2 },
       { x: 68, y: 14, w: 116, h: 150, r: -7, z: 50, orbit: 10.8 },
       { x: 65, y: 51, w: 116, h: 150, r: 8, z: 42, orbit: 11.6 },
       { x: 10, y: 51, w: 116, h: 150, r: -8, z: 42, orbit: 12.6 },
-    ];
+    ]);
   }
-  return [
+  return normalizeGallerySlots([
     { x: 11, y: 15, w: 208, h: 258, r: -9, z: 58, orbit: 12.4 },
     { x: 39, y: 8, w: 188, h: 236, r: 5, z: 40, orbit: 14.2 },
     { x: 67, y: 15, w: 208, h: 258, r: -8, z: 58, orbit: 12.8 },
     { x: 63, y: 51, w: 194, h: 244, r: 7, z: 48, orbit: 13.6 },
     { x: 15, y: 51, w: 194, h: 244, r: -7, z: 48, orbit: 14.4 },
-  ];
+  ]);
 }
 
 function createMemoryCard(src, slot, className = "") {
@@ -1263,6 +1339,8 @@ function renderGallery() {
   const stage = $("#memoryStage");
   if (!main || !echo) return;
   const sakuraMode = state.theme === "sakura";
+  const compactStage = isCompactViewport();
+  const tightStage = isTightViewport();
 
   main.innerHTML = "";
   echo.innerHTML = "";
@@ -1300,7 +1378,7 @@ function renderGallery() {
     echo.appendChild(
       createMemoryCard(
         src,
-        moveSlotAwayFromCore(slot, isMobile() ? (sakuraMode ? 30 : 20) : (sakuraMode ? 34 : 25)),
+        moveSlotAwayFromCore(slot, isMobile() ? (sakuraMode ? 30 : 20) : (sakuraMode ? (compactStage ? 38 : 34) : (compactStage ? 29 : 25))),
         "memory-photo--echo"
       )
     );
@@ -1322,13 +1400,13 @@ function renderGallery() {
     echo.appendChild(
       createMemoryCard(
         src,
-        moveSlotAwayFromCore(slot, isMobile() ? (sakuraMode ? 34 : 24) : (sakuraMode ? 38 : 30)),
+        moveSlotAwayFromCore(slot, isMobile() ? (sakuraMode ? 34 : 24) : (sakuraMode ? (compactStage ? 42 : 38) : (compactStage ? 34 : 30))),
         "memory-photo--echo memory-photo--echo-soft"
       )
     );
   });
 
-  const sparse = sakuraMode
+  const sparse = normalizeGallerySlots(sakuraMode
     ? (isMobile()
       ? [
         { x: 2, y: 28, w: 74, h: 96, r: -6, z: 4, orbit: 16.8 },
@@ -1343,21 +1421,21 @@ function renderGallery() {
       ])
     : (isMobile()
       ? [{ x: 3, y: 27, w: 78, h: 100, r: -8, z: 4, orbit: 16.2 }, { x: 82, y: 27, w: 78, h: 100, r: 7, z: 4, orbit: 15.8 }]
-      : [{ x: 3, y: 20, w: 96, h: 122, r: -8, z: 5, orbit: 17.4 }, { x: 81, y: 22, w: 96, h: 122, r: 8, z: 5, orbit: 16.8 }, { x: 43, y: 76, w: 96, h: 122, r: -6, z: 4, orbit: 18.2 }]);
+      : [{ x: 3, y: 20, w: 96, h: 122, r: -8, z: 5, orbit: 17.4 }, { x: 81, y: 22, w: 96, h: 122, r: 8, z: 5, orbit: 16.8 }, { x: 43, y: 76, w: 96, h: 122, r: -6, z: 4, orbit: 18.2 }]));
 
   sparse.forEach((slot, idx) => {
     echo.appendChild(createMemoryCard(girl.images[idx % girl.images.length], slot, "memory-photo--echo memory-photo--echo-faint"));
   });
 
   if (!isMobile()) {
-    const ringCount = sakuraMode ? 6 : 10;
+    const ringCount = sakuraMode ? (compactStage ? 5 : 6) : (tightStage ? 7 : compactStage ? 8 : 10);
     for (let i = 0; i < ringCount; i += 1) {
       const angle = (Math.PI * 2 * i) / ringCount + rand(-0.18, 0.18);
       const slot = {
         x: clamp(50 + (Math.cos(angle) * rand(sakuraMode ? 38 : 31, sakuraMode ? 46 : 42)), 1, 89),
         y: clamp(50 + (Math.sin(angle) * rand(sakuraMode ? 30 : 24, sakuraMode ? 40 : 36)), 2, 88),
-        w: Math.round(rand(sakuraMode ? 78 : 86, sakuraMode ? 96 : 104)),
-        h: Math.round(rand(sakuraMode ? 100 : 110, sakuraMode ? 122 : 130)),
+        w: Math.round(rand(sakuraMode ? (compactStage ? 70 : 78) : (compactStage ? 76 : 86), sakuraMode ? (compactStage ? 90 : 96) : (compactStage ? 96 : 104))),
+        h: Math.round(rand(sakuraMode ? (compactStage ? 92 : 100) : (compactStage ? 100 : 110), sakuraMode ? (compactStage ? 116 : 122) : (compactStage ? 122 : 130))),
         r: rand(-12, 12),
         z: rand(2, 8),
         orbit: rand(16, 21),
@@ -1365,7 +1443,7 @@ function renderGallery() {
       echo.appendChild(
         createMemoryCard(
           girl.images[i % girl.images.length],
-          moveSlotAwayFromCore(slot, sakuraMode ? 40 : 34),
+          moveSlotAwayFromCore(slot, sakuraMode ? (compactStage ? 44 : 40) : (compactStage ? 38 : 34)),
           "memory-photo--echo memory-photo--echo-faint memory-photo--ambient"
         )
       );
@@ -1830,13 +1908,16 @@ function pickWishPosition() {
   const width = sky?.clientWidth || (isMobile() ? 320 : 760);
   const height = sky?.clientHeight || 300;
   let best = { x: rand(10, 90), y: rand(12, 78) };
+  const minDistance = state.theme === "sakura"
+    ? (isMobile() ? 74 : 94)
+    : (isMobile() ? 52 : 64);
 
   for (let i = 0; i < 28; i += 1) {
     const c = { x: rand(10, 90), y: rand(12, 78) };
     const overlap = state.wishes.some((w) => {
       const dx = ((c.x - w.x) / 100) * width;
       const dy = ((c.y - w.y) / 100) * height;
-      return Math.hypot(dx, dy) < (isMobile() ? 52 : 64);
+      return Math.hypot(dx, dy) < minDistance;
     });
     best = c;
     if (!overlap) break;
@@ -1846,10 +1927,28 @@ function pickWishPosition() {
 
 function wishNode(wish, animate = false) {
   const item = document.createElement("article");
-  item.className = `wish-node ${wish.theme === "sakura" ? "is-sakura" : "is-cosmic"}`;
+  const renderTheme = state.theme === "sakura" ? "sakura" : "cosmic";
+  item.className = `wish-node ${renderTheme === "sakura" ? "is-sakura" : "is-cosmic"}`;
   item.style.setProperty("--x", `${wish.x}%`);
   item.style.setProperty("--y", `${wish.y}%`);
-  item.innerHTML = `<span class="wish-node__spark">${wish.theme === "sakura" ? "🌸" : "✨"}</span><p class="wish-node__text">${wish.text}</p>`;
+  item.style.setProperty("--wish-delay", `${rand(-4.2, 0).toFixed(2)}s`);
+  item.style.setProperty("--wish-tilt", `${rand(-8, 8).toFixed(2)}deg`);
+  if (renderTheme === "sakura") {
+    item.innerHTML = `
+      <span class="wish-node__halo" aria-hidden="true"></span>
+      <span class="wish-node__flower" aria-hidden="true">
+        <span class="wish-node__petal wish-node__petal--1"></span>
+        <span class="wish-node__petal wish-node__petal--2"></span>
+        <span class="wish-node__petal wish-node__petal--3"></span>
+        <span class="wish-node__petal wish-node__petal--4"></span>
+        <span class="wish-node__petal wish-node__petal--5"></span>
+        <span class="wish-node__core">❀</span>
+      </span>
+      <p class="wish-node__text">${wish.text}</p>
+    `;
+  } else {
+    item.innerHTML = `<span class="wish-node__halo" aria-hidden="true"></span><span class="wish-node__spark">✨</span><p class="wish-node__text">${wish.text}</p>`;
+  }
   if (animate) {
     item.classList.add("is-launching");
     requestAnimationFrame(() => item.classList.add("is-settled"));
@@ -1860,7 +1959,7 @@ function wishNode(wish, animate = false) {
 }
 
 function renderWishSky() {
-  const sky = $("#wishSky");
+  const sky = $("#wishSkyNodes");
   if (!sky) return;
   sky.innerHTML = "";
   state.wishes.forEach((wish) => sky.appendChild(wishNode(wish, false)));
@@ -1868,11 +1967,11 @@ function renderWishSky() {
 
 function makeWish() {
   const input = $("#wishInput");
-  const sky = $("#wishSky");
+  const sky = $("#wishSkyNodes");
   if (!input || !sky) return;
   const text = input.value.trim().replace(/\s+/g, " ").slice(0, 140);
   if (!text) {
-    showToast("Nhập điều ước trước nhé ✨");
+    showToast(state.theme === "sakura" ? "Nhập điều ước trước nhé 🌸" : "Nhập điều ước trước nhé ✨");
     input.focus();
     return;
   }
@@ -1890,7 +1989,7 @@ function makeWish() {
   saveWishes();
   sky.appendChild(wishNode(wish, true));
   input.value = "";
-  showToast("Điều ước của bạn đã bay lên bầu trời.");
+  showToast(state.theme === "sakura" ? "Điều ước của bạn đã nở trong khu vườn sakura." : "Điều ước của bạn đã bay vào dải ngân hà.");
 }
 
 function openWishScreen(fromScreen) {

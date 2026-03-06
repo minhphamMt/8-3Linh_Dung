@@ -630,6 +630,7 @@ html[data-theme="sakura"] .bg-glow {
   width: 100%;
   height: 100svh;
   min-height: 100svh;
+  min-width: 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -640,6 +641,9 @@ html[data-theme="sakura"] .bg-glow {
   width: min(1320px, 100%);
   height: 100%;
   max-height: calc(100svh - clamp(16px, 3vh, 32px));
+  min-height: 0;
+  min-width: 0;
+  margin-inline: auto;
   display: none;
   flex-direction: column;
   gap: clamp(8px, 1.2vh, 14px);
@@ -848,11 +852,16 @@ html[data-theme="sakura"] .toast {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
+  flex: 0 0 auto;
+  min-width: 0;
 }
 
 .topbar-center {
   display: flex;
   align-items: center;
+  justify-content: center;
+  flex: 1 1 auto;
+  min-width: 0;
   gap: 10px;
 }
 
@@ -860,6 +869,10 @@ html[data-theme="sakura"] .toast {
   font-size: clamp(18px, 2.1vw, 28px);
   font-family: var(--font-title);
   position: relative;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 html[data-theme="cosmic"] .topbar-center strong {
@@ -887,6 +900,7 @@ html[data-theme="cosmic"] .topbar-center strong {
   display: flex;
   align-items: center;
   gap: 8px;
+  flex: 0 0 auto;
 }
 
 .topbar-actions--ghost { width: 42px; }
@@ -933,6 +947,7 @@ html[data-theme="cosmic"] .topbar-center strong {
   --my: 50%;
   position: relative;
   flex: 1;
+  min-height: 0;
   overflow: hidden;
   padding: clamp(16px, 2.2vh, 28px) clamp(16px, 2.2vw, 30px);
   background:
@@ -1009,13 +1024,18 @@ html[data-theme="sakura"] .hero.is-sakura-transition .hero-visual {
   position: relative;
   z-index: 4;
   height: 100%;
+  min-height: 0;
   display: grid;
   grid-template-columns: minmax(0, .95fr) minmax(390px, 1.05fr);
   align-items: center;
   gap: clamp(18px, 2.3vw, 40px);
 }
 
-.hero-copy { max-width: 680px; }
+.hero-copy {
+  max-width: 680px;
+  min-width: 0;
+  min-height: 0;
+}
 
 .hero-kicker {
   margin: 0;
@@ -1343,6 +1363,124 @@ html[data-theme="sakura"] .choice-card:focus-visible .choice-emblem {
   box-shadow: 0 14px 34px rgba(93,145,255,.3), 0 0 36px rgba(178,225,255,.46);
 }
 
+.wish-entry-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px 12px 14px;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.wish-entry-btn__glow,
+.wish-entry-btn__icon,
+.wish-entry-btn__label,
+.wish-shortcut-btn__glow,
+.wish-shortcut-btn__glyph,
+.wish-action-btn__glow,
+.wish-action-btn__icon,
+.wish-action-btn__text {
+  position: relative;
+  z-index: 1;
+}
+
+.wish-entry-btn__glow {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.wish-entry-btn__icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  flex: 0 0 auto;
+}
+
+.wish-entry-btn__label {
+  letter-spacing: .01em;
+}
+
+html[data-theme="cosmic"] .wish-entry-btn {
+  background: linear-gradient(135deg, rgba(17,32,88,.92), rgba(32,24,92,.78));
+  border-color: rgba(175,218,255,.44);
+  color: #edf5ff;
+  box-shadow: 0 14px 30px rgba(8,14,42,.24), 0 0 26px rgba(145,198,255,.16);
+}
+
+html[data-theme="cosmic"] .wish-entry-btn__glow {
+  background:
+    radial-gradient(circle at 16% 50%, rgba(150,217,255,.34), transparent 22%),
+    linear-gradient(100deg, rgba(137,197,255,.12), transparent 46%, rgba(255,176,226,.16));
+}
+
+html[data-theme="cosmic"] .wish-entry-btn__icon {
+  background: radial-gradient(circle, rgba(244,250,255,.96), rgba(144,198,255,.46) 44%, rgba(104,137,255,.16) 80%);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.28), 0 0 20px rgba(151,201,255,.32);
+}
+
+html[data-theme="sakura"] .wish-entry-btn {
+  background: linear-gradient(135deg, rgba(255,251,253,.96), rgba(255,234,244,.88));
+  border-color: rgba(255,185,209,.56);
+  color: #7f5267;
+  box-shadow: 0 14px 28px rgba(213,148,178,.18), 0 0 24px rgba(255,203,223,.22);
+}
+
+html[data-theme="sakura"] .wish-entry-btn__glow {
+  background:
+    radial-gradient(circle at 15% 50%, rgba(255,198,220,.42), transparent 24%),
+    linear-gradient(100deg, rgba(255,201,220,.16), transparent 44%, rgba(255,241,246,.52));
+}
+
+html[data-theme="sakura"] .wish-entry-btn__icon {
+  background: radial-gradient(circle, rgba(255,255,255,.98), rgba(255,218,231,.78) 46%, rgba(255,175,202,.38) 84%);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.76), 0 0 18px rgba(255,188,210,.34);
+}
+
+.wish-shortcut-btn {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.wish-shortcut-btn__glow {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.wish-shortcut-btn__glyph {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  font-size: 17px;
+}
+
+html[data-theme="cosmic"] .wish-shortcut-btn {
+  background: linear-gradient(135deg, rgba(19,36,96,.88), rgba(34,28,88,.76));
+  border-color: rgba(178,217,255,.42);
+  box-shadow: 0 0 0 1px rgba(183,223,255,.18), 0 0 22px rgba(149,200,255,.14);
+}
+
+html[data-theme="cosmic"] .wish-shortcut-btn__glow {
+  background: radial-gradient(circle at 50% 50%, rgba(156,220,255,.22), rgba(255,177,228,0) 68%);
+}
+
+html[data-theme="sakura"] .wish-shortcut-btn {
+  background: linear-gradient(135deg, rgba(255,251,253,.96), rgba(255,236,245,.88));
+  border-color: rgba(255,187,210,.56);
+  box-shadow: 0 0 0 1px rgba(255,208,225,.22), 0 0 18px rgba(255,201,220,.16);
+}
+
+html[data-theme="sakura"] .wish-shortcut-btn__glow {
+  background: radial-gradient(circle at 50% 50%, rgba(255,194,215,.26), rgba(255,214,230,0) 70%);
+}
+
 .hero-visual {
   position: relative;
   display: grid;
@@ -1351,6 +1489,7 @@ html[data-theme="sakura"] .choice-card:focus-visible .choice-emblem {
   align-items: center;
   justify-items: center;
   min-height: min(62vh, 560px);
+  min-width: 0;
 }
 
 .hero-visual::before,
@@ -1988,6 +2127,7 @@ html[data-theme="cosmic"] .choice-card.is-cosmic-selected::after {
   --sy: 50%;
   position: relative;
   flex: 1;
+  min-height: 0;
   overflow: hidden;
   perspective: 1100px;
   background:
@@ -3188,8 +3328,14 @@ html[data-theme="sakura"] .stage-hint { color: #87586d; }
 .letter-scene {
   position: relative;
   flex: 1;
+  min-height: 0;
   overflow: hidden;
   padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .letter-scene::before,
@@ -3635,9 +3781,10 @@ html[data-theme="sakura"] .letter-light {
 
 .envelope {
   position: relative;
-  width: min(880px, 96%);
-  height: min(640px, 76svh);
+  width: min(880px, calc(100% - 8px));
+  height: min(640px, 76svh, calc(100% - 34px));
   margin: 0 auto;
+  flex: 0 0 auto;
   z-index: 4;
   will-change: transform, opacity;
   transform: translateZ(0);
@@ -3735,10 +3882,10 @@ html[data-theme="sakura"] .envelope-flap {
 .letter-paper {
   position: absolute;
   left: 50%;
-  top: 14px;
+  top: clamp(10px, 1.4svh, 16px);
   transform: translateX(-50%) translateY(56px);
-  width: min(740px, 92vw);
-  height: min(520px, 64svh);
+  width: min(740px, calc(100% - 24px));
+  height: min(520px, 64svh, calc(100% - 96px));
   border-radius: 20px;
   border: 1px solid rgba(203,229,255,.6);
   background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(246,251,255,.84));
@@ -3856,6 +4003,7 @@ html[data-theme="sakura"] .to-line strong {
 
 .typing {
   flex: 1;
+  min-height: 0;
   border-radius: 16px;
   border: 1px solid rgba(175,209,255,.4);
   background: rgba(242,248,255,.72);
@@ -4020,27 +4168,128 @@ html[data-theme="sakura"] #againBtn:hover {
 
 .wish-wrap {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 14px;
+  padding: 16px;
+  overflow: hidden;
+}
+
+.wish-layout {
+  display: grid;
+  grid-template-columns: minmax(320px, .88fr) minmax(0, 1.12fr);
+  gap: 18px;
+  height: 100%;
+}
+
+.wish-panel,
+.wish-scene {
+  position: relative;
+  min-height: 0;
+}
+
+.wish-panel {
+  border-radius: 24px;
+  padding: clamp(18px, 2vw, 26px);
+  overflow: hidden;
+}
+
+.wish-panel::before,
+.wish-panel::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+html[data-theme="cosmic"] .wish-panel {
+  background:
+    radial-gradient(circle at 14% 16%, rgba(148,212,255,.14), transparent 26%),
+    radial-gradient(circle at 84% 18%, rgba(255,174,226,.12), transparent 24%),
+    linear-gradient(160deg, rgba(11,22,63,.88), rgba(12,18,52,.74));
+  border: 1px solid rgba(177,217,255,.26);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 18px 42px rgba(4,10,32,.26);
+}
+
+html[data-theme="sakura"] .wish-panel {
+  background:
+    radial-gradient(circle at 12% 14%, rgba(255,255,255,.84), transparent 24%),
+    radial-gradient(circle at 84% 18%, rgba(255,216,230,.44), transparent 24%),
+    linear-gradient(160deg, rgba(255,253,254,.96), rgba(255,241,247,.9));
+  border: 1px solid rgba(255,192,215,.48);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.88), 0 18px 38px rgba(216,146,177,.16);
+}
+
+html[data-theme="sakura"] .wish-panel::before {
+  right: -18px;
+  top: -20px;
+  width: 180px;
+  height: 110px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 50% 60%, rgba(255,203,222,.56), rgba(255,229,239,.12) 62%, rgba(255,229,239,0) 78%);
+  filter: blur(2px);
+}
+
+html[data-theme="sakura"] .wish-panel::after {
+  left: 18px;
+  bottom: 18px;
+  width: 120px;
+  height: 70px;
+  background:
+    radial-gradient(circle at 10% 70%, rgba(255,184,211,.62) 0 3px, transparent 4px),
+    radial-gradient(circle at 24% 46%, rgba(255,214,230,.72) 0 3px, transparent 4px),
+    radial-gradient(circle at 42% 62%, rgba(255,188,214,.58) 0 3px, transparent 4px),
+    radial-gradient(circle at 60% 40%, rgba(255,219,233,.74) 0 3px, transparent 4px),
+    radial-gradient(circle at 78% 60%, rgba(255,183,211,.58) 0 3px, transparent 4px),
+    linear-gradient(180deg, rgba(219,239,206,0), rgba(206,231,194,.34) 58%, rgba(195,223,182,.48));
+  opacity: .62;
+}
+
+.wish-head {
+  position: relative;
+  z-index: 1;
+}
+
+.wish-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+html[data-theme="cosmic"] .wish-kicker {
+  background: rgba(155,205,255,.08);
+  border: 1px solid rgba(176,214,255,.22);
+  color: #cfe4ff;
+}
+
+html[data-theme="sakura"] .wish-kicker {
+  background: rgba(255,242,247,.92);
+  border: 1px solid rgba(255,200,220,.42);
+  color: #9a6278;
 }
 
 .wish-head h2 {
-  margin: 0;
+  margin: 14px 0 0;
   font-family: var(--font-title);
-  font-size: clamp(34px, 4.2vw, 54px);
-  line-height: .92;
+  font-size: clamp(38px, 4.3vw, 64px);
+  line-height: .9;
 }
 
 .wish-head p {
-  margin: 6px 0 0;
+  margin: 10px 0 0;
+  max-width: 46ch;
   color: var(--ink-soft);
+  line-height: 1.65;
 }
 
 .wish-form {
+  position: relative;
+  z-index: 1;
   display: grid;
-  gap: 8px;
+  gap: 10px;
+  margin-top: 24px;
 }
 
 .wish-form label {
@@ -4053,15 +4302,30 @@ html[data-theme="sakura"] #againBtn:hover {
 
 .wish-form textarea {
   width: 100%;
-  min-height: 76px;
-  max-height: 160px;
+  min-height: 120px;
+  max-height: 220px;
   resize: vertical;
-  border-radius: 14px;
+  border-radius: 18px;
   border: 1px solid var(--panel-border);
-  background: rgba(255,255,255,.28);
   color: var(--ink);
   font: inherit;
-  padding: 10px 12px;
+  line-height: 1.6;
+  padding: 14px 16px;
+  transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+html[data-theme="cosmic"] .wish-form textarea {
+  background:
+    linear-gradient(180deg, rgba(13,26,74,.72), rgba(11,20,58,.64)),
+    linear-gradient(90deg, rgba(255,255,255,.08), rgba(255,255,255,0));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), inset 0 -12px 24px rgba(85,125,255,.08);
+}
+
+html[data-theme="sakura"] .wish-form textarea {
+  background:
+    linear-gradient(180deg, rgba(255,252,253,.98), rgba(255,244,248,.92)),
+    linear-gradient(90deg, rgba(255,255,255,.24), rgba(255,255,255,0));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.94), inset 0 -10px 18px rgba(255,221,234,.28);
 }
 
 .wish-form textarea:focus-visible {
@@ -4070,34 +4334,476 @@ html[data-theme="sakura"] #againBtn:hover {
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 35%, transparent);
 }
 
+.wish-actions {
+  display: grid;
+  gap: 12px;
+  align-items: start;
+}
+
+.primary-btn--wish {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+  padding: 13px 18px;
+  min-height: 52px;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.wish-action-btn__glow {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.wish-action-btn__icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+}
+
+.wish-action-btn__text {
+  font-size: 14px;
+  letter-spacing: .02em;
+}
+
+html[data-theme="cosmic"] .primary-btn--wish {
+  background: linear-gradient(135deg, rgba(17,34,96,.96), rgba(34,22,88,.8));
+  border-color: rgba(177,218,255,.42);
+  color: #eef6ff;
+  box-shadow: 0 18px 34px rgba(7,12,34,.26), 0 0 28px rgba(143,196,255,.18);
+}
+
+html[data-theme="cosmic"] .wish-action-btn__glow {
+  background:
+    radial-gradient(circle at 14% 50%, rgba(149,216,255,.36), transparent 22%),
+    linear-gradient(95deg, rgba(142,198,255,.14), transparent 44%, rgba(255,179,228,.18));
+}
+
+html[data-theme="cosmic"] .wish-action-btn__icon {
+  background: radial-gradient(circle, rgba(247,251,255,.98), rgba(149,202,255,.44) 44%, rgba(104,136,255,.18) 80%);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.26), 0 0 20px rgba(149,202,255,.28);
+}
+
+html[data-theme="sakura"] .primary-btn--wish {
+  background: linear-gradient(135deg, rgba(255,251,253,.98), rgba(255,232,243,.9));
+  border-color: rgba(255,188,210,.56);
+  color: #7b4f63;
+  box-shadow: 0 16px 30px rgba(216,147,178,.18), 0 0 24px rgba(255,205,223,.2);
+}
+
+html[data-theme="sakura"] .wish-action-btn__glow {
+  background:
+    radial-gradient(circle at 14% 50%, rgba(255,198,220,.42), transparent 24%),
+    linear-gradient(95deg, rgba(255,204,223,.18), transparent 42%, rgba(255,242,247,.56));
+}
+
+html[data-theme="sakura"] .wish-action-btn__icon {
+  background: radial-gradient(circle, rgba(255,255,255,.98), rgba(255,220,232,.78) 46%, rgba(255,180,205,.34) 84%);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.76), 0 0 18px rgba(255,188,210,.32);
+}
+
+.wish-note {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+.wish-scene {
+  border-radius: 28px;
+  overflow: hidden;
+}
+
 .wish-sky {
   position: relative;
-  flex: 1;
-  min-height: 230px;
-  border-radius: 18px;
+  width: 100%;
+  height: 100%;
+  min-height: 360px;
+  border-radius: 28px;
   border: 1px solid var(--panel-border);
   overflow: hidden;
+}
+
+.wish-sky::before,
+.wish-sky::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+html[data-theme="cosmic"] .wish-sky {
   background:
-    radial-gradient(circle at 10% 12%, rgba(122,178,255,.24), transparent 40%),
-    radial-gradient(circle at 88% 20%, rgba(255,173,230,.18), transparent 42%),
-    linear-gradient(175deg, rgba(9,18,54,.84), rgba(12,22,64,.78));
+    radial-gradient(circle at 12% 18%, rgba(145,205,255,.2), transparent 28%),
+    radial-gradient(circle at 86% 18%, rgba(255,172,224,.16), transparent 28%),
+    linear-gradient(180deg, rgba(9,18,58,.96), rgba(7,16,46,.92));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), inset 0 -20px 44px rgba(71,105,255,.08);
+}
+
+html[data-theme="cosmic"] .wish-sky::before {
+  background:
+    radial-gradient(circle at 10% 16%, rgba(255,255,255,.94) 0 1px, transparent 2px),
+    radial-gradient(circle at 20% 28%, rgba(188,223,255,.8) 0 1px, transparent 2px),
+    radial-gradient(circle at 34% 14%, rgba(255,255,255,.78) 0 1px, transparent 2px),
+    radial-gradient(circle at 52% 34%, rgba(190,225,255,.68) 0 1px, transparent 2px),
+    radial-gradient(circle at 68% 16%, rgba(255,255,255,.88) 0 1px, transparent 2px),
+    radial-gradient(circle at 78% 32%, rgba(184,219,255,.64) 0 1px, transparent 2px),
+    radial-gradient(circle at 86% 12%, rgba(255,255,255,.72) 0 1px, transparent 2px),
+    radial-gradient(circle at 18% 62%, rgba(255,255,255,.72) 0 1px, transparent 2px),
+    radial-gradient(circle at 38% 74%, rgba(193,227,255,.7) 0 1px, transparent 2px),
+    radial-gradient(circle at 58% 66%, rgba(255,255,255,.82) 0 1px, transparent 2px),
+    radial-gradient(circle at 76% 72%, rgba(190,225,255,.64) 0 1px, transparent 2px);
+  opacity: .62;
+}
+
+html[data-theme="cosmic"] .wish-sky::after {
+  inset: 8% -10% 18% -4%;
+  background: linear-gradient(115deg, rgba(164,214,255,0), rgba(164,214,255,.08) 40%, rgba(255,181,228,.14) 52%, rgba(164,214,255,0) 72%);
+  filter: blur(22px);
+  opacity: .5;
+  animation: milkyBandDrift 12s ease-in-out infinite;
 }
 
 html[data-theme="sakura"] .wish-sky {
   background:
-    radial-gradient(circle at 10% 12%, rgba(255,236,186,.58), transparent 44%),
-    radial-gradient(circle at 88% 20%, rgba(255,191,219,.48), transparent 44%),
-    linear-gradient(175deg, rgba(255,247,252,.94), rgba(255,234,244,.9));
+    radial-gradient(circle at 14% 16%, rgba(255,246,214,.78), transparent 28%),
+    radial-gradient(circle at 86% 18%, rgba(255,205,225,.52), transparent 30%),
+    radial-gradient(circle at 52% 64%, rgba(255,236,244,.82), transparent 34%),
+    linear-gradient(180deg, rgba(255,252,253,.98), rgba(255,238,246,.92));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.92), inset 0 -18px 36px rgba(255,214,230,.24);
 }
+
+html[data-theme="sakura"] .wish-sky::before {
+  background:
+    radial-gradient(circle at 12% 16%, rgba(255,255,255,.84), transparent 24%),
+    radial-gradient(circle at 82% 22%, rgba(255,214,230,.38), transparent 26%),
+    linear-gradient(180deg, rgba(255,255,255,.28), rgba(255,255,255,0)),
+    linear-gradient(118deg, rgba(255,240,246,0), rgba(255,255,255,.42) 48%, rgba(255,240,246,0) 82%);
+}
+
+html[data-theme="sakura"] .wish-sky::after {
+  inset: auto 0 0 0;
+  height: 30%;
+  background:
+    radial-gradient(circle at 16% 10%, rgba(243,255,236,.52), transparent 14%),
+    radial-gradient(circle at 82% 12%, rgba(243,255,236,.44), transparent 14%),
+    linear-gradient(180deg, rgba(219,239,206,0), rgba(210,233,198,.3) 48%, rgba(194,224,181,.5));
+}
+
+.wish-scene-decor {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.wish-sky__nodes {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+.wish-cosmic-nebula,
+.wish-cosmic-orbit,
+.wish-cosmic-planet,
+.wish-cosmic-star,
+.wish-sakura-sun,
+.wish-sakura-canopy,
+.wish-sakura-tree,
+.wish-sakura-branch,
+.wish-sakura-ground,
+.wish-sakura-flowerbed,
+.wish-sakura-bloom,
+.wish-sakura-butterfly,
+.wish-sakura-petal {
+  position: absolute;
+}
+
+html[data-theme="cosmic"] .wish-sakura-sun,
+html[data-theme="cosmic"] .wish-sakura-canopy,
+html[data-theme="cosmic"] .wish-sakura-tree,
+html[data-theme="cosmic"] .wish-sakura-branch,
+html[data-theme="cosmic"] .wish-sakura-ground,
+html[data-theme="cosmic"] .wish-sakura-flowerbed,
+html[data-theme="cosmic"] .wish-sakura-bloom,
+html[data-theme="cosmic"] .wish-sakura-butterfly,
+html[data-theme="cosmic"] .wish-sakura-petal {
+  display: none;
+}
+
+html[data-theme="sakura"] .wish-cosmic-nebula,
+html[data-theme="sakura"] .wish-cosmic-orbit,
+html[data-theme="sakura"] .wish-cosmic-planet,
+html[data-theme="sakura"] .wish-cosmic-star {
+  display: none;
+}
+
+.wish-cosmic-nebula {
+  border-radius: 999px;
+  filter: blur(24px);
+  opacity: .48;
+  animation: wishNebulaFloat 12s ease-in-out infinite;
+}
+
+.wish-cosmic-nebula--one {
+  inset: 10% auto auto 6%;
+  width: 220px;
+  height: 160px;
+  background: radial-gradient(circle, rgba(149,210,255,.28), transparent 70%);
+}
+
+.wish-cosmic-nebula--two {
+  right: 6%;
+  top: 18%;
+  width: 260px;
+  height: 180px;
+  background: radial-gradient(circle, rgba(255,175,228,.24), transparent 72%);
+  animation-delay: -4s;
+}
+
+.wish-cosmic-orbit {
+  border-radius: 50%;
+  border: 1px solid rgba(176,214,255,.14);
+  opacity: .6;
+}
+
+.wish-cosmic-orbit--one {
+  width: 420px;
+  height: 420px;
+  right: -40px;
+  top: -36px;
+}
+
+.wish-cosmic-orbit--two {
+  width: 300px;
+  height: 300px;
+  left: -80px;
+  bottom: -40px;
+  opacity: .36;
+}
+
+.wish-cosmic-planet {
+  border-radius: 50%;
+}
+
+.wish-cosmic-planet--one {
+  width: 86px;
+  height: 86px;
+  right: 12%;
+  bottom: 14%;
+  background: radial-gradient(circle at 34% 30%, rgba(248,252,255,.94), rgba(133,163,255,.58) 42%, rgba(94,108,255,.18) 78%);
+  box-shadow: 0 0 42px rgba(133,163,255,.28);
+}
+
+.wish-cosmic-planet--two {
+  width: 44px;
+  height: 44px;
+  left: 16%;
+  top: 18%;
+  background: radial-gradient(circle at 34% 30%, rgba(255,255,255,.98), rgba(160,214,255,.62) 44%, rgba(96,130,255,.22) 84%);
+}
+
+.wish-cosmic-star {
+  color: #eef7ff;
+  text-shadow: 0 0 12px rgba(180,222,255,.82), 0 0 24px rgba(152,201,255,.34);
+  animation: cursorTwinkle 3s ease-in-out infinite;
+}
+
+.wish-cosmic-star::before {
+  content: "✦";
+}
+
+.wish-cosmic-star--one { left: 16%; top: 18%; font-size: 14px; }
+.wish-cosmic-star--two { right: 18%; top: 26%; font-size: 12px; animation-delay: -.8s; }
+.wish-cosmic-star--three { right: 22%; bottom: 20%; font-size: 16px; animation-delay: -1.6s; }
+
+.wish-sakura-sun {
+  width: 180px;
+  height: 180px;
+  left: 8%;
+  top: 4%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,250,221,.92), rgba(255,234,194,.46) 48%, rgba(255,238,246,0) 78%);
+  filter: blur(4px);
+}
+
+.wish-sakura-canopy {
+  top: -30px;
+  height: 170px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 50% 60%, rgba(255,188,212,.88), rgba(255,215,228,.56) 56%, rgba(255,215,228,0) 78%);
+  filter: blur(4px);
+  animation: sakuraBreath 6.8s ease-in-out infinite;
+}
+
+.wish-sakura-canopy--one {
+  left: -20px;
+  width: 260px;
+}
+
+.wish-sakura-canopy--two {
+  right: -10px;
+  width: 320px;
+  animation-delay: -2.4s;
+}
+
+.wish-sakura-canopy--three {
+  left: 30%;
+  top: -20px;
+  width: 240px;
+  height: 150px;
+  animation-delay: -4.1s;
+  opacity: .84;
+}
+
+.wish-sakura-tree {
+  bottom: 0;
+  width: 22px;
+  border-radius: 20px 20px 0 0;
+  background: linear-gradient(180deg, rgba(137,92,81,.58), rgba(111,71,63,.42));
+  opacity: .56;
+}
+
+.wish-sakura-tree--left {
+  left: 6%;
+  height: 210px;
+}
+
+.wish-sakura-tree--right {
+  right: 10%;
+  height: 178px;
+  opacity: .42;
+}
+
+.wish-sakura-branch {
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(141,100,91,.46), rgba(173,123,110,.32));
+  transform-origin: left center;
+}
+
+.wish-sakura-branch--one {
+  left: 8%;
+  top: 22%;
+  width: 220px;
+  transform: rotate(12deg);
+}
+
+.wish-sakura-branch--two {
+  right: 12%;
+  top: 18%;
+  width: 180px;
+  transform: rotate(-12deg);
+}
+
+.wish-sakura-ground {
+  left: -4%;
+  right: -4%;
+  bottom: -4%;
+  height: 120px;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(204,233,192,.54), transparent 22%),
+    radial-gradient(circle at 80% 30%, rgba(204,233,192,.44), transparent 22%),
+    linear-gradient(180deg, rgba(231,246,219,.18), rgba(198,226,184,.48));
+}
+
+.wish-sakura-flowerbed {
+  bottom: 0;
+  height: 130px;
+  border-radius: 50% 50% 0 0;
+  opacity: .74;
+}
+
+.wish-sakura-flowerbed--one {
+  left: -4%;
+  width: 220px;
+  background:
+    radial-gradient(circle at 20% 28%, rgba(255,183,211,.66), transparent 8%),
+    radial-gradient(circle at 36% 20%, rgba(255,202,223,.62), transparent 8%),
+    radial-gradient(circle at 54% 30%, rgba(255,177,207,.64), transparent 8%),
+    radial-gradient(circle at 72% 24%, rgba(255,214,230,.66), transparent 8%),
+    linear-gradient(180deg, rgba(219,239,206,0), rgba(199,228,186,.42) 46%, rgba(189,221,177,.58));
+}
+
+.wish-sakura-flowerbed--two {
+  left: 34%;
+  width: 260px;
+  background:
+    radial-gradient(circle at 22% 28%, rgba(255,192,217,.62), transparent 8%),
+    radial-gradient(circle at 42% 18%, rgba(255,221,234,.72), transparent 8%),
+    radial-gradient(circle at 64% 30%, rgba(255,184,211,.58), transparent 8%),
+    radial-gradient(circle at 78% 22%, rgba(255,205,225,.62), transparent 8%),
+    linear-gradient(180deg, rgba(219,239,206,0), rgba(204,232,191,.38) 48%, rgba(192,224,179,.5));
+}
+
+.wish-sakura-flowerbed--three {
+  right: -4%;
+  width: 220px;
+  background:
+    radial-gradient(circle at 18% 26%, rgba(255,188,213,.66), transparent 8%),
+    radial-gradient(circle at 34% 18%, rgba(255,212,229,.7), transparent 8%),
+    radial-gradient(circle at 56% 28%, rgba(255,180,208,.62), transparent 8%),
+    radial-gradient(circle at 74% 22%, rgba(255,225,236,.72), transparent 8%),
+    linear-gradient(180deg, rgba(219,239,206,0), rgba(200,228,186,.38) 48%, rgba(189,221,177,.52));
+}
+
+.wish-sakura-bloom {
+  font-size: 22px;
+  filter: drop-shadow(0 0 12px rgba(255,191,213,.42));
+  opacity: .88;
+}
+
+.wish-sakura-bloom--one { left: 15%; top: 24%; }
+.wish-sakura-bloom--two { left: 32%; top: 18%; font-size: 18px; opacity: .72; }
+.wish-sakura-bloom--three { right: 24%; top: 18%; }
+.wish-sakura-bloom--four { right: 12%; top: 28%; font-size: 18px; opacity: .76; }
+.wish-sakura-bloom--five { left: 58%; top: 14%; font-size: 16px; opacity: .68; }
+
+.wish-sakura-butterfly {
+  font-size: 18px;
+  opacity: .78;
+  animation: wishButterflyFloat 9s ease-in-out infinite;
+}
+
+.wish-sakura-butterfly--one {
+  left: 22%;
+  top: 36%;
+}
+
+.wish-sakura-butterfly--two {
+  right: 18%;
+  top: 42%;
+  animation-delay: -3.2s;
+}
+
+.wish-sakura-petal {
+  font-size: 18px;
+  animation: wishPetalDrift 8s ease-in-out infinite;
+}
+
+.wish-sakura-petal--one { left: 18%; top: 28%; }
+.wish-sakura-petal--two { left: 72%; top: 22%; animation-delay: -2s; }
+.wish-sakura-petal--three { right: 18%; bottom: 26%; animation-delay: -4.2s; }
+.wish-sakura-petal--four { left: 36%; bottom: 20%; animation-delay: -5.6s; }
 
 .wish-node {
   position: absolute;
   left: var(--x);
   top: var(--y);
-  transform: translate(-50%, -50%) scale(.6);
+  min-width: 72px;
+  max-width: min(64vw, 260px);
+  padding: 8px 10px 10px;
+  border-radius: 18px;
+  transform: translate(-50%, 14%) scale(.7);
   opacity: 0;
   pointer-events: none;
-  transition: transform 1.4s var(--ease), opacity .45s ease;
+  transition: transform 1.2s var(--ease), opacity .45s ease;
 }
 
 .wish-node.is-settled {
@@ -4105,25 +4811,132 @@ html[data-theme="sakura"] .wish-sky {
   opacity: 1;
 }
 
+.wish-node__halo {
+  position: absolute;
+  inset: -12px;
+  border-radius: 22px;
+  z-index: 0;
+}
+
+html[data-theme="cosmic"] .wish-node {
+  background:
+    linear-gradient(180deg, rgba(16,32,84,.88), rgba(12,22,60,.72)),
+    linear-gradient(90deg, rgba(255,255,255,.08), rgba(255,255,255,0));
+  border: 1px solid rgba(176,214,255,.26);
+  box-shadow: 0 12px 28px rgba(5,10,28,.18), 0 0 22px rgba(145,198,255,.12);
+}
+
+html[data-theme="cosmic"] .wish-node__halo {
+  background: radial-gradient(circle, rgba(149,207,255,.18), transparent 70%);
+}
+
+html[data-theme="sakura"] .wish-node {
+  min-width: 0;
+  max-width: min(64vw, 190px);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+}
+
+html[data-theme="sakura"] .wish-node__halo {
+  inset: -8px;
+  background: radial-gradient(circle, rgba(255,204,222,.28), transparent 72%);
+}
+
+.wish-node__flower {
+  position: relative;
+  width: 76px;
+  height: 76px;
+  display: block;
+}
+
+.wish-node__petal {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 28px;
+  height: 38px;
+  margin-left: -14px;
+  margin-top: -19px;
+  border-radius: 18px 18px 14px 14px;
+  background: linear-gradient(180deg, rgba(255,246,250,.98), rgba(255,194,219,.96) 44%, rgba(255,163,194,.86) 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 8px 16px rgba(235,164,193,.2);
+  transform-origin: 50% 68%;
+}
+
+.wish-node__petal--1 { transform: translate(-50%, -50%) rotate(0deg) translateY(-22px); }
+.wish-node__petal--2 { transform: translate(-50%, -50%) rotate(72deg) translateY(-22px); }
+.wish-node__petal--3 { transform: translate(-50%, -50%) rotate(144deg) translateY(-22px); }
+.wish-node__petal--4 { transform: translate(-50%, -50%) rotate(216deg) translateY(-22px); }
+.wish-node__petal--5 { transform: translate(-50%, -50%) rotate(288deg) translateY(-22px); }
+
+.wish-node__core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 30px;
+  height: 30px;
+  margin-left: -15px;
+  margin-top: -15px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle, rgba(255,254,245,.98), rgba(255,223,153,.92) 46%, rgba(255,184,112,.82) 88%);
+  color: #b86b8e;
+  font-size: 16px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.84), 0 6px 12px rgba(224,171,123,.22);
+  transform: rotate(var(--wish-tilt));
+}
+
 .wish-node__spark {
+  position: relative;
+  z-index: 1;
   display: block;
   text-align: center;
-  font-size: 21px;
-  filter: drop-shadow(0 0 10px rgba(171,220,255,.82));
+  font-size: 22px;
+}
+
+html[data-theme="cosmic"] .wish-node__spark {
+  filter: drop-shadow(0 0 12px rgba(171,220,255,.82));
+}
+
+html[data-theme="sakura"] .wish-node__spark {
+  filter: drop-shadow(0 0 10px rgba(255,189,210,.56));
 }
 
 .wish-node__text {
-  margin: 4px 0 0;
+  position: relative;
+  z-index: 1;
+  margin: 5px 0 0;
   font-size: 12px;
-  color: #eaf3ff;
   text-align: center;
   white-space: nowrap;
-  max-width: min(64vw, 280px);
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
+html[data-theme="cosmic"] .wish-node__text { color: #eaf3ff; }
 html[data-theme="sakura"] .wish-node__text { color: #704b5e; }
+
+html[data-theme="sakura"] .wish-node__text {
+  margin-top: 0;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(255,251,253,.92);
+  border: 1px solid rgba(255,198,218,.48);
+  box-shadow: 0 8px 18px rgba(222,162,189,.16);
+  white-space: nowrap;
+  max-width: 180px;
+}
+
+html[data-theme="sakura"] .wish-node.is-settled .wish-node__flower {
+  animation: wishSakuraFlowerFloat 8.2s ease-in-out infinite;
+  animation-delay: var(--wish-delay, 0s);
+}
 
 @keyframes introGlow {
   0%, 100% { transform: scale(.96); opacity: .82; }
@@ -5117,6 +5930,36 @@ html[data-theme="sakura"] .wish-node__text { color: #704b5e; }
   50% { transform: scale(1.06); opacity: 1; }
 }
 
+@keyframes wishNebulaFloat {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: .42; }
+  50% { transform: translate3d(12px, -8px, 0) scale(1.06); opacity: .62; }
+}
+
+@keyframes wishPetalDrift {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-6deg); opacity: .84; }
+  50% { transform: translate3d(10px, 14px, 0) rotate(10deg); opacity: 1; }
+}
+
+@keyframes wishCosmicFloat {
+  0%, 100% { transform: translate(-50%, -50%) translate3d(0, 0, 0); }
+  50% { transform: translate(-50%, -50%) translate3d(0, -8px, 0); }
+}
+
+@keyframes wishSakuraFloat {
+  0%, 100% { transform: translate(-50%, -50%) translate3d(0, 0, 0) rotate(-1deg); }
+  50% { transform: translate(-50%, -50%) translate3d(0, -6px, 0) rotate(1deg); }
+}
+
+@keyframes wishSakuraFlowerFloat {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(var(--wish-tilt, 0deg)); }
+  50% { transform: translate3d(0, -8px, 0) rotate(calc(var(--wish-tilt, 0deg) + 3deg)); }
+}
+
+@keyframes wishButterflyFloat {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-8deg); opacity: .72; }
+  50% { transform: translate3d(10px, -12px, 0) rotate(10deg); opacity: 1; }
+}
+
 @media (max-width: 1100px) {
   .hero-grid {
     grid-template-columns: 1fr;
@@ -5124,11 +5967,220 @@ html[data-theme="sakura"] .wish-node__text { color: #704b5e; }
     gap: 12px;
   }
 
+  .hero-copy { max-width: none; }
+
   .hero-title { font-size: clamp(44px, 9vw, 72px); }
 
   .hero-visual {
     width: min(620px, 100%);
     margin-inline: auto;
+    min-height: clamp(220px, 34vh, 360px);
+    gap: 16px;
+  }
+
+  .hero-photo { width: min(100%, 280px); }
+
+  .wish-layout {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .wish-panel {
+    padding: 18px;
+  }
+
+  .wish-sky {
+    min-height: 320px;
+  }
+}
+
+@media (max-height: 920px) {
+  .screen { gap: 8px; }
+
+  .hero {
+    padding: clamp(12px, 1.8vh, 20px) clamp(14px, 2vw, 22px);
+  }
+
+  .hero-title { font-size: clamp(46px, 5.2vw, 78px); }
+
+  .hero-subtitle { margin-bottom: 12px; }
+
+  .choice-grid {
+    margin-top: 14px;
+    margin-bottom: 12px;
+    gap: 12px;
+  }
+
+  .hero-visual {
+    min-height: min(48vh, 420px);
+    gap: 16px;
+  }
+
+  .hero-photo { width: min(100%, 300px); }
+
+  .portal-btn__inner {
+    width: 160px;
+    height: 160px;
+  }
+
+  .portal-btn__rays { inset: -64px; }
+
+  .memory-caption { bottom: 42px; }
+  .stage-hint { bottom: 10px; }
+
+  .envelope {
+    height: min(600px, 72svh, calc(100% - 28px));
+  }
+
+  .letter-paper {
+    height: min(480px, 60svh, calc(100% - 88px));
+  }
+}
+
+@media (max-height: 820px) {
+  .app { padding-block: 8px; }
+
+  .screen { gap: 6px; }
+
+  .topbar {
+    padding: 8px 12px;
+  }
+
+  .topbar-center strong {
+    font-size: clamp(28px, 2.7vw, 42px);
+  }
+
+  .hero-title {
+    margin: 8px 0;
+    font-size: clamp(40px, 5vw, 66px);
+  }
+
+  .hero-subtitle { font-size: 14px; }
+
+  .choice-card {
+    padding: 12px 14px;
+  }
+
+  .choice-name { font-size: clamp(28px, 3.2vw, 44px); }
+
+  .hero-visual {
+    min-height: min(38vh, 330px);
+    gap: 14px;
+  }
+
+  .hero-photo {
+    width: min(100%, 250px);
+    padding: 8px;
+  }
+
+  .portal-btn__inner {
+    width: 148px;
+    height: 148px;
+  }
+
+  .portal-btn__glyph { inset: -28px; }
+  .portal-btn__ring { inset: -14px; }
+
+  .portal-btn__rays {
+    inset: -54px;
+    filter: blur(12px);
+  }
+
+  .memory-caption {
+    bottom: 36px;
+    font-size: 11px;
+  }
+
+  .stage-hint {
+    bottom: 8px;
+    width: calc(100% - 32px);
+    text-align: center;
+    font-size: 11px;
+  }
+
+  .letter-scene {
+    padding: 10px;
+    gap: 6px;
+  }
+
+  .envelope {
+    width: min(96%, 760px);
+    height: min(560px, calc(100% - 22px));
+  }
+
+  .letter-paper {
+    width: min(94%, 700px);
+    height: min(420px, calc(100% - 82px));
+    top: 8px;
+  }
+
+  .letter-paper__head { padding: 10px 12px; }
+
+  .letter-paper__body {
+    padding: 10px 12px 12px;
+    gap: 8px;
+  }
+
+  .typing {
+    padding: 10px;
+    line-height: 1.52;
+  }
+}
+
+@media (max-height: 760px) and (min-width: 761px) {
+  .hero-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(300px, .88fr);
+    gap: 14px;
+  }
+
+  .hero-visual {
+    min-height: min(34vh, 280px);
+    gap: 12px;
+  }
+
+  .hero-photo { width: min(100%, 220px); }
+
+  .choice-grid { gap: 10px; }
+
+  .choice-card {
+    grid-template-columns: 62px minmax(0, 1fr);
+    column-gap: 12px;
+    padding: 12px;
+  }
+
+  .choice-emblem {
+    width: 56px;
+    height: 56px;
+  }
+
+  .choice-name { font-size: clamp(24px, 2.6vw, 34px); }
+
+  .wish-entry-btn { padding-block: 9px; }
+
+  .portal-btn__inner {
+    width: 138px;
+    height: 138px;
+  }
+
+  .portal-btn__icon { font-size: 30px; }
+  .portal-btn__text { font-size: 11px; }
+  .portal-btn__sub { font-size: 9px; }
+
+  .memory-caption { bottom: 30px; }
+  .stage-hint { font-size: 10px; }
+
+  .envelope {
+    height: min(520px, calc(100% - 18px));
+  }
+
+  .letter-paper {
+    height: min(400px, calc(100% - 76px));
+  }
+
+  .letter-ending {
+    max-width: min(90%, 460px);
+    padding: 8px 14px;
+    font-size: 12px;
   }
 }
 
@@ -5163,6 +6215,11 @@ html[data-theme="sakura"] .wish-node__text { color: #704b5e; }
   }
 
   .hero { padding: 12px; }
+  .hero-grid {
+    gap: 10px;
+    align-content: start;
+  }
+
   .hero-title {
     font-size: clamp(34px, 10vw, 48px);
     line-height: .94;
@@ -5188,8 +6245,17 @@ html[data-theme="sakura"] .wish-node__text { color: #704b5e; }
   .choice-stars { top: 8px; right: 10px; }
   .choice-stars i { font-size: 10px; }
 
-  .hero-visual { gap: 10px; }
-  .hero-photo { padding: 7px; }
+  .hero-visual {
+    width: min(100%, 440px);
+    min-height: clamp(210px, 30vh, 280px);
+    gap: 12px;
+  }
+
+  .hero-photo {
+    width: min(100%, 170px);
+    padding: 8px;
+  }
+
   .hero-photo p { font-size: 9px; }
   .hero-planet--one { width: 56px; height: 56px; }
   .hero-planet--two { width: 40px; height: 40px; }
@@ -5204,11 +6270,13 @@ html[data-theme="sakura"] .wish-node__text { color: #704b5e; }
   }
 
   .portal-btn__inner {
-    width: 110px;
-    height: 110px;
+    width: 104px;
+    height: 104px;
   }
 
-  .portal-btn__rays { inset: -54px; }
+  .portal-btn__glyph { inset: -24px; }
+  .portal-btn__ring { inset: -12px; }
+  .portal-btn__rays { inset: -48px; }
 
   .portal-btn__icon { font-size: 26px; }
   .portal-btn__text { font-size: 10px; }
@@ -5247,7 +6315,11 @@ html[data-theme="sakura"] .wish-node__text { color: #704b5e; }
   .sakura-spray { font-size: 20px; opacity: .68; }
   .sakura-bloom { font-size: 14px; opacity: .72; }
 
-  .stage-hint { font-size: 11px; }
+  .stage-hint {
+    width: calc(100% - 28px);
+    text-align: center;
+    font-size: 11px;
+  }
 
   .letter-vault-ring--one { width: min(92vw, 560px); }
   .letter-vault-ring--two { width: min(72vw, 380px); }
@@ -5265,21 +6337,104 @@ html[data-theme="sakura"] .wish-node__text { color: #704b5e; }
   .letter-sakura-branch--two { width: 44%; top: 22%; }
   .letter-sakura-petal { font-size: 18px; }
 
+  .letter-scene {
+    padding: 10px;
+    gap: 6px;
+  }
+
   .envelope {
-    width: min(92vw, 700px);
-    height: min(620px, 74svh);
+    width: min(94vw, 680px);
+    height: min(560px, calc(100% - 24px));
   }
 
   .letter-paper {
-    width: min(92vw, 700px);
-    height: min(470px, 58svh);
-    top: 10px;
+    width: min(94vw, 680px);
+    height: min(420px, calc(100% - 82px));
+    top: 8px;
   }
 
-  .typing { font-size: 14px; }
+  .letter-paper__head { padding: 10px 12px; }
+
+  .letter-paper__body {
+    padding: 10px 12px 12px;
+    gap: 8px;
+  }
+
+  .letter-paper__foot {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .letter-paper__foot .secondary-btn { width: 100%; }
+
+  .typing {
+    font-size: 13px;
+    padding: 10px;
+    line-height: 1.5;
+  }
 
   .wish-wrap { padding: 10px; }
+  .wish-panel { padding: 14px; }
   .wish-head h2 { font-size: clamp(28px, 8.8vw, 42px); }
+  .wish-head p { font-size: 13px; }
+  .wish-form textarea {
+    min-height: 96px;
+    max-height: 180px;
+    border-radius: 16px;
+  }
+  .wish-sky {
+    min-height: 260px;
+    border-radius: 20px;
+  }
+  .wish-node {
+    max-width: min(72vw, 180px);
+    padding: 7px 9px 9px;
+  }
+  .wish-node__text {
+    font-size: 11px;
+    white-space: normal;
+    line-height: 1.35;
+  }
+  .wish-cosmic-orbit--one { width: 300px; height: 300px; right: -60px; }
+  .wish-cosmic-orbit--two { width: 220px; height: 220px; left: -70px; }
+  .wish-cosmic-planet--one { width: 64px; height: 64px; }
+  .wish-sakura-canopy--one { width: 200px; height: 132px; }
+  .wish-sakura-canopy--two { width: 220px; height: 146px; }
+  .wish-sakura-canopy--three { width: 170px; height: 112px; left: 34%; }
+  .wish-sakura-tree--left { height: 156px; }
+  .wish-sakura-tree--right { height: 132px; }
+  .wish-sakura-branch--one { width: 160px; }
+  .wish-sakura-branch--two { width: 128px; }
+  .wish-sakura-flowerbed--one,
+  .wish-sakura-flowerbed--two,
+  .wish-sakura-flowerbed--three { height: 92px; }
+  html[data-theme="sakura"] .wish-node {
+    max-width: min(74vw, 156px);
+    padding: 0;
+  }
+  .wish-node__flower { width: 64px; height: 64px; }
+  .wish-node__petal {
+    width: 24px;
+    height: 32px;
+    margin-left: -12px;
+    margin-top: -16px;
+  }
+  .wish-node__petal--1 { transform: translate(-50%, -50%) rotate(0deg) translateY(-18px); }
+  .wish-node__petal--2 { transform: translate(-50%, -50%) rotate(72deg) translateY(-18px); }
+  .wish-node__petal--3 { transform: translate(-50%, -50%) rotate(144deg) translateY(-18px); }
+  .wish-node__petal--4 { transform: translate(-50%, -50%) rotate(216deg) translateY(-18px); }
+  .wish-node__petal--5 { transform: translate(-50%, -50%) rotate(288deg) translateY(-18px); }
+  .wish-node__core {
+    width: 24px;
+    height: 24px;
+    margin-left: -12px;
+    margin-top: -12px;
+    font-size: 13px;
+  }
+  html[data-theme="sakura"] .wish-node__text {
+    max-width: 150px;
+    padding: 6px 10px;
+  }
 }
 
 @media (max-width: 520px) {
@@ -5288,6 +6443,11 @@ html[data-theme="sakura"] .wish-node__text { color: #704b5e; }
   .hero-title { font-size: clamp(30px, 10.4vw, 40px); }
   .choice-name { font-size: 28px; }
   .hero-credit { font-size: 12px; }
+  .hero-visual {
+    min-height: 190px;
+    gap: 10px;
+  }
+  .hero-photo { width: min(100%, 148px); }
   .memory-stage .memory-photo--echo-faint { display: none; }
   .letter-planet--two { display: none; }
   .letter-vault-beam { width: 180px; }
@@ -5299,4 +6459,13 @@ html[data-theme="sakura"] .wish-node__text { color: #704b5e; }
   .letter-sakura-branch--two { width: 48%; top: 23%; }
   .letter-sakura-petal { font-size: 16px; }
   .letter-sakura-petal--six { left: 58%; }
+  .wish-sky { min-height: 236px; }
+  .wish-sakura-butterfly { font-size: 15px; }
+  .wish-sakura-bloom { font-size: 18px; }
+  .wish-sakura-tree--right { display: none; }
+  .wish-node__flower { width: 58px; height: 58px; }
+  html[data-theme="sakura"] .wish-node__text {
+    max-width: 132px;
+    font-size: 10px;
+  }
 }
