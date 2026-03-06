@@ -1,0 +1,395 @@
+﻿/* Intro overlay, galaxy/sakura background effects, starfields */
+
+function runIntro() {
+  const intro = $("#introOverlay");
+  if (!intro) return;
+  if (prefersReducedMotion()) {
+    intro.remove();
+    return;
+  }
+  intro.classList.add("is-visible");
+  setTimeout(() => intro.classList.add("is-reveal"), 260);
+  setTimeout(() => intro.classList.add("is-fade"), 1700);
+  setTimeout(() => intro.remove(), 2550);
+}
+
+function spawnBackgroundItem(layerId, className, text, durationMin, durationMax) {
+  const layer = $(layerId);
+  if (!layer) return;
+  const item = document.createElement("span");
+  item.className = `fx-item ${className}`;
+  if (text) item.textContent = text;
+
+  if (className.includes("fx-shooting")) {
+    item.style.setProperty("--x", `${rand(-8, 82).toFixed(2)}%`);
+    item.style.setProperty("--y", `${rand(-16, 8).toFixed(2)}%`);
+    item.style.setProperty("--shoot-angle", `${rand(28, 42).toFixed(2)}deg`);
+    item.style.setProperty("--shoot-dx", `${rand(24, 46).toFixed(2)}vw`);
+    item.style.setProperty("--shoot-dy", `${rand(34, 56).toFixed(2)}vh`);
+    item.style.setProperty("--shoot-scale-start", `${rand(0.46, 0.62).toFixed(2)}`);
+    item.style.setProperty("--shoot-scale-end", `${rand(0.92, 1.08).toFixed(2)}`);
+  } else if (className.includes("fx-butterfly")) {
+    item.style.setProperty("--x", `${rand(-8, 10).toFixed(2)}%`);
+    item.style.setProperty("--y", `${rand(18, 66).toFixed(2)}%`);
+    item.style.animationName = "fxFlutter";
+  } else if (className.includes("fx-bee")) {
+    item.style.setProperty("--x", `${rand(-8, 12).toFixed(2)}%`);
+    item.style.setProperty("--y", `${rand(20, 72).toFixed(2)}%`);
+    item.style.animationName = "fxBuzz";
+  } else if (className.includes("fx-bird")) {
+    item.style.setProperty("--x", `${rand(-12, 8).toFixed(2)}%`);
+    item.style.setProperty("--y", `${rand(8, 42).toFixed(2)}%`);
+    item.style.animationName = "fxBirdGlide";
+  } else {
+    item.style.setProperty("--x", `${rand(2, 98).toFixed(2)}%`);
+    item.style.setProperty("--y", `${rand(-16, 0).toFixed(2)}%`);
+  }
+  item.style.setProperty("--dx", `${rand(-70, 70).toFixed(2)}px`);
+  item.style.setProperty("--spin", `${rand(-240, 240).toFixed(1)}deg`);
+  item.style.animationDuration = `${rand(durationMin, durationMax).toFixed(2)}s`;
+  layer.appendChild(item);
+  setTimeout(() => item.remove(), 22000);
+}
+
+function spawnConstellation() {
+  if (state.theme !== "cosmic" || prefersReducedMotion()) return;
+  const layer = $("#bgConstellation");
+  if (!layer) return;
+
+  const group = document.createElement("span");
+  group.className = "fx-constellation";
+  group.style.left = `${rand(8, 88)}%`;
+  group.style.top = `${rand(10, 58)}%`;
+
+  const points = Array.from({ length: 4 }, (_, index) => ({
+    x: 12 + index * rand(20, 34),
+    y: rand(8, 48),
+  }));
+
+  points.forEach((point) => {
+    const star = document.createElement("span");
+    star.className = "fx-constellation__star";
+    star.style.left = `${point.x}%`;
+    star.style.top = `${point.y}%`;
+    group.appendChild(star);
+  });
+
+  for (let i = 0; i < points.length - 1; i += 1) {
+    const from = points[i];
+    const to = points[i + 1];
+    const dx = to.x - from.x;
+    const dy = to.y - from.y;
+    const line = document.createElement("span");
+    line.className = "fx-constellation__line";
+    line.style.left = `${from.x}%`;
+    line.style.top = `${from.y}%`;
+    line.style.width = `${Math.hypot(dx, dy)}%`;
+    line.style.transform = `rotate(${Math.atan2(dy, dx)}rad)`;
+    group.appendChild(line);
+  }
+
+  layer.appendChild(group);
+  const center = {
+    x: parseFloat(group.style.left),
+    y: parseFloat(group.style.top),
+  };
+  state.constellationAnchors.push(center);
+  if (state.constellationAnchors.length > 6) state.constellationAnchors.shift();
+
+  if (state.constellationAnchors.length >= 2 && Math.random() > 0.35) {
+    const from = state.constellationAnchors[state.constellationAnchors.length - 2];
+    const to = state.constellationAnchors[state.constellationAnchors.length - 1];
+    const bridge = document.createElement("span");
+    bridge.className = "fx-constellation-bridge";
+    bridge.style.left = `${from.x}%`;
+    bridge.style.top = `${from.y}%`;
+    const dx = to.x - from.x;
+    const dy = to.y - from.y;
+    bridge.style.width = `${Math.hypot(dx, dy)}%`;
+    bridge.style.transform = `rotate(${Math.atan2(dy, dx)}rad)`;
+    layer.appendChild(bridge);
+    setTimeout(() => bridge.remove(), 7600);
+  }
+
+  setTimeout(() => group.remove(), 7200);
+}
+
+function generateGalaxyStarfield(count, options = {}) {
+  const {
+    minX = 0,
+    maxX = 100,
+    minY = 0,
+    maxY = 100,
+    clusterCount = 6,
+    clusterBias = 0.58,
+    minGap = 0.9,
+    avoidCenterRadius = 0,
+    avoidRects = [],
+  } = options;
+
+  const clusters = Array.from({ length: clusterCount }, () => ({
+    x: rand(minX + 4, maxX - 4),
+    y: rand(minY + 4, maxY - 4),
+    spreadX: rand(5.5, 16),
+    spreadY: rand(4.5, 14),
+  }));
+
+  const points = [];
+  let attempts = 0;
+  const maxAttempts = count * 36;
+
+  const pickPoint = () => {
+    if (Math.random() < clusterBias) {
+      const cluster = clusters[Math.floor(rand(0, clusters.length))];
+      const angle = rand(0, Math.PI * 2);
+      const radius = Math.sqrt(Math.random());
+      return {
+        x: cluster.x + (Math.cos(angle) * cluster.spreadX * radius),
+        y: cluster.y + (Math.sin(angle) * cluster.spreadY * radius),
+      };
+    }
+    return {
+      x: rand(minX, maxX),
+      y: rand(minY, maxY),
+    };
+  };
+
+  while (points.length < count && attempts < maxAttempts) {
+    attempts += 1;
+    const point = pickPoint();
+    const x = clamp(point.x, minX, maxX);
+    const y = clamp(point.y, minY, maxY);
+
+    if (avoidCenterRadius > 0 && Math.hypot(x - 50, y - 50) < avoidCenterRadius) continue;
+
+    const blockedRect = avoidRects.some((rect) => (
+      x >= rect.x1 && x <= rect.x2 && y >= rect.y1 && y <= rect.y2 && Math.random() > (rect.allowChance ?? 0.14)
+    ));
+    if (blockedRect) continue;
+
+    const tooClose = points.some((existing) => Math.hypot(x - existing.x, y - existing.y) < minGap);
+    if (tooClose && Math.random() > 0.18) continue;
+
+    const roll = Math.random();
+    const toneRoll = Math.random();
+    points.push({
+      x,
+      y,
+      bright: roll > 0.8,
+      giant: roll > 0.965,
+      dim: roll < 0.16,
+      warm: toneRoll > 0.86,
+      cool: toneRoll > 0.56 && toneRoll < 0.8,
+    });
+  }
+
+  while (points.length < count) {
+    const roll = Math.random();
+    const toneRoll = Math.random();
+    points.push({
+      x: rand(minX, maxX),
+      y: rand(minY, maxY),
+      bright: roll > 0.8,
+      giant: roll > 0.965,
+      dim: roll < 0.16,
+      warm: toneRoll > 0.86,
+      cool: toneRoll > 0.56 && toneRoll < 0.8,
+    });
+  }
+
+  return points;
+}
+
+function buildGalaxyDustMap(count, options = {}) {
+  const points = generateGalaxyStarfield(count, {
+    minGap: 0.12,
+    ...options,
+  });
+
+  return points.map((point) => {
+    const rgb = point.warm
+      ? [255, 228, 210]
+      : point.cool
+        ? [198, 228, 255]
+        : [255, 255, 255];
+    const alpha = point.giant
+      ? rand(0.46, 0.78)
+      : point.bright
+        ? rand(0.18, 0.42)
+        : point.dim
+          ? rand(0.05, 0.12)
+          : rand(0.07, 0.2);
+    const core = point.giant
+      ? rand(1.05, 2.2)
+      : point.bright
+        ? rand(0.62, 1.24)
+        : point.dim
+          ? rand(0.18, 0.42)
+          : rand(0.28, 0.78);
+    const glow = core + (point.giant ? rand(1.1, 2.6) : rand(0.55, 1.4));
+    return `radial-gradient(circle at ${point.x.toFixed(2)}% ${point.y.toFixed(2)}%, rgba(${rgb[0]},${rgb[1]},${rgb[2]},${alpha.toFixed(2)}) 0 ${core.toFixed(2)}px, rgba(${rgb[0]},${rgb[1]},${rgb[2]},0) ${glow.toFixed(2)}px)`;
+  }).join(",");
+}
+
+function renderGalaxyBackgroundStars() {
+  const layer = $("#bgStars");
+  const constellationLayer = $("#bgConstellation");
+  if (!layer) return;
+
+  layer.querySelectorAll(".bg-starfield__star").forEach((node) => node.remove());
+  if (state.theme !== "cosmic") {
+    layer.style.backgroundImage = "";
+    if (constellationLayer) constellationLayer.style.removeProperty("--milky-dust-map");
+    return;
+  }
+
+  layer.style.backgroundImage = buildGalaxyDustMap(isMobile() ? 180 : 320, {
+    minX: 0.5,
+    maxX: 99.5,
+    minY: 0.5,
+    maxY: 99.5,
+    clusterCount: isMobile() ? 8 : 12,
+    clusterBias: isMobile() ? 0.6 : 0.74,
+  });
+  if (constellationLayer) {
+    constellationLayer.style.setProperty("--milky-dust-map", buildGalaxyDustMap(isMobile() ? 84 : 156, {
+      minX: 14,
+      maxX: 86,
+      minY: 18,
+      maxY: 78,
+      clusterCount: isMobile() ? 5 : 8,
+      clusterBias: 0.82,
+    }));
+  }
+
+  const count = isMobile() ? 240 : 520;
+  const points = generateGalaxyStarfield(count, {
+    minX: 0.8,
+    maxX: 99.2,
+    minY: 0.8,
+    maxY: 99.2,
+    clusterCount: isMobile() ? 8 : 12,
+    clusterBias: isMobile() ? 0.6 : 0.76,
+    minGap: isMobile() ? 0.34 : 0.44,
+  });
+
+  points.forEach((point) => {
+    const star = document.createElement("span");
+    star.className = [
+      "bg-starfield__star",
+      point.bright ? "bg-starfield__star--bright" : "",
+      point.giant ? "bg-starfield__star--giant" : "",
+      point.dim ? "bg-starfield__star--dim" : "",
+      point.warm ? "bg-starfield__star--warm" : "",
+      point.cool ? "bg-starfield__star--cool" : "",
+    ].filter(Boolean).join(" ");
+    star.style.left = `${point.x.toFixed(2)}%`;
+    star.style.top = `${point.y.toFixed(2)}%`;
+    star.style.setProperty("--size", `${(point.giant ? rand(2.8, 5) : point.bright ? rand(1.6, 3.4) : rand(0.7, 2.1)).toFixed(2)}px`);
+    star.style.setProperty("--opacity", `${(point.giant ? rand(0.76, 0.98) : point.bright ? rand(0.36, 0.82) : point.dim ? rand(0.08, 0.24) : rand(0.14, 0.52)).toFixed(2)}`);
+    star.style.setProperty("--dur", `${rand(2.8, 7.2).toFixed(2)}s`);
+    star.style.setProperty("--delay", `${rand(0, 6.8).toFixed(2)}s`);
+    star.style.setProperty("--blur", `${(point.giant ? rand(0, 0.45) : rand(0, 1.2)).toFixed(2)}px`);
+    star.style.setProperty("--drift-x", `${rand(-8, 8).toFixed(2)}px`);
+    star.style.setProperty("--drift-y", `${rand(-6, 6).toFixed(2)}px`);
+    layer.appendChild(star);
+  });
+}
+
+function applyStageTheme() {
+  const stage = $("#memoryStage");
+  if (!stage) return;
+  stage.dataset.themeMode = state.theme;
+}
+
+function renderStageStars() {
+  const layer = $("#stageStars");
+  if (!layer) return;
+  layer.innerHTML = "";
+
+  if (state.theme !== "cosmic" || state.screen !== 2) return;
+  const count = isMobile() ? 108 : 220;
+  const minCenterDistance = isMobile() ? 14 : 16;
+  const points = generateGalaxyStarfield(count, {
+    minX: 2,
+    maxX: 98,
+    minY: 4,
+    maxY: 94,
+    clusterCount: isMobile() ? 7 : 10,
+    clusterBias: isMobile() ? 0.64 : 0.74,
+    minGap: isMobile() ? 0.48 : 0.6,
+    avoidCenterRadius: minCenterDistance,
+  });
+
+  points.forEach((point) => {
+    const star = document.createElement("span");
+    star.className = [
+      "stage-star",
+      point.bright ? "stage-star--bright" : "",
+      point.giant ? "stage-star--giant" : "",
+      point.warm ? "stage-star--warm" : "",
+      point.cool ? "stage-star--cool" : "",
+    ].filter(Boolean).join(" ");
+    star.style.left = `${point.x.toFixed(2)}%`;
+    star.style.top = `${point.y.toFixed(2)}%`;
+    star.style.setProperty("--size", `${(point.giant ? rand(2.4, 4.6) : point.bright ? rand(1.5, 3.4) : rand(0.9, 2.5)).toFixed(2)}px`);
+    star.style.setProperty("--opacity", `${(point.giant ? rand(0.54, 0.88) : point.bright ? rand(0.3, 0.66) : rand(0.12, 0.38)).toFixed(2)}`);
+    star.style.setProperty("--dur", `${rand(2.4, 6.2).toFixed(2)}s`);
+    star.style.setProperty("--delay", `${rand(0, 5.4).toFixed(2)}s`);
+    star.style.setProperty("--blur", `${(point.giant ? rand(0, 0.34) : rand(0, 1.1)).toFixed(2)}px`);
+    layer.appendChild(star);
+  });
+}
+
+function clearBackgroundEffects() {
+  state.backgroundIntervals.forEach((timer) => clearInterval(timer));
+  state.backgroundTimeouts.forEach((timer) => clearTimeout(timer));
+  state.backgroundIntervals = [];
+  state.backgroundTimeouts = [];
+  state.constellationAnchors = [];
+  $$(".fx-item").forEach((node) => node.remove());
+  $$(".fx-constellation").forEach((node) => node.remove());
+  $$(".fx-constellation-bridge").forEach((node) => node.remove());
+}
+
+function startBackgroundEffects() {
+  clearBackgroundEffects();
+
+  const lowPower = prefersReducedMotion() || isMobile();
+  const sakura = state.theme === "sakura";
+  const recipes = [];
+
+  if (sakura) {
+    recipes.push({ layer: "#bgSakura", className: "fx-petal", text: "🌸", min: 7.2, max: 11.8, interval: lowPower ? 900 : 520 });
+    recipes.push({ layer: "#bgParticles", className: "fx-leaf", text: "🍃", min: 9.2, max: 13.8, interval: lowPower ? 1450 : 860 });
+    recipes.push({ layer: "#bgStars", className: "fx-spark", text: "✨", min: 6.8, max: 10.6, interval: lowPower ? 1300 : 740 });
+    recipes.push({ layer: "#bgSakura", className: "fx-butterfly", text: "🦋", min: 8.8, max: 13.4, interval: lowPower ? 5200 : 3000 });
+    recipes.push({ layer: "#bgParticles", className: "fx-bee", text: "🐝", min: 7.6, max: 11.2, interval: lowPower ? 6800 : 3600 });
+    recipes.push({ layer: "#bgSakura", className: "fx-bird", text: "🐦", min: 10.4, max: 14.8, interval: lowPower ? 9200 : 5200 });
+  } else {
+    recipes.push({ layer: "#bgStars", className: "fx-star", text: "", min: 6.8, max: 10.4, interval: lowPower ? 640 : 300 });
+    recipes.push({ layer: "#bgParticles", className: "fx-soft", text: "", min: 8.2, max: 12.8, interval: lowPower ? 900 : 520 });
+    recipes.push({ layer: "#bgParticles", className: "fx-shooting", text: "", min: 1.5, max: 2.4, interval: lowPower ? 9800 : 5200 });
+  }
+
+  recipes.forEach((recipe) => {
+    const isCreature = /fx-butterfly|fx-bee|fx-bird/.test(recipe.className);
+    const burst = lowPower ? (recipe.className.includes("fx-shooting") ? 0 : 1) : (recipe.className.includes("fx-shooting") ? 1 : (isCreature ? 1 : 3));
+    for (let i = 0; i < burst; i += 1) {
+      spawnBackgroundItem(recipe.layer, recipe.className, recipe.text, recipe.min, recipe.max);
+    }
+    const timer = setInterval(
+      () => spawnBackgroundItem(recipe.layer, recipe.className, recipe.text, recipe.min, recipe.max),
+      recipe.interval
+    );
+    state.backgroundIntervals.push(timer);
+  });
+
+  if (!sakura && !lowPower) {
+    spawnConstellation();
+    const constellationTimer = setInterval(spawnConstellation, 5600);
+    state.backgroundIntervals.push(constellationTimer);
+    state.backgroundTimeouts.push(setTimeout(spawnConstellation, 1800));
+  }
+}
+

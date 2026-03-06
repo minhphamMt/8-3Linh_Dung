@@ -1,0 +1,1797 @@
+﻿/* Screen 4: wish page, wish nodes, wish-specific motion */
+
+
+.wish-wrap {
+  flex: 1;
+  padding: 16px;
+  overflow: hidden;
+}
+
+.wish-layout {
+  display: grid;
+  grid-template-columns: minmax(320px, .88fr) minmax(0, 1.12fr);
+  gap: 18px;
+  height: 100%;
+}
+
+.wish-panel,
+.wish-scene {
+  position: relative;
+  min-height: 0;
+}
+
+.wish-panel {
+  border-radius: 24px;
+  padding: clamp(18px, 2vw, 26px);
+  overflow: hidden;
+}
+
+.wish-panel::before,
+.wish-panel::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+html[data-theme="cosmic"] .wish-panel {
+  background:
+    radial-gradient(circle at 14% 16%, rgba(148,212,255,.14), transparent 26%),
+    radial-gradient(circle at 84% 18%, rgba(255,174,226,.12), transparent 24%),
+    linear-gradient(160deg, rgba(11,22,63,.88), rgba(12,18,52,.74));
+  border: 1px solid rgba(177,217,255,.26);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 18px 42px rgba(4,10,32,.26);
+}
+
+html[data-theme="sakura"] .wish-panel {
+  background:
+    radial-gradient(circle at 12% 14%, rgba(255,255,255,.84), transparent 24%),
+    radial-gradient(circle at 84% 18%, rgba(255,216,230,.44), transparent 24%),
+    linear-gradient(160deg, rgba(255,253,254,.96), rgba(255,241,247,.9));
+  border: 1px solid rgba(255,192,215,.48);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.88), 0 18px 38px rgba(216,146,177,.16);
+}
+
+html[data-theme="sakura"] .wish-panel::before {
+  right: -18px;
+  top: -20px;
+  width: 180px;
+  height: 110px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 50% 60%, rgba(255,203,222,.56), rgba(255,229,239,.12) 62%, rgba(255,229,239,0) 78%);
+  filter: blur(2px);
+}
+
+html[data-theme="sakura"] .wish-panel::after {
+  left: 18px;
+  bottom: 18px;
+  width: 120px;
+  height: 70px;
+  background:
+    radial-gradient(circle at 10% 70%, rgba(255,184,211,.62) 0 3px, transparent 4px),
+    radial-gradient(circle at 24% 46%, rgba(255,214,230,.72) 0 3px, transparent 4px),
+    radial-gradient(circle at 42% 62%, rgba(255,188,214,.58) 0 3px, transparent 4px),
+    radial-gradient(circle at 60% 40%, rgba(255,219,233,.74) 0 3px, transparent 4px),
+    radial-gradient(circle at 78% 60%, rgba(255,183,211,.58) 0 3px, transparent 4px),
+    linear-gradient(180deg, rgba(219,239,206,0), rgba(206,231,194,.34) 58%, rgba(195,223,182,.48));
+  opacity: .62;
+}
+
+.wish-head {
+  position: relative;
+  z-index: 1;
+}
+
+.wish-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+html[data-theme="cosmic"] .wish-kicker {
+  background: rgba(155,205,255,.08);
+  border: 1px solid rgba(176,214,255,.22);
+  color: #cfe4ff;
+}
+
+html[data-theme="sakura"] .wish-kicker {
+  background: rgba(255,242,247,.92);
+  border: 1px solid rgba(255,200,220,.42);
+  color: #9a6278;
+}
+
+.wish-head h2 {
+  margin: 14px 0 0;
+  font-family: var(--font-title);
+  font-size: clamp(38px, 4.3vw, 64px);
+  line-height: .9;
+}
+
+.wish-head p {
+  margin: 10px 0 0;
+  max-width: 46ch;
+  color: var(--ink-soft);
+  line-height: 1.65;
+}
+
+.wish-form {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.wish-form label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.wish-form textarea {
+  width: 100%;
+  min-height: 120px;
+  max-height: 220px;
+  resize: vertical;
+  border-radius: 18px;
+  border: 1px solid var(--panel-border);
+  color: var(--ink);
+  font: inherit;
+  line-height: 1.6;
+  padding: 14px 16px;
+  transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+html[data-theme="cosmic"] .wish-form textarea {
+  background:
+    linear-gradient(180deg, rgba(13,26,74,.72), rgba(11,20,58,.64)),
+    linear-gradient(90deg, rgba(255,255,255,.08), rgba(255,255,255,0));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), inset 0 -12px 24px rgba(85,125,255,.08);
+}
+
+html[data-theme="sakura"] .wish-form textarea {
+  background:
+    linear-gradient(180deg, rgba(255,252,253,.98), rgba(255,244,248,.92)),
+    linear-gradient(90deg, rgba(255,255,255,.24), rgba(255,255,255,0));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.94), inset 0 -10px 18px rgba(255,221,234,.28);
+}
+
+.wish-form textarea:focus-visible {
+  outline: none;
+  border-color: color-mix(in srgb, var(--primary) 72%, white);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 35%, transparent);
+}
+
+.wish-actions {
+  display: grid;
+  gap: 12px;
+  align-items: start;
+}
+
+.primary-btn--wish {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+  padding: 13px 18px;
+  min-height: 52px;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.wish-action-btn__glow {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.wish-action-btn__icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+}
+
+.wish-action-btn__text {
+  font-size: 14px;
+  letter-spacing: .02em;
+}
+
+html[data-theme="cosmic"] .primary-btn--wish {
+  background: linear-gradient(135deg, rgba(17,34,96,.96), rgba(34,22,88,.8));
+  border-color: rgba(177,218,255,.42);
+  color: #eef6ff;
+  box-shadow: 0 18px 34px rgba(7,12,34,.26), 0 0 28px rgba(143,196,255,.18);
+}
+
+html[data-theme="cosmic"] .wish-action-btn__glow {
+  background:
+    radial-gradient(circle at 14% 50%, rgba(149,216,255,.36), transparent 22%),
+    linear-gradient(95deg, rgba(142,198,255,.14), transparent 44%, rgba(255,179,228,.18));
+}
+
+html[data-theme="cosmic"] .wish-action-btn__icon {
+  background: radial-gradient(circle, rgba(247,251,255,.98), rgba(149,202,255,.44) 44%, rgba(104,136,255,.18) 80%);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.26), 0 0 20px rgba(149,202,255,.28);
+}
+
+html[data-theme="sakura"] .primary-btn--wish {
+  background: linear-gradient(135deg, rgba(255,251,253,.98), rgba(255,232,243,.9));
+  border-color: rgba(255,188,210,.56);
+  color: #7b4f63;
+  box-shadow: 0 16px 30px rgba(216,147,178,.18), 0 0 24px rgba(255,205,223,.2);
+}
+
+html[data-theme="sakura"] .wish-action-btn__glow {
+  background:
+    radial-gradient(circle at 14% 50%, rgba(255,198,220,.42), transparent 24%),
+    linear-gradient(95deg, rgba(255,204,223,.18), transparent 42%, rgba(255,242,247,.56));
+}
+
+html[data-theme="sakura"] .wish-action-btn__icon {
+  background: radial-gradient(circle, rgba(255,255,255,.98), rgba(255,220,232,.78) 46%, rgba(255,180,205,.34) 84%);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.76), 0 0 18px rgba(255,188,210,.32);
+}
+
+.wish-note {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+.wish-scene {
+  border-radius: 28px;
+  overflow: hidden;
+}
+
+.wish-sky {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 360px;
+  border-radius: 28px;
+  border: 1px solid var(--panel-border);
+  overflow: hidden;
+}
+
+.wish-sky::before,
+.wish-sky::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+html[data-theme="cosmic"] .wish-sky {
+  background:
+    radial-gradient(circle at 12% 18%, rgba(145,205,255,.2), transparent 28%),
+    radial-gradient(circle at 86% 18%, rgba(255,172,224,.16), transparent 28%),
+    linear-gradient(180deg, rgba(9,18,58,.96), rgba(7,16,46,.92));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), inset 0 -20px 44px rgba(71,105,255,.08);
+}
+
+html[data-theme="cosmic"] .wish-sky::before {
+  background:
+    radial-gradient(circle at 10% 16%, rgba(255,255,255,.94) 0 1px, transparent 2px),
+    radial-gradient(circle at 20% 28%, rgba(188,223,255,.8) 0 1px, transparent 2px),
+    radial-gradient(circle at 34% 14%, rgba(255,255,255,.78) 0 1px, transparent 2px),
+    radial-gradient(circle at 52% 34%, rgba(190,225,255,.68) 0 1px, transparent 2px),
+    radial-gradient(circle at 68% 16%, rgba(255,255,255,.88) 0 1px, transparent 2px),
+    radial-gradient(circle at 78% 32%, rgba(184,219,255,.64) 0 1px, transparent 2px),
+    radial-gradient(circle at 86% 12%, rgba(255,255,255,.72) 0 1px, transparent 2px),
+    radial-gradient(circle at 18% 62%, rgba(255,255,255,.72) 0 1px, transparent 2px),
+    radial-gradient(circle at 38% 74%, rgba(193,227,255,.7) 0 1px, transparent 2px),
+    radial-gradient(circle at 58% 66%, rgba(255,255,255,.82) 0 1px, transparent 2px),
+    radial-gradient(circle at 76% 72%, rgba(190,225,255,.64) 0 1px, transparent 2px);
+  opacity: .62;
+}
+
+html[data-theme="cosmic"] .wish-sky::after {
+  inset: 8% -10% 18% -4%;
+  background: linear-gradient(115deg, rgba(164,214,255,0), rgba(164,214,255,.08) 40%, rgba(255,181,228,.14) 52%, rgba(164,214,255,0) 72%);
+  filter: blur(22px);
+  opacity: .5;
+  animation: milkyBandDrift 12s ease-in-out infinite;
+}
+
+html[data-theme="sakura"] .wish-sky {
+  background:
+    radial-gradient(circle at 14% 16%, rgba(255,246,214,.78), transparent 28%),
+    radial-gradient(circle at 86% 18%, rgba(255,205,225,.52), transparent 30%),
+    radial-gradient(circle at 52% 64%, rgba(255,236,244,.82), transparent 34%),
+    linear-gradient(180deg, rgba(255,252,253,.98), rgba(255,238,246,.92));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.92), inset 0 -18px 36px rgba(255,214,230,.24);
+}
+
+html[data-theme="sakura"] .wish-sky::before {
+  background:
+    radial-gradient(circle at 12% 16%, rgba(255,255,255,.84), transparent 24%),
+    radial-gradient(circle at 82% 22%, rgba(255,214,230,.38), transparent 26%),
+    linear-gradient(180deg, rgba(255,255,255,.28), rgba(255,255,255,0)),
+    linear-gradient(118deg, rgba(255,240,246,0), rgba(255,255,255,.42) 48%, rgba(255,240,246,0) 82%);
+}
+
+html[data-theme="sakura"] .wish-sky::after {
+  inset: auto 0 0 0;
+  height: 30%;
+  background:
+    radial-gradient(circle at 16% 10%, rgba(243,255,236,.52), transparent 14%),
+    radial-gradient(circle at 82% 12%, rgba(243,255,236,.44), transparent 14%),
+    linear-gradient(180deg, rgba(219,239,206,0), rgba(210,233,198,.3) 48%, rgba(194,224,181,.5));
+}
+
+.wish-scene-decor {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.wish-sky__nodes {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+.wish-cosmic-nebula,
+.wish-cosmic-orbit,
+.wish-cosmic-planet,
+.wish-cosmic-star,
+.wish-sakura-sun,
+.wish-sakura-canopy,
+.wish-sakura-tree,
+.wish-sakura-branch,
+.wish-sakura-ground,
+.wish-sakura-flowerbed,
+.wish-sakura-bloom,
+.wish-sakura-butterfly,
+.wish-sakura-petal {
+  position: absolute;
+}
+
+html[data-theme="cosmic"] .wish-sakura-sun,
+html[data-theme="cosmic"] .wish-sakura-canopy,
+html[data-theme="cosmic"] .wish-sakura-tree,
+html[data-theme="cosmic"] .wish-sakura-branch,
+html[data-theme="cosmic"] .wish-sakura-ground,
+html[data-theme="cosmic"] .wish-sakura-flowerbed,
+html[data-theme="cosmic"] .wish-sakura-bloom,
+html[data-theme="cosmic"] .wish-sakura-butterfly,
+html[data-theme="cosmic"] .wish-sakura-petal {
+  display: none;
+}
+
+html[data-theme="sakura"] .wish-cosmic-nebula,
+html[data-theme="sakura"] .wish-cosmic-orbit,
+html[data-theme="sakura"] .wish-cosmic-planet,
+html[data-theme="sakura"] .wish-cosmic-star {
+  display: none;
+}
+
+.wish-cosmic-nebula {
+  border-radius: 999px;
+  filter: blur(24px);
+  opacity: .48;
+  animation: wishNebulaFloat 12s ease-in-out infinite;
+}
+
+.wish-cosmic-nebula--one {
+  inset: 10% auto auto 6%;
+  width: 220px;
+  height: 160px;
+  background: radial-gradient(circle, rgba(149,210,255,.28), transparent 70%);
+}
+
+.wish-cosmic-nebula--two {
+  right: 6%;
+  top: 18%;
+  width: 260px;
+  height: 180px;
+  background: radial-gradient(circle, rgba(255,175,228,.24), transparent 72%);
+  animation-delay: -4s;
+}
+
+.wish-cosmic-orbit {
+  border-radius: 50%;
+  border: 1px solid rgba(176,214,255,.14);
+  opacity: .6;
+}
+
+.wish-cosmic-orbit--one {
+  width: 420px;
+  height: 420px;
+  right: -40px;
+  top: -36px;
+}
+
+.wish-cosmic-orbit--two {
+  width: 300px;
+  height: 300px;
+  left: -80px;
+  bottom: -40px;
+  opacity: .36;
+}
+
+.wish-cosmic-planet {
+  border-radius: 50%;
+}
+
+.wish-cosmic-planet--one {
+  width: 86px;
+  height: 86px;
+  right: 12%;
+  bottom: 14%;
+  background: radial-gradient(circle at 34% 30%, rgba(248,252,255,.94), rgba(133,163,255,.58) 42%, rgba(94,108,255,.18) 78%);
+  box-shadow: 0 0 42px rgba(133,163,255,.28);
+}
+
+.wish-cosmic-planet--two {
+  width: 44px;
+  height: 44px;
+  left: 16%;
+  top: 18%;
+  background: radial-gradient(circle at 34% 30%, rgba(255,255,255,.98), rgba(160,214,255,.62) 44%, rgba(96,130,255,.22) 84%);
+}
+
+.wish-cosmic-star {
+  color: #eef7ff;
+  text-shadow: 0 0 12px rgba(180,222,255,.82), 0 0 24px rgba(152,201,255,.34);
+  animation: cursorTwinkle 3s ease-in-out infinite;
+}
+
+.wish-cosmic-star::before {
+  content: "✦";
+}
+
+.wish-cosmic-star--one { left: 16%; top: 18%; font-size: 14px; }
+.wish-cosmic-star--two { right: 18%; top: 26%; font-size: 12px; animation-delay: -.8s; }
+.wish-cosmic-star--three { right: 22%; bottom: 20%; font-size: 16px; animation-delay: -1.6s; }
+
+.wish-sakura-sun {
+  width: 180px;
+  height: 180px;
+  left: 8%;
+  top: 4%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,250,221,.92), rgba(255,234,194,.46) 48%, rgba(255,238,246,0) 78%);
+  filter: blur(4px);
+}
+
+.wish-sakura-canopy {
+  top: -30px;
+  height: 170px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 50% 60%, rgba(255,188,212,.88), rgba(255,215,228,.56) 56%, rgba(255,215,228,0) 78%);
+  filter: blur(4px);
+  animation: sakuraBreath 6.8s ease-in-out infinite;
+}
+
+.wish-sakura-canopy--one {
+  left: -20px;
+  width: 260px;
+}
+
+.wish-sakura-canopy--two {
+  right: -10px;
+  width: 320px;
+  animation-delay: -2.4s;
+}
+
+.wish-sakura-canopy--three {
+  left: 30%;
+  top: -20px;
+  width: 240px;
+  height: 150px;
+  animation-delay: -4.1s;
+  opacity: .84;
+}
+
+.wish-sakura-tree {
+  bottom: 0;
+  width: 22px;
+  border-radius: 20px 20px 0 0;
+  background: linear-gradient(180deg, rgba(137,92,81,.58), rgba(111,71,63,.42));
+  opacity: .56;
+}
+
+.wish-sakura-tree--left {
+  left: 6%;
+  height: 210px;
+}
+
+.wish-sakura-tree--right {
+  right: 10%;
+  height: 178px;
+  opacity: .42;
+}
+
+.wish-sakura-branch {
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(141,100,91,.46), rgba(173,123,110,.32));
+  transform-origin: left center;
+}
+
+.wish-sakura-branch--one {
+  left: 8%;
+  top: 22%;
+  width: 220px;
+  transform: rotate(12deg);
+}
+
+.wish-sakura-branch--two {
+  right: 12%;
+  top: 18%;
+  width: 180px;
+  transform: rotate(-12deg);
+}
+
+.wish-sakura-ground {
+  left: -4%;
+  right: -4%;
+  bottom: -4%;
+  height: 120px;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(204,233,192,.54), transparent 22%),
+    radial-gradient(circle at 80% 30%, rgba(204,233,192,.44), transparent 22%),
+    linear-gradient(180deg, rgba(231,246,219,.18), rgba(198,226,184,.48));
+}
+
+.wish-sakura-flowerbed {
+  bottom: 0;
+  height: 130px;
+  border-radius: 50% 50% 0 0;
+  opacity: .74;
+}
+
+.wish-sakura-flowerbed--one {
+  left: -4%;
+  width: 220px;
+  background:
+    radial-gradient(circle at 20% 28%, rgba(255,183,211,.66), transparent 8%),
+    radial-gradient(circle at 36% 20%, rgba(255,202,223,.62), transparent 8%),
+    radial-gradient(circle at 54% 30%, rgba(255,177,207,.64), transparent 8%),
+    radial-gradient(circle at 72% 24%, rgba(255,214,230,.66), transparent 8%),
+    linear-gradient(180deg, rgba(219,239,206,0), rgba(199,228,186,.42) 46%, rgba(189,221,177,.58));
+}
+
+.wish-sakura-flowerbed--two {
+  left: 34%;
+  width: 260px;
+  background:
+    radial-gradient(circle at 22% 28%, rgba(255,192,217,.62), transparent 8%),
+    radial-gradient(circle at 42% 18%, rgba(255,221,234,.72), transparent 8%),
+    radial-gradient(circle at 64% 30%, rgba(255,184,211,.58), transparent 8%),
+    radial-gradient(circle at 78% 22%, rgba(255,205,225,.62), transparent 8%),
+    linear-gradient(180deg, rgba(219,239,206,0), rgba(204,232,191,.38) 48%, rgba(192,224,179,.5));
+}
+
+.wish-sakura-flowerbed--three {
+  right: -4%;
+  width: 220px;
+  background:
+    radial-gradient(circle at 18% 26%, rgba(255,188,213,.66), transparent 8%),
+    radial-gradient(circle at 34% 18%, rgba(255,212,229,.7), transparent 8%),
+    radial-gradient(circle at 56% 28%, rgba(255,180,208,.62), transparent 8%),
+    radial-gradient(circle at 74% 22%, rgba(255,225,236,.72), transparent 8%),
+    linear-gradient(180deg, rgba(219,239,206,0), rgba(200,228,186,.38) 48%, rgba(189,221,177,.52));
+}
+
+.wish-sakura-bloom {
+  font-size: 22px;
+  filter: drop-shadow(0 0 12px rgba(255,191,213,.42));
+  opacity: .88;
+}
+
+.wish-sakura-bloom--one { left: 15%; top: 24%; }
+.wish-sakura-bloom--two { left: 32%; top: 18%; font-size: 18px; opacity: .72; }
+.wish-sakura-bloom--three { right: 24%; top: 18%; }
+.wish-sakura-bloom--four { right: 12%; top: 28%; font-size: 18px; opacity: .76; }
+.wish-sakura-bloom--five { left: 58%; top: 14%; font-size: 16px; opacity: .68; }
+
+.wish-sakura-butterfly {
+  font-size: 18px;
+  opacity: .78;
+  animation: wishButterflyFloat 9s ease-in-out infinite;
+}
+
+.wish-sakura-butterfly--one {
+  left: 22%;
+  top: 36%;
+}
+
+.wish-sakura-butterfly--two {
+  right: 18%;
+  top: 42%;
+  animation-delay: -3.2s;
+}
+
+.wish-sakura-petal {
+  font-size: 18px;
+  animation: wishPetalDrift 8s ease-in-out infinite;
+}
+
+.wish-sakura-petal--one { left: 18%; top: 28%; }
+.wish-sakura-petal--two { left: 72%; top: 22%; animation-delay: -2s; }
+.wish-sakura-petal--three { right: 18%; bottom: 26%; animation-delay: -4.2s; }
+.wish-sakura-petal--four { left: 36%; bottom: 20%; animation-delay: -5.6s; }
+
+.wish-node {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  min-width: 72px;
+  max-width: min(64vw, 260px);
+  padding: 8px 10px 10px;
+  border-radius: 18px;
+  transform: translate(-50%, 14%) scale(.7);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 1.2s var(--ease), opacity .45s ease;
+}
+
+.wish-node.is-settled {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+}
+
+.wish-node__halo {
+  position: absolute;
+  inset: -12px;
+  border-radius: 22px;
+  z-index: 0;
+}
+
+html[data-theme="cosmic"] .wish-node {
+  background:
+    linear-gradient(180deg, rgba(16,32,84,.88), rgba(12,22,60,.72)),
+    linear-gradient(90deg, rgba(255,255,255,.08), rgba(255,255,255,0));
+  border: 1px solid rgba(176,214,255,.26);
+  box-shadow: 0 12px 28px rgba(5,10,28,.18), 0 0 22px rgba(145,198,255,.12);
+}
+
+html[data-theme="cosmic"] .wish-node__halo {
+  background: radial-gradient(circle, rgba(149,207,255,.18), transparent 70%);
+}
+
+html[data-theme="sakura"] .wish-node {
+  min-width: 0;
+  max-width: min(64vw, 190px);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+}
+
+html[data-theme="sakura"] .wish-node__halo {
+  inset: -8px;
+  background: radial-gradient(circle, rgba(255,204,222,.28), transparent 72%);
+}
+
+.wish-node__flower {
+  position: relative;
+  width: 76px;
+  height: 76px;
+  display: block;
+}
+
+.wish-node__petal {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 28px;
+  height: 38px;
+  margin-left: -14px;
+  margin-top: -19px;
+  border-radius: 18px 18px 14px 14px;
+  background: linear-gradient(180deg, rgba(255,246,250,.98), rgba(255,194,219,.96) 44%, rgba(255,163,194,.86) 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 8px 16px rgba(235,164,193,.2);
+  transform-origin: 50% 68%;
+}
+
+.wish-node__petal--1 { transform: translate(-50%, -50%) rotate(0deg) translateY(-22px); }
+.wish-node__petal--2 { transform: translate(-50%, -50%) rotate(72deg) translateY(-22px); }
+.wish-node__petal--3 { transform: translate(-50%, -50%) rotate(144deg) translateY(-22px); }
+.wish-node__petal--4 { transform: translate(-50%, -50%) rotate(216deg) translateY(-22px); }
+.wish-node__petal--5 { transform: translate(-50%, -50%) rotate(288deg) translateY(-22px); }
+
+.wish-node__core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 30px;
+  height: 30px;
+  margin-left: -15px;
+  margin-top: -15px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle, rgba(255,254,245,.98), rgba(255,223,153,.92) 46%, rgba(255,184,112,.82) 88%);
+  color: #b86b8e;
+  font-size: 16px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.84), 0 6px 12px rgba(224,171,123,.22);
+  transform: rotate(var(--wish-tilt));
+}
+
+.wish-node__spark {
+  position: relative;
+  z-index: 1;
+  display: block;
+  text-align: center;
+  font-size: 22px;
+}
+
+html[data-theme="cosmic"] .wish-node__spark {
+  filter: drop-shadow(0 0 12px rgba(171,220,255,.82));
+}
+
+html[data-theme="sakura"] .wish-node__spark {
+  filter: drop-shadow(0 0 10px rgba(255,189,210,.56));
+}
+
+.wish-node__text {
+  position: relative;
+  z-index: 1;
+  margin: 5px 0 0;
+  font-size: 12px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+html[data-theme="cosmic"] .wish-node__text { color: #eaf3ff; }
+html[data-theme="sakura"] .wish-node__text { color: #704b5e; }
+
+html[data-theme="sakura"] .wish-node__text {
+  margin-top: 0;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(255,251,253,.92);
+  border: 1px solid rgba(255,198,218,.48);
+  box-shadow: 0 8px 18px rgba(222,162,189,.16);
+  white-space: nowrap;
+  max-width: 180px;
+}
+
+html[data-theme="sakura"] .wish-node.is-settled .wish-node__flower {
+  animation: wishSakuraFlowerFloat 8.2s ease-in-out infinite;
+  animation-delay: var(--wish-delay, 0s);
+}
+
+@keyframes introGlow {
+  0%, 100% { transform: scale(.96); opacity: .82; }
+  50% { transform: scale(1.04); opacity: 1; }
+}
+
+@keyframes twinkle { 50% { opacity: .34; } }
+
+@keyframes constellationTwinkle {
+  0%, 100% { opacity: .08; }
+  50% { opacity: .2; }
+}
+
+@keyframes skyDrift {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-26px, 22px, 0); }
+}
+
+@keyframes heroStarDrift {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-18px, 14px, 0); }
+}
+
+@keyframes milkyBandDrift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(10px, -6px, 0) scale(1.02); }
+}
+
+@keyframes sakuraBreath {
+  0%, 100% { transform: scale(1); opacity: .86; }
+  50% { transform: scale(1.04); opacity: 1; }
+}
+
+@keyframes raySweep {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(6px, 2px, 0) rotate(2deg); }
+}
+
+@keyframes rayPulse {
+  0%, 100% { opacity: .36; transform: scale(1); }
+  50% { opacity: .54; transform: scale(1.04); }
+}
+
+@keyframes streamFlowA {
+  0% { transform: translate3d(-10vw, 0, 0) rotate(-6deg); opacity: 0; }
+  14% { opacity: .46; }
+  88% { opacity: .46; }
+  100% { transform: translate3d(132vw, 2vh, 0) rotate(-4deg); opacity: 0; }
+}
+
+@keyframes streamFlowB {
+  0% { transform: translate3d(-12vw, 0, 0) rotate(4deg); opacity: 0; }
+  14% { opacity: .4; }
+  88% { opacity: .4; }
+  100% { transform: translate3d(132vw, -2vh, 0) rotate(6deg); opacity: 0; }
+}
+
+@keyframes streamFlowC {
+  0% { transform: translate3d(-14vw, 0, 0) rotate(-5deg); opacity: 0; }
+  14% { opacity: .42; }
+  88% { opacity: .42; }
+  100% { transform: translate3d(132vw, 1.5vh, 0) rotate(-3deg); opacity: 0; }
+}
+
+@keyframes fxFall {
+  0% {
+    transform: translate3d(0, -100px, 0) rotate(0deg);
+    opacity: 0;
+  }
+  14% { opacity: .92; }
+  100% {
+    transform: translate3d(var(--dx), 112vh, 0) rotate(var(--spin));
+    opacity: 0;
+  }
+}
+
+@keyframes fxFlutter {
+  0% {
+    transform: translate3d(-8vw, -6vh, 0) rotate(-14deg) scale(.8);
+    opacity: 0;
+  }
+  14% { opacity: .9; }
+  50% {
+    transform: translate3d(44vw, 8vh, 0) rotate(8deg) scale(1);
+  }
+  100% {
+    transform: translate3d(108vw, -4vh, 0) rotate(18deg) scale(.9);
+    opacity: 0;
+  }
+}
+
+@keyframes fxBuzz {
+  0% {
+    transform: translate3d(-8vw, 10vh, 0) rotate(-8deg) scale(.78);
+    opacity: 0;
+  }
+  12% { opacity: .92; }
+  50% {
+    transform: translate3d(46vw, 0, 0) rotate(5deg) scale(1);
+  }
+  100% {
+    transform: translate3d(108vw, 12vh, 0) rotate(12deg) scale(.9);
+    opacity: 0;
+  }
+}
+
+@keyframes fxBirdGlide {
+  0% {
+    transform: translate3d(-12vw, -4vh, 0) rotate(-4deg) scale(.85);
+    opacity: 0;
+  }
+  18% { opacity: .9; }
+  100% {
+    transform: translate3d(110vw, 8vh, 0) rotate(6deg) scale(1.02);
+    opacity: 0;
+  }
+}
+
+@keyframes shooting {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(var(--shoot-angle, 34deg)) scale(var(--shoot-scale-start, .52));
+    opacity: 0;
+  }
+  14% { opacity: .96; }
+  62% { opacity: .82; }
+  100% {
+    transform: translate3d(var(--shoot-dx, 36vw), var(--shoot-dy, 46vh), 0) rotate(var(--shoot-angle, 34deg)) scale(var(--shoot-scale-end, 1));
+    opacity: 0;
+  }
+}
+
+@keyframes constellationLife {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.9); }
+  18% { opacity: .86; }
+  82% { opacity: .74; }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.06); }
+}
+
+@keyframes sparkleNode {
+  0%, 100% { opacity: .42; transform: scale(.8); }
+  50% { opacity: 1; transform: scale(1.18); }
+}
+
+@keyframes bridgeLife {
+  0% { opacity: 0; }
+  16% { opacity: .46; }
+  78% { opacity: .26; }
+  100% { opacity: 0; }
+}
+
+@keyframes previewDrift {
+  0% {
+    transform: translate3d(-10vw, calc(var(--drift-y) * -.45), 0) rotate(var(--rot-start)) scale(var(--scale));
+    opacity: 0;
+  }
+  16% { opacity: .54; }
+  60% { opacity: .84; }
+  100% {
+    transform: translate3d(124vw, var(--drift-y), 0) rotate(var(--rot-end)) scale(calc(var(--scale) * 1.04));
+    opacity: 0;
+  }
+}
+
+@keyframes heroHoverStar {
+  0% { transform: translate3d(0, 0, 0) scale(.5); opacity: 0; }
+  30% { opacity: 1; }
+  100% { transform: translate3d(var(--dx), var(--dy), 0) scale(1.4); opacity: 0; }
+}
+
+@keyframes heroHoverPetal {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(.7);
+    opacity: 0;
+  }
+  20% { opacity: 1; }
+  100% {
+    transform: translate3d(var(--dx), var(--dy), 0) rotate(var(--rot, 90deg)) scale(1.1);
+    opacity: 0;
+  }
+}
+
+@keyframes flutterInHero {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-6deg); }
+  50% { transform: translate3d(10px, -8px, 0) rotate(8deg); }
+}
+
+@keyframes buzzInHero {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-2deg); }
+  50% { transform: translate3d(8px, -6px, 0) rotate(6deg); }
+}
+
+@keyframes birdInHero {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-4deg); }
+  50% { transform: translate3d(12px, -10px, 0) rotate(5deg); }
+}
+
+@keyframes sparkTwinkle {
+  0%, 100% { opacity: .25; transform: scale(.8); }
+  50% { opacity: .9; transform: scale(1.18); }
+}
+
+@keyframes galaxySkyTwinkle {
+  0%, 100% { opacity: calc(var(--opacity, .3) * .62); transform: scale(.84); }
+  38% { opacity: var(--opacity, .3); transform: scale(1.02); }
+  72% { opacity: calc(var(--opacity, .3) * .78); transform: scale(.9); }
+}
+
+@keyframes galaxySkyFloat {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(var(--drift-x, 4px), var(--drift-y, -3px), 0); }
+}
+
+@keyframes bloomWarp {
+  0% { transform: translate(-50%, -50%) scale(.2); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(18); opacity: 0; }
+}
+
+@keyframes sakuraBloomWarp {
+  0% { transform: translate(-50%, -50%) scale(.18) rotate(-10deg); opacity: 0; }
+  22% { opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(16) rotate(18deg); opacity: 0; }
+}
+
+@keyframes cosmicBloomWarp {
+  0% { transform: translate(-50%, -50%) scale(.18); opacity: 0; }
+  18% { opacity: 1; }
+  62% { transform: translate(-50%, -50%) scale(7.8); opacity: .96; }
+  100% { transform: translate(-50%, -50%) scale(20); opacity: 0; }
+}
+
+@keyframes cosmicCore {
+  0% { transform: translate(-50%, -50%) scale(.24); opacity: 0; }
+  25% { opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(9); opacity: 0; }
+}
+
+@keyframes cosmicRing {
+  0% { transform: translate(-50%, -50%) scale(.3); opacity: 0; }
+  16% { opacity: .95; }
+  100% { transform: translate(-50%, -50%) scale(17); opacity: 0; }
+}
+
+@keyframes cosmicParticle {
+  0% {
+    transform: translate(-50%, -50%) scale(.5);
+    opacity: 0;
+  }
+  18% { opacity: 1; }
+  100% {
+    transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1.1);
+    opacity: 0;
+  }
+}
+
+@keyframes cosmicHeroDepart {
+  0% {
+    transform: scale(1) translate3d(0, 0, 0);
+    filter: saturate(1) brightness(1);
+  }
+  100% {
+    transform: scale(1.035) translate3d(0, -6px, 0);
+    filter: saturate(1.08) brightness(1.08) blur(.8px);
+  }
+}
+
+@keyframes cosmicHeroCopyDepart {
+  0% { opacity: 1; transform: translate3d(0, 0, 0); }
+  100% { opacity: .16; transform: translate3d(-26px, 0, 0); }
+}
+
+@keyframes cosmicHeroVisualDepart {
+  0% { opacity: 1; transform: translate3d(0, 0, 0); }
+  100% { opacity: .34; transform: translate3d(28px, -10px, 0) scale(1.03); }
+}
+
+@keyframes cosmicSelectedLift {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(var(--tilt, 0deg)) scale(1);
+    box-shadow: 0 0 0 1px rgba(214,238,255,.36), 0 0 26px rgba(145,202,255,.24);
+    filter: saturate(1);
+  }
+  44% {
+    transform: translate3d(0, -8px, 0) rotate(var(--tilt, 0deg)) scale(1.04);
+    box-shadow: 0 0 0 1px rgba(226,242,255,.72), 0 0 54px rgba(156,213,255,.58);
+    filter: saturate(1.08);
+  }
+  100% {
+    transform: translate3d(0, -4px, 0) rotate(var(--tilt, 0deg)) scale(1.01);
+    box-shadow: 0 0 0 1px rgba(226,242,255,.48), 0 0 38px rgba(156,213,255,.42);
+    filter: saturate(1.04);
+  }
+}
+
+@keyframes sakuraLaunchGlow {
+  0% { transform: translate(-50%, -50%) scale(.3); opacity: 0; }
+  18% { opacity: .96; }
+  100% { transform: translate(-50%, -50%) scale(10.4); opacity: 0; }
+}
+
+@keyframes sakuraLaunchRing {
+  0% { transform: translate(-50%, -50%) scale(.24); opacity: 0; }
+  22% { opacity: .82; }
+  100% { transform: translate(-50%, -50%) scale(7.8); opacity: 0; }
+}
+
+@keyframes sakuraLaunchCore {
+  0% { transform: translate(-50%, -50%) scale(.18) rotate(-18deg); opacity: 0; }
+  24% { opacity: 1; }
+  56% { transform: translate(-50%, -50%) scale(1.06) rotate(4deg); opacity: 1; }
+  100% { transform: translate(-50%, calc(-50% - 128px)) scale(.44) rotate(22deg); opacity: 0; }
+}
+
+@keyframes sakuraLaunchPetal {
+  0% { transform: translate(-50%, -50%) scale(.5) rotate(0deg); opacity: 0; }
+  18% { opacity: 1; }
+  100% {
+    transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1.16) rotate(var(--rz, 90deg));
+    opacity: 0;
+  }
+}
+
+@keyframes sakuraPortalVeil {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.26); }
+  24% { opacity: .92; }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(6.8); }
+}
+
+@keyframes sakuraPortalSwirlGlow {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.24); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(4.4); }
+}
+
+@keyframes sakuraPortalSwirlRing {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.28) rotate(-12deg); }
+  26% { opacity: .9; }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(2.5) rotate(72deg); }
+}
+
+@keyframes sakuraPortalSwirlCore {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.24) rotate(-14deg); }
+  30% { opacity: 1; }
+  56% { opacity: 1; transform: translate(-50%, -50%) scale(1.08) rotate(8deg); }
+  100% { opacity: 0; transform: translate(-50%, calc(-50% - 38px)) scale(.56) rotate(24deg); }
+}
+
+@keyframes sakuraPortalSwirlPetal {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.4) rotate(0deg); }
+  18% { opacity: 1; }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1.02) rotate(var(--rz, 120deg));
+  }
+}
+
+@keyframes sakuraPortalPull {
+  0% {
+    transform: translate3d(0, 0, var(--depth-z, 0px)) rotate(var(--base-rotate, 0deg)) scale(1);
+    opacity: 1;
+  }
+  26% {
+    transform:
+      translate3d(calc(var(--arc-x, 0px) * .34), calc(var(--arc-y, 0px) * .26 - 10px), calc(var(--depth-z, 0px) + 8px))
+      rotate(calc(var(--base-rotate, 0deg) + var(--spin-a, 18deg)))
+      scale(1.03);
+    opacity: 1;
+  }
+  68% {
+    transform:
+      translate3d(calc(var(--portal-dx) * .62 + var(--arc-x, 0px)), calc(var(--portal-dy) * .5 + var(--arc-y, 0px)), 16px)
+      rotate(calc(var(--base-rotate, 0deg) + var(--spin-b, 84deg)))
+      scale(.7);
+    opacity: .88;
+  }
+  100% {
+    transform:
+      translate3d(var(--portal-dx), var(--portal-dy), -24px)
+      rotate(calc(var(--base-rotate, 0deg) + var(--spin-c, 150deg)))
+      scale(var(--petal-scale, .16));
+    opacity: 0;
+  }
+}
+
+@keyframes sakuraPortalField {
+  0% {
+    opacity: 1;
+    clip-path: inset(0 round 32px);
+    transform: scale(1);
+  }
+  62% {
+    opacity: .94;
+    clip-path: ellipse(46% 40% at 50% 50%);
+    transform: scale(.99);
+  }
+  100% {
+    opacity: 0;
+    clip-path: ellipse(14% 14% at 50% 50%);
+    transform: scale(1.02);
+  }
+}
+
+@keyframes sakuraPortalGlow {
+  0% {
+    opacity: .18;
+    clip-path: circle(10% at 50% 50%);
+    transform: scale(.82);
+  }
+  42% {
+    opacity: .96;
+    clip-path: circle(24% at 50% 50%);
+    transform: scale(1.04);
+  }
+  100% {
+    opacity: 1;
+    clip-path: circle(54% at 50% 50%);
+    transform: scale(1.16);
+  }
+}
+
+@keyframes sakuraPortalDecor {
+  0% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+  100% { opacity: 0; transform: translate3d(0, -10px, 0) scale(.92); }
+}
+
+@keyframes sakuraPortalText {
+  0% { opacity: 1; transform: translateX(-50%) scale(1); }
+  100% { opacity: 0; transform: translateX(-50%) scale(.7); }
+}
+
+@keyframes sakuraPortalHold {
+  0% { transform: translate(calc(-50% + var(--px)), calc(-50% + var(--py))) scale(1); }
+  100% { transform: translate(calc(-50% + var(--px)), calc(-50% + var(--py))) scale(1.03); }
+}
+
+@keyframes sakuraPortalCore {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 12px rgba(255,190,217,.2), 0 0 46px rgba(255,182,193,.4);
+    filter: brightness(1);
+  }
+  54% {
+    transform: scale(.8);
+    box-shadow: 0 0 0 8px rgba(255,199,218,.16), 0 0 32px rgba(255,194,214,.34);
+    filter: brightness(.96);
+  }
+  100% {
+    transform: scale(.14);
+    box-shadow: 0 0 0 0 rgba(255,199,218,0), 0 0 0 rgba(255,194,214,0);
+    filter: brightness(.92);
+  }
+}
+
+@keyframes sakuraPortalTextFade {
+  0% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(.46); }
+}
+
+@keyframes sakuraPortalWreath {
+  0% { opacity: .92; transform: scale(1) rotate(0deg); }
+  100% { opacity: 0; transform: scale(.26) rotate(96deg); }
+}
+
+@keyframes sakuraPortalBloom {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.16); }
+  24% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: .98; transform: translate(-50%, -50%) scale(1.72); }
+}
+
+@keyframes sakuraPortalPetalWave {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.14); }
+  22% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(6.4); }
+}
+
+@keyframes sakuraPortalFlash {
+  0% {
+    background:
+      radial-gradient(circle at 50% 50%, rgba(255,255,255,.82), rgba(255,220,232,.42) 14%, rgba(255,220,232,0) 32%),
+      linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,0));
+    opacity: 0;
+  }
+  22% { opacity: 1; }
+  100% {
+    background:
+      radial-gradient(circle at 50% 50%, rgba(255,255,255,0), rgba(255,220,232,0) 24%, rgba(255,220,232,0) 42%),
+      linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,0));
+    opacity: 0;
+  }
+}
+
+@keyframes portalPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+
+@keyframes ringPulse {
+  0%, 100% { transform: scale(1); opacity: .55; }
+  50% { transform: scale(1.1); opacity: .9; }
+}
+
+@keyframes flyToPortal {
+  0% { opacity: 1; }
+  100% { opacity: 0; transform: translate3d(0, 0, 0) scale(.18) rotate(0deg); }
+}
+
+@keyframes blackHolePull {
+  0% {
+    transform: translate3d(0, 0, var(--depth-z, 0px)) rotate(var(--base-rotate, 0deg)) scale(1);
+    opacity: 1;
+  }
+  42% {
+    transform:
+      translate3d(calc(var(--portal-dx) * .42 + var(--arc-x, 0px)), calc(var(--portal-dy) * .34 + var(--arc-y, 0px)), calc(var(--depth-z, 0px) - 6px))
+      rotate(calc(var(--base-rotate, 0deg) + var(--spin-a, 120deg)))
+      scale(.76);
+    opacity: .98;
+  }
+  78% {
+    opacity: .84;
+  }
+  100% {
+    transform:
+      translate3d(var(--portal-dx), var(--portal-dy), -40px)
+      rotate(calc(var(--base-rotate, 0deg) + var(--spin-b, 320deg)))
+      scale(.05);
+    opacity: 0;
+  }
+}
+
+@keyframes blackHoleFieldCollapse {
+  0% {
+    opacity: 1;
+    clip-path: circle(88% at 50% 50%);
+    transform: scale(1);
+  }
+  62% {
+    opacity: .94;
+    clip-path: circle(26% at 50% 50%);
+    transform: scale(.98);
+  }
+  100% {
+    opacity: 0;
+    clip-path: circle(7% at 50% 50%);
+    transform: scale(.96);
+  }
+}
+
+@keyframes blackHoleCenterPulse {
+  0% {
+    opacity: .28;
+    clip-path: circle(8% at 50% 50%);
+    transform: scale(.92);
+  }
+  40% {
+    opacity: .94;
+    clip-path: circle(22% at 50% 50%);
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    clip-path: circle(18% at 50% 50%);
+    transform: scale(1);
+  }
+}
+
+@keyframes blackHoleLayerCollapse {
+  0% {
+    opacity: 1;
+    clip-path: circle(88% at 50% 50%);
+    transform: scale(1);
+  }
+  56% {
+    opacity: .78;
+    clip-path: circle(24% at 50% 50%);
+    transform: scale(.94);
+  }
+  100% {
+    opacity: 0;
+    clip-path: circle(5% at 50% 50%);
+    transform: scale(.88);
+  }
+}
+
+@keyframes blackHoleTextCollapse {
+  0% { opacity: 1; transform: translateX(-50%) scale(1); }
+  100% { opacity: 0; transform: translateX(-50%) scale(.16); }
+}
+
+@keyframes blackHolePortalHold {
+  0% { transform: translate(calc(-50% + var(--px)), calc(-50% + var(--py))) scale(1); }
+  100% { transform: translate(calc(-50% + var(--px)), calc(-50% + var(--py))) scale(1.02); }
+}
+
+@keyframes blackHolePortalCore {
+  0% {
+    transform: scale(1);
+    border-color: rgba(196,227,255,.62);
+    box-shadow: 0 0 0 14px rgba(144,195,255,.16), 0 0 42px rgba(149,201,255,.52);
+    filter: brightness(1);
+  }
+  48% {
+    transform: scale(.82);
+    border-color: rgba(120,172,255,.28);
+    box-shadow: 0 0 0 8px rgba(92,136,255,.14), 0 0 54px rgba(72,96,188,.42);
+    filter: brightness(.46);
+  }
+  100% {
+    transform: scale(.08);
+    border-color: rgba(90,130,210,0);
+    box-shadow: 0 0 0 0 rgba(92,136,255,0), 0 0 0 rgba(72,96,188,0);
+    filter: brightness(.1);
+  }
+}
+
+@keyframes blackHolePortalText {
+  0% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(.4); }
+}
+
+@keyframes blackHoleAccretion {
+  0% { opacity: .9; transform: scale(1) rotate(0deg); filter: blur(0); }
+  100% { opacity: 0; transform: scale(.22) rotate(180deg); filter: blur(8px); }
+}
+
+@keyframes blackHoleSingularity {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.18); }
+  26% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+  68% { opacity: 1; transform: translate(-50%, -50%) scale(2.2); }
+  100% { opacity: .96; transform: translate(-50%, -50%) scale(1.2); }
+}
+
+@keyframes blackHoleShockwave {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.1); }
+  18% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(7.4); }
+}
+
+@keyframes blackHoleBurstFlash {
+  0% {
+    background:
+      radial-gradient(circle at 50% 50%, rgba(255,255,255,.82), rgba(196,230,255,.42) 14%, rgba(196,230,255,0) 32%),
+      linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,0));
+    opacity: 0;
+  }
+  22% { opacity: 1; }
+  100% {
+    background:
+      radial-gradient(circle at 50% 50%, rgba(255,255,255,0), rgba(196,230,255,0) 26%, rgba(196,230,255,0) 42%),
+      linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,0));
+    opacity: 0;
+  }
+}
+
+@keyframes portalOpen {
+  0% { transform: scale(1); }
+  45% { transform: scale(.9); }
+  100% { transform: scale(1.26); opacity: .1; }
+}
+
+@keyframes supernovaIn {
+  0% { opacity: 0; transform: scale(.2); }
+  100% { opacity: 1; transform: scale(1.16); }
+}
+
+@keyframes supernovaOut {
+  0% { opacity: 1; transform: scale(1.02); }
+  100% { opacity: 0; transform: scale(1.62); }
+}
+
+@keyframes supernovaGlowIn {
+  0% { opacity: 0; transform: scale(.34); }
+  100% { opacity: 1; transform: scale(1.22); }
+}
+
+@keyframes supernovaGlowOut {
+  0% { opacity: 1; transform: scale(1.08); }
+  100% { opacity: 0; transform: scale(1.82); }
+}
+
+@keyframes letterStarfield {
+  0% { transform: translate3d(0, 0, 0); opacity: .18; }
+  50% { transform: translate3d(-8px, 6px, 0); opacity: .28; }
+  100% { transform: translate3d(-16px, 12px, 0); opacity: .18; }
+}
+
+@keyframes letterNebulaFloat {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: .7; }
+  50% { transform: translate3d(10px, -8px, 0) scale(1.04); opacity: 1; }
+}
+
+@keyframes letterVaultSpin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes letterVaultSpinReverse {
+  0% { transform: translate(-50%, -50%) rotate(360deg); }
+  100% { transform: translate(-50%, -50%) rotate(0deg); }
+}
+
+@keyframes letterPlanetFloat {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(0, -8px, 0) scale(1.04); }
+}
+
+@keyframes letterBeamPulse {
+  0% { opacity: 0; transform: translateX(-50%) scaleY(.76); }
+  40% { opacity: .78; }
+  100% { opacity: .54; transform: translateX(-50%) scaleY(1); }
+}
+
+@keyframes cosmicEnvelopeFloat {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  25% { transform: translate3d(0, -2px, 0); }
+  50% { transform: translate3d(0, -5px, 0); }
+  75% { transform: translate3d(0, -2px, 0); }
+}
+
+@keyframes sakuraCanopyDrift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(8px, -6px, 0) scale(1.02); }
+}
+
+@keyframes sakuraLetterPetalDrift {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-6deg) scale(1); }
+  35% { transform: translate3d(10px, -8px, 0) rotate(8deg) scale(1.04); }
+  70% { transform: translate3d(-8px, 6px, 0) rotate(-10deg) scale(.98); }
+}
+
+@keyframes sakuraLetterSunPulse {
+  0% { opacity: .18; transform: scale(.86); }
+  40% { opacity: .96; transform: scale(1.02); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes sakuraEnvelopeFloat {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  25% { transform: translate3d(2px, -2px, 0) rotate(.35deg); }
+  50% { transform: translate3d(0, -5px, 0) rotate(0deg); }
+  75% { transform: translate3d(-2px, -2px, 0) rotate(-.35deg); }
+}
+
+@keyframes envelopeArrive {
+  0% { transform: translateY(30px) scale(.94); opacity: .2; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+@keyframes heroFloatOne {
+  0%, 100% { transform: translateY(0) rotate(var(--tilt)); }
+  50% { transform: translateY(-10px) rotate(calc(var(--tilt) + 1.4deg)); }
+}
+
+@keyframes heroFloatTwo {
+  0%, 100% { transform: translateY(0) rotate(var(--tilt)); }
+  50% { transform: translateY(-12px) rotate(calc(var(--tilt) - 1.3deg)); }
+}
+
+@keyframes orbitCard {
+  0%, 100% {
+    transform: translate3d(0, 0, var(--depth-z, 0px)) rotate(var(--base-rotate, 0deg));
+  }
+  35% {
+    transform: translate3d(var(--orbit-x, 0px), calc(var(--orbit-y, 0px) * -1), calc(var(--depth-z, 0px) + 6px))
+      rotate(calc(var(--base-rotate, 0deg) + 1.6deg));
+  }
+  70% {
+    transform: translate3d(calc(var(--orbit-x, 0px) * -0.7), var(--orbit-y, 0px), calc(var(--depth-z, 0px) - 2px))
+      rotate(calc(var(--base-rotate, 0deg) - 1.4deg));
+  }
+}
+
+@keyframes orbitCardEcho {
+  0%, 100% {
+    transform: translate3d(0, 0, var(--depth-z, 0px)) rotate(var(--base-rotate, 0deg)) scale(.98);
+  }
+  50% {
+    transform: translate3d(calc(var(--orbit-x, 0px) * .8), calc(var(--orbit-y, 0px) * -1.2), calc(var(--depth-z, 0px) - 3px))
+      rotate(calc(var(--base-rotate, 0deg) + 2deg)) scale(1);
+  }
+}
+
+@keyframes sakuraHeroDepart {
+  0% { transform: scale(1) translate3d(0, 0, 0); filter: saturate(1); }
+  100% { transform: scale(1.035) translate3d(0, -8px, 0); filter: saturate(1.06) blur(1.4px); }
+}
+
+@keyframes sakuraHeroLayerDepart {
+  0% { opacity: 1; transform: translate3d(0, 0, 0); }
+  100% { opacity: .18; transform: translate3d(0, -20px, 0); }
+}
+
+@keyframes screenIn {
+  0% { opacity: 0; transform: scale(.62); }
+  100% { opacity: 1; transform: scale(1.06); }
+}
+
+@keyframes screenOut {
+  0% { opacity: 1; transform: scale(1.04); }
+  100% { opacity: 0; transform: scale(1.36); }
+}
+
+@keyframes screenGlowIn {
+  0% { opacity: 0; transform: scale(.8); }
+  100% { opacity: .9; transform: scale(1.1); }
+}
+
+@keyframes screenGlowOut {
+  0% { opacity: .9; transform: scale(1.08); }
+  100% { opacity: 0; transform: scale(1.5); }
+}
+
+@keyframes sakuraScreenIn {
+  0% { opacity: 0; transform: scale(.74) rotate(-6deg); }
+  100% { opacity: 1; transform: scale(1.04) rotate(3deg); }
+}
+
+@keyframes sakuraScreenOut {
+  0% { opacity: 1; transform: scale(1.02) rotate(2deg); }
+  100% { opacity: 0; transform: scale(1.22) rotate(10deg); }
+}
+
+@keyframes sakuraScreenGlowIn {
+  0% { opacity: 0; transform: scale(.88); }
+  100% { opacity: 1; transform: scale(1.12); }
+}
+
+@keyframes sakuraScreenGlowOut {
+  0% { opacity: .92; transform: scale(1.08); }
+  100% { opacity: 0; transform: scale(1.42); }
+}
+
+@keyframes blossomIn {
+  0% {
+    opacity: 0;
+    clip-path: circle(10% at 50% 56%);
+    transform: scale(.7) rotate(-10deg);
+  }
+  100% {
+    opacity: 1;
+    clip-path: circle(98% at 50% 56%);
+    transform: scale(1.08) rotate(4deg);
+  }
+}
+
+@keyframes blossomOut {
+  0% {
+    opacity: 1;
+    clip-path: circle(96% at 50% 56%);
+    transform: scale(1.02) rotate(2deg);
+  }
+  100% {
+    opacity: 0;
+    clip-path: circle(120% at 50% 56%);
+    transform: scale(1.3) rotate(10deg);
+  }
+}
+
+@keyframes blossomGlowIn {
+  0% { opacity: 0; transform: scale(.44); }
+  100% { opacity: 1; transform: scale(1.18); }
+}
+
+@keyframes blossomGlowOut {
+  0% { opacity: 1; transform: scale(1.04); }
+  100% { opacity: 0; transform: scale(1.7); }
+}
+
+@keyframes burstUp {
+  0% { transform: translate3d(0, 0, 0) scale(.8); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: translate3d(var(--dx), calc(var(--dy) * -1), 0) scale(1.25); opacity: 0; }
+}
+
+@keyframes linkFlow {
+  0% { stroke-dashoffset: 0; opacity: .34; }
+  50% { opacity: .65; }
+  100% { stroke-dashoffset: -120; opacity: .34; }
+}
+
+@keyframes sakuraThreadFlow {
+  0% { stroke-dashoffset: 0; opacity: .34; }
+  50% { opacity: .62; }
+  100% { stroke-dashoffset: -80; opacity: .34; }
+}
+
+@keyframes stageDust {
+  0% { transform: translate3d(0, 0, 0) scale(.6); opacity: 0; }
+  18% { opacity: 1; }
+  100% { transform: translate3d(var(--dx), var(--dy), 0) scale(1.45); opacity: 0; }
+}
+
+@keyframes sakuraCanopyBreath {
+  0%, 100% { transform: scale(1); opacity: .74; }
+  50% { transform: scale(1.04); opacity: .92; }
+}
+
+@keyframes sakuraSprayFloat {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(0, -5px, 0) scale(1.03); }
+}
+
+@keyframes sakuraHang {
+  0%, 100% {
+    transform: translate3d(0, 0, var(--depth-z, 0px)) rotate(var(--base-rotate, 0deg));
+  }
+  30% {
+    transform: translate3d(6px, -5px, calc(var(--depth-z, 0px) + 4px)) rotate(calc(var(--base-rotate, 0deg) + 1.5deg));
+  }
+  65% {
+    transform: translate3d(-5px, 4px, calc(var(--depth-z, 0px) - 2px)) rotate(calc(var(--base-rotate, 0deg) - 1.2deg));
+  }
+}
+
+@keyframes stageStarTwinkle {
+  0%, 100% { opacity: .16; transform: scale(.7); }
+  45% { opacity: .72; transform: scale(1.08); }
+  70% { opacity: .34; transform: scale(.86); }
+}
+
+@keyframes milkyFlow {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(var(--rot, 0deg)); opacity: .2; }
+  50% { transform: translate3d(8px, -6px, 0) rotate(calc(var(--rot, 0deg) + 2deg)); opacity: .34; }
+}
+
+@keyframes stagePlanetFloat {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(0, -8px, 0) scale(1.03); }
+}
+
+@keyframes orbitSpinA {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes orbitSpinB {
+  0% { transform: rotate(360deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes glyphSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes receiverShimmer {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 220% 50%; }
+}
+
+@keyframes portalSweep {
+  0%, 28% { transform: translateX(-130%) rotate(8deg); opacity: 0; }
+  40% { opacity: .9; }
+  56% { transform: translateX(116%) rotate(8deg); opacity: 0; }
+  100% { transform: translateX(116%) rotate(8deg); opacity: 0; }
+}
+
+@keyframes raysSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes raysPulse {
+  0%, 100% { opacity: .46; }
+  50% { opacity: .78; }
+}
+
+@keyframes raysBurst {
+  0% { opacity: .88; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.68); }
+}
+
+@keyframes cursorTwinkle {
+  0%, 100% { transform: scale(.92) rotate(0deg); opacity: .88; }
+  50% { transform: scale(1.08) rotate(12deg); opacity: 1; }
+}
+
+@keyframes sakuraCursorFloat {
+  0%, 100% { transform: translateY(0) rotate(-6deg); }
+  50% { transform: translateY(-2px) rotate(6deg); }
+}
+
+@keyframes choiceOrbitSpin {
+  0% { transform: rotate(0deg) scale(1); opacity: .72; }
+  50% { transform: rotate(180deg) scale(1.04); opacity: .92; }
+  100% { transform: rotate(360deg) scale(1); opacity: .72; }
+}
+
+@keyframes sakuraSealBreath {
+  0%, 100% { transform: scale(1); opacity: .72; }
+  50% { transform: scale(1.06); opacity: 1; }
+}
+
+@keyframes wishNebulaFloat {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: .42; }
+  50% { transform: translate3d(12px, -8px, 0) scale(1.06); opacity: .62; }
+}
+
+@keyframes wishPetalDrift {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-6deg); opacity: .84; }
+  50% { transform: translate3d(10px, 14px, 0) rotate(10deg); opacity: 1; }
+}
+
+@keyframes wishCosmicFloat {
+  0%, 100% { transform: translate(-50%, -50%) translate3d(0, 0, 0); }
+  50% { transform: translate(-50%, -50%) translate3d(0, -8px, 0); }
+}
+
+@keyframes wishSakuraFloat {
+  0%, 100% { transform: translate(-50%, -50%) translate3d(0, 0, 0) rotate(-1deg); }
+  50% { transform: translate(-50%, -50%) translate3d(0, -6px, 0) rotate(1deg); }
+}
+
+@keyframes wishSakuraFlowerFloat {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(var(--wish-tilt, 0deg)); }
+  50% { transform: translate3d(0, -8px, 0) rotate(calc(var(--wish-tilt, 0deg) + 3deg)); }
+}
+
+@keyframes wishButterflyFloat {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-8deg); opacity: .72; }
+  50% { transform: translate3d(10px, -12px, 0) rotate(10deg); opacity: 1; }
+}
+

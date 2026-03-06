@@ -1,0 +1,558 @@
+﻿/* Responsive breakpoints and compact viewport adjustments */
+
+@media (max-width: 1100px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+    align-items: start;
+    gap: 12px;
+  }
+
+  .hero-copy { max-width: none; }
+
+  .hero-title { font-size: clamp(44px, 9vw, 72px); }
+
+  .hero-visual {
+    width: min(620px, 100%);
+    margin-inline: auto;
+    min-height: clamp(220px, 34vh, 360px);
+    gap: 16px;
+  }
+
+  .hero-photo { width: min(100%, 280px); }
+
+  .wish-layout {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .wish-panel {
+    padding: 18px;
+  }
+
+  .wish-sky {
+    min-height: 320px;
+  }
+}
+
+@media (max-height: 920px) {
+  .screen { gap: 8px; }
+
+  .hero {
+    padding: clamp(12px, 1.8vh, 20px) clamp(14px, 2vw, 22px);
+  }
+
+  .hero-title { font-size: clamp(46px, 5.2vw, 78px); }
+
+  .hero-subtitle { margin-bottom: 12px; }
+
+  .choice-grid {
+    margin-top: 14px;
+    margin-bottom: 12px;
+    gap: 12px;
+  }
+
+  .hero-visual {
+    min-height: min(48vh, 420px);
+    gap: 16px;
+  }
+
+  .hero-photo { width: min(100%, 300px); }
+
+  .portal-btn__inner {
+    width: 160px;
+    height: 160px;
+  }
+
+  .portal-btn__rays { inset: -64px; }
+
+  .memory-caption { bottom: 42px; }
+  .stage-hint { bottom: 10px; }
+
+  .envelope {
+    height: min(600px, 72svh, calc(100% - 28px));
+  }
+
+  .letter-paper {
+    height: min(480px, 60svh, calc(100% - 88px));
+  }
+}
+
+@media (max-height: 820px) {
+  .app { padding-block: 8px; }
+
+  .screen { gap: 6px; }
+
+  .topbar {
+    padding: 8px 12px;
+  }
+
+  .topbar-center strong {
+    font-size: clamp(28px, 2.7vw, 42px);
+  }
+
+  .hero-title {
+    margin: 8px 0;
+    font-size: clamp(40px, 5vw, 66px);
+  }
+
+  .hero-subtitle { font-size: 14px; }
+
+  .choice-card {
+    padding: 12px 14px;
+  }
+
+  .choice-name { font-size: clamp(28px, 3.2vw, 44px); }
+
+  .hero-visual {
+    min-height: min(38vh, 330px);
+    gap: 14px;
+  }
+
+  .hero-photo {
+    width: min(100%, 250px);
+    padding: 8px;
+  }
+
+  .portal-btn__inner {
+    width: 148px;
+    height: 148px;
+  }
+
+  .portal-btn__glyph { inset: -28px; }
+  .portal-btn__ring { inset: -14px; }
+
+  .portal-btn__rays {
+    inset: -54px;
+    filter: blur(12px);
+  }
+
+  .memory-caption {
+    bottom: 36px;
+    font-size: 11px;
+  }
+
+  .stage-hint {
+    bottom: 8px;
+    width: calc(100% - 32px);
+    text-align: center;
+    font-size: 11px;
+  }
+
+  .letter-scene {
+    padding: 10px;
+    gap: 6px;
+  }
+
+  .envelope {
+    width: min(96%, 760px);
+    height: min(560px, calc(100% - 22px));
+  }
+
+  .letter-paper {
+    width: min(94%, 700px);
+    height: min(420px, calc(100% - 82px));
+    top: 8px;
+  }
+
+  .letter-paper__head { padding: 10px 12px; }
+
+  .letter-paper__body {
+    padding: 10px 12px 12px;
+    gap: 8px;
+  }
+
+  .typing {
+    padding: 10px;
+    line-height: 1.52;
+  }
+}
+
+@media (max-height: 760px) and (min-width: 761px) {
+  .hero-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(300px, .88fr);
+    gap: 14px;
+  }
+
+  .hero-visual {
+    min-height: min(34vh, 280px);
+    gap: 12px;
+  }
+
+  .hero-photo { width: min(100%, 220px); }
+
+  .choice-grid { gap: 10px; }
+
+  .choice-card {
+    grid-template-columns: 62px minmax(0, 1fr);
+    column-gap: 12px;
+    padding: 12px;
+  }
+
+  .choice-emblem {
+    width: 56px;
+    height: 56px;
+  }
+
+  .choice-name { font-size: clamp(24px, 2.6vw, 34px); }
+
+  .wish-entry-btn { padding-block: 9px; }
+
+  .portal-btn__inner {
+    width: 138px;
+    height: 138px;
+  }
+
+  .portal-btn__icon { font-size: 30px; }
+  .portal-btn__text { font-size: 11px; }
+  .portal-btn__sub { font-size: 9px; }
+
+  .memory-caption { bottom: 30px; }
+  .stage-hint { font-size: 10px; }
+
+  .envelope {
+    height: min(520px, calc(100% - 18px));
+  }
+
+  .letter-paper {
+    height: min(400px, calc(100% - 76px));
+  }
+
+  .letter-ending {
+    max-width: min(90%, 460px);
+    padding: 8px 14px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 760px) {
+  .theme-switcher {
+    right: 8px;
+    top: 8px;
+    padding: 6px;
+  }
+
+  .theme-btn {
+    padding: 7px 10px;
+    font-size: 12px;
+  }
+
+  .screen {
+    max-height: calc(100svh - 16px);
+    gap: 8px;
+  }
+
+  .topbar {
+    padding: 8px 10px;
+    border-radius: 14px;
+  }
+
+  .topbar-center strong { font-size: 26px; }
+
+  .icon-btn {
+    width: 38px;
+    height: 38px;
+    font-size: 18px;
+  }
+
+  .hero { padding: 12px; }
+  .hero-grid {
+    gap: 10px;
+    align-content: start;
+  }
+
+  .hero-title {
+    font-size: clamp(34px, 10vw, 48px);
+    line-height: .94;
+  }
+
+  .hero-subtitle { font-size: 13px; }
+
+  .choice-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .choice-card {
+    grid-template-columns: 58px minmax(0, 1fr);
+    column-gap: 12px;
+    padding: 12px;
+  }
+  .choice-emblem {
+    width: 52px;
+    height: 52px;
+  }
+  .choice-name { font-size: 32px; }
+  .choice-stars { top: 8px; right: 10px; }
+  .choice-stars i { font-size: 10px; }
+
+  .hero-visual {
+    width: min(100%, 440px);
+    min-height: clamp(210px, 30vh, 280px);
+    gap: 12px;
+  }
+
+  .hero-photo {
+    width: min(100%, 170px);
+    padding: 8px;
+  }
+
+  .hero-photo p { font-size: 9px; }
+  .hero-planet--one { width: 56px; height: 56px; }
+  .hero-planet--two { width: 40px; height: 40px; }
+  .hero-planet--three { width: 28px; height: 28px; }
+  .hero-blossom { font-size: 18px; }
+  .hero-butterfly, .hero-bee { font-size: 14px; }
+  .hero-bird { font-size: 16px; }
+
+  .preview-petal {
+    width: 50px;
+    height: 50px;
+  }
+
+  .portal-btn__inner {
+    width: 104px;
+    height: 104px;
+  }
+
+  .portal-btn__glyph { inset: -24px; }
+  .portal-btn__ring { inset: -12px; }
+  .portal-btn__rays { inset: -48px; }
+
+  .portal-btn__icon { font-size: 26px; }
+  .portal-btn__text { font-size: 10px; }
+
+  .memory-caption {
+    width: calc(100% - 24px);
+    text-align: center;
+    bottom: 34px;
+  }
+
+  .stage-links,
+  .stage-cursor-glow,
+  .orbit-3,
+  .orbit-4 {
+    display: none;
+  }
+
+  html[data-theme="sakura"] .stage-links {
+    display: block;
+  }
+
+  .stage-milkyway { opacity: .2; }
+  .stage-planet--one { width: 40px; height: 40px; }
+  .stage-planet--two { width: 56px; height: 56px; }
+  .stage-planet--three { display: none; }
+  .sakura-canopy--left { width: 290px; height: 170px; left: -8%; }
+  .sakura-canopy--mid { width: 240px; height: 150px; left: 14%; }
+  .sakura-branch--one { width: 60%; top: 18%; }
+  .sakura-branch--two { width: 34%; left: 34%; }
+  .sakura-shrub { width: 150px; height: 84px; }
+  .sakura-shrub--center { width: 180px; }
+  .sakura-petal-haze--one { width: 170px; height: 96px; }
+  .sakura-petal-haze--two { width: 150px; height: 84px; }
+  .sakura-petal-haze--three,
+  .sakura-petal-haze--four { width: 140px; height: 80px; }
+  .sakura-spray { font-size: 20px; opacity: .68; }
+  .sakura-bloom { font-size: 14px; opacity: .72; }
+
+  .stage-hint {
+    width: calc(100% - 28px);
+    text-align: center;
+    font-size: 11px;
+  }
+
+  .letter-vault-ring--one { width: min(92vw, 560px); }
+  .letter-vault-ring--two { width: min(72vw, 380px); }
+  .letter-vault-beam { width: min(58vw, 240px); height: 64%; top: 10%; }
+  .letter-nebula--one { width: 220px; height: 160px; }
+  .letter-nebula--two { width: 200px; height: 150px; }
+  .letter-planet--one { width: 54px; height: 54px; left: 4%; bottom: 12%; }
+  .letter-planet--two { width: 38px; height: 38px; right: 7%; top: 14%; }
+  .letter-starfield { inset: 12% 8%; opacity: .13; }
+  .letter-sakura-sun { width: 210px; height: 210px; right: -2%; top: -2%; }
+  .letter-sakura-canopy--left { width: 250px; height: 150px; left: -10%; }
+  .letter-sakura-canopy--mid { width: 300px; height: 180px; left: 10%; top: -8%; }
+  .letter-sakura-canopy--right { width: 240px; height: 150px; right: -8%; }
+  .letter-sakura-branch--one { width: 58%; top: 17%; }
+  .letter-sakura-branch--two { width: 44%; top: 22%; }
+  .letter-sakura-petal { font-size: 18px; }
+
+  .letter-scene {
+    padding: 8px;
+    gap: 6px;
+  }
+
+  .envelope {
+    width: min(680px, calc(100% - 2px));
+    height: min(560px, calc(100% - 20px));
+  }
+
+  .letter-paper {
+    width: calc(100% - 12px);
+    height: min(420px, calc(100% - 74px));
+    top: 8px;
+  }
+
+  .letter-paper__head { padding: 10px 12px; }
+
+  .letter-paper__body {
+    padding: 10px 12px 12px;
+    gap: 8px;
+  }
+
+  .letter-paper__foot {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .letter-paper__foot .secondary-btn { width: 100%; }
+
+  .typing {
+    font-size: 13px;
+    padding: 10px;
+    line-height: 1.5;
+  }
+
+  .wish-wrap { padding: 10px; }
+  .wish-panel { padding: 14px; }
+  .wish-head h2 { font-size: clamp(28px, 8.8vw, 42px); }
+  .wish-head p { font-size: 13px; }
+  .wish-form textarea {
+    min-height: 96px;
+    max-height: 180px;
+    border-radius: 16px;
+  }
+  .wish-sky {
+    min-height: 260px;
+    border-radius: 20px;
+  }
+  .wish-node {
+    max-width: min(72vw, 180px);
+    padding: 7px 9px 9px;
+  }
+  .wish-node__text {
+    font-size: 11px;
+    white-space: normal;
+    line-height: 1.35;
+  }
+  .wish-cosmic-orbit--one { width: 300px; height: 300px; right: -60px; }
+  .wish-cosmic-orbit--two { width: 220px; height: 220px; left: -70px; }
+  .wish-cosmic-planet--one { width: 64px; height: 64px; }
+  .wish-sakura-canopy--one { width: 200px; height: 132px; }
+  .wish-sakura-canopy--two { width: 220px; height: 146px; }
+  .wish-sakura-canopy--three { width: 170px; height: 112px; left: 34%; }
+  .wish-sakura-tree--left { height: 156px; }
+  .wish-sakura-tree--right { height: 132px; }
+  .wish-sakura-branch--one { width: 160px; }
+  .wish-sakura-branch--two { width: 128px; }
+  .wish-sakura-flowerbed--one,
+  .wish-sakura-flowerbed--two,
+  .wish-sakura-flowerbed--three { height: 92px; }
+  html[data-theme="sakura"] .wish-node {
+    max-width: min(74vw, 156px);
+    padding: 0;
+  }
+  .wish-node__flower { width: 64px; height: 64px; }
+  .wish-node__petal {
+    width: 24px;
+    height: 32px;
+    margin-left: -12px;
+    margin-top: -16px;
+  }
+  .wish-node__petal--1 { transform: translate(-50%, -50%) rotate(0deg) translateY(-18px); }
+  .wish-node__petal--2 { transform: translate(-50%, -50%) rotate(72deg) translateY(-18px); }
+  .wish-node__petal--3 { transform: translate(-50%, -50%) rotate(144deg) translateY(-18px); }
+  .wish-node__petal--4 { transform: translate(-50%, -50%) rotate(216deg) translateY(-18px); }
+  .wish-node__petal--5 { transform: translate(-50%, -50%) rotate(288deg) translateY(-18px); }
+  .wish-node__core {
+    width: 24px;
+    height: 24px;
+    margin-left: -12px;
+    margin-top: -12px;
+    font-size: 13px;
+  }
+  html[data-theme="sakura"] .wish-node__text {
+    max-width: 150px;
+    padding: 6px 10px;
+  }
+}
+
+@media (max-width: 520px) {
+  .pill { display: none; }
+  .topbar-center strong { font-size: 24px; }
+  .hero-title { font-size: clamp(30px, 10.4vw, 40px); }
+  .choice-name { font-size: 28px; }
+  .hero-credit { font-size: 12px; }
+  .hero-visual {
+    min-height: 190px;
+    gap: 10px;
+  }
+  .hero-photo { width: min(100%, 148px); }
+  .memory-stage .memory-photo--echo-faint { display: none; }
+  .letter-planet--two { display: none; }
+  .letter-vault-beam { width: 180px; }
+  .letter-ending { padding-inline: 14px; font-size: 12px; }
+  .letter-scene {
+    padding: 6px;
+    gap: 4px;
+  }
+  .envelope {
+    width: calc(100% - 2px);
+    height: min(500px, calc(100% - 14px));
+  }
+  .letter-paper {
+    width: calc(100% - 8px);
+    height: min(390px, calc(100% - 68px));
+    border-radius: 16px;
+    top: 6px;
+  }
+  .letter-paper__head {
+    gap: 8px;
+    padding: 9px 10px;
+  }
+  .letter-paper__head strong {
+    min-width: 0;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .stamp {
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
+  }
+  .letter-paper__body {
+    padding: 9px 10px 10px;
+    gap: 7px;
+  }
+  .typing {
+    font-size: 12px;
+    line-height: 1.45;
+    padding: 9px;
+  }
+  .to-line { font-size: 13px; }
+  .letter-paper__foot {
+    gap: 8px;
+  }
+  .letter-paper__foot .secondary-btn {
+    padding: 9px 12px;
+    font-size: 12px;
+  }
+  .letter-sakura-canopy--mid { width: 220px; height: 140px; left: 8%; }
+  .letter-sakura-canopy--left,
+  .letter-sakura-canopy--right { width: 170px; height: 110px; }
+  .letter-sakura-branch--one { width: 64%; top: 18%; }
+  .letter-sakura-branch--two { width: 48%; top: 23%; }
+  .letter-sakura-petal { font-size: 16px; }
+  .letter-sakura-petal--six { left: 58%; }
+  .wish-sky { min-height: 236px; }
+  .wish-sakura-butterfly { font-size: 15px; }
+  .wish-sakura-bloom { font-size: 18px; }
+  .wish-sakura-tree--right { display: none; }
+  .wish-node__flower { width: 58px; height: 58px; }
+  html[data-theme="sakura"] .wish-node__text {
+    max-width: 132px;
+    font-size: 10px;
+  }
+}
