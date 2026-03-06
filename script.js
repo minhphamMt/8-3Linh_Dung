@@ -68,7 +68,7 @@ const CONFIG = {
     cosmic: {
       heroKicker: "08/03 Story Journey",
       heroTitle: "Hai vì sao tỏa sáng trong khu vườn 8/3",
-      heroSubtitle: "Chọn một người để bắt đầu hành trình ký ức và lời chúc.",
+      heroSubtitle: "Chọn một ngôi sao bắt đầu hành trình ký ức và lời chúc.",
       choiceTagLinh: "STAR 01",
       choiceTagDung: "STAR 02",
       choiceHintLinh: "Chạm để mở hành trình",
@@ -76,7 +76,7 @@ const CONFIG = {
       wishBtn: "🌸 Vào Wish Star Page",
       heroCredit: "A small universe by <strong>Minh Phạm ✨</strong>",
       stagePill: "Cosmic Receiver",
-      letterPill: "Love Letter",
+      letterPill: "Space Letter",
       wishPill: "Wish Star Page",
       stageHint: "Di chuột để cảm nhận không gian • bấm vòng hoa để mở thư",
       portalText: "Open Letter",
@@ -87,7 +87,7 @@ const CONFIG = {
     sakura: {
       heroKicker: "08/03 Dreamy Sakura Garden",
       heroTitle: "Hai cánh hoa rực rỡ trong khu vườn 8/3",
-      heroSubtitle: "Chọn một người để dạo vào vườn sakura và mở lá thư mùa xuân.",
+      heroSubtitle: "Chọn bông hoa để dạo vào vườn sakura và mở lá thư mùa xuân.",
       choiceTagLinh: "BLOOM 01",
       choiceTagDung: "BLOOM 02",
       choiceHintLinh: "Chạm để bước vào vườn hoa",
@@ -231,6 +231,7 @@ function setTheme(theme, persist = true) {
   $$(".theme-btn").forEach((btn) => btn.classList.toggle("is-active", btn.dataset.theme === normalized));
   applyThemeCopy();
   applyStageTheme();
+  renderGalaxyBackgroundStars();
   renderHeroPetalPreview();
   renderWishSky();
   if (state.screen === 2 && state.currentGirlKey) renderGallery();
@@ -391,6 +392,188 @@ function spawnConstellation() {
   setTimeout(() => group.remove(), 7200);
 }
 
+function generateGalaxyStarfield(count, options = {}) {
+  const {
+    minX = 0,
+    maxX = 100,
+    minY = 0,
+    maxY = 100,
+    clusterCount = 6,
+    clusterBias = 0.58,
+    minGap = 0.9,
+    avoidCenterRadius = 0,
+    avoidRects = [],
+  } = options;
+
+  const clusters = Array.from({ length: clusterCount }, () => ({
+    x: rand(minX + 4, maxX - 4),
+    y: rand(minY + 4, maxY - 4),
+    spreadX: rand(5.5, 16),
+    spreadY: rand(4.5, 14),
+  }));
+
+  const points = [];
+  let attempts = 0;
+  const maxAttempts = count * 36;
+
+  const pickPoint = () => {
+    if (Math.random() < clusterBias) {
+      const cluster = clusters[Math.floor(rand(0, clusters.length))];
+      const angle = rand(0, Math.PI * 2);
+      const radius = Math.sqrt(Math.random());
+      return {
+        x: cluster.x + (Math.cos(angle) * cluster.spreadX * radius),
+        y: cluster.y + (Math.sin(angle) * cluster.spreadY * radius),
+      };
+    }
+    return {
+      x: rand(minX, maxX),
+      y: rand(minY, maxY),
+    };
+  };
+
+  while (points.length < count && attempts < maxAttempts) {
+    attempts += 1;
+    const point = pickPoint();
+    const x = clamp(point.x, minX, maxX);
+    const y = clamp(point.y, minY, maxY);
+
+    if (avoidCenterRadius > 0 && Math.hypot(x - 50, y - 50) < avoidCenterRadius) continue;
+
+    const blockedRect = avoidRects.some((rect) => (
+      x >= rect.x1 && x <= rect.x2 && y >= rect.y1 && y <= rect.y2 && Math.random() > (rect.allowChance ?? 0.14)
+    ));
+    if (blockedRect) continue;
+
+    const tooClose = points.some((existing) => Math.hypot(x - existing.x, y - existing.y) < minGap);
+    if (tooClose && Math.random() > 0.18) continue;
+
+    const roll = Math.random();
+    const toneRoll = Math.random();
+    points.push({
+      x,
+      y,
+      bright: roll > 0.8,
+      giant: roll > 0.965,
+      dim: roll < 0.16,
+      warm: toneRoll > 0.86,
+      cool: toneRoll > 0.56 && toneRoll < 0.8,
+    });
+  }
+
+  while (points.length < count) {
+    const roll = Math.random();
+    const toneRoll = Math.random();
+    points.push({
+      x: rand(minX, maxX),
+      y: rand(minY, maxY),
+      bright: roll > 0.8,
+      giant: roll > 0.965,
+      dim: roll < 0.16,
+      warm: toneRoll > 0.86,
+      cool: toneRoll > 0.56 && toneRoll < 0.8,
+    });
+  }
+
+  return points;
+}
+
+function buildGalaxyDustMap(count, options = {}) {
+  const points = generateGalaxyStarfield(count, {
+    minGap: 0.12,
+    ...options,
+  });
+
+  return points.map((point) => {
+    const rgb = point.warm
+      ? [255, 228, 210]
+      : point.cool
+        ? [198, 228, 255]
+        : [255, 255, 255];
+    const alpha = point.giant
+      ? rand(0.46, 0.78)
+      : point.bright
+        ? rand(0.18, 0.42)
+        : point.dim
+          ? rand(0.05, 0.12)
+          : rand(0.07, 0.2);
+    const core = point.giant
+      ? rand(1.05, 2.2)
+      : point.bright
+        ? rand(0.62, 1.24)
+        : point.dim
+          ? rand(0.18, 0.42)
+          : rand(0.28, 0.78);
+    const glow = core + (point.giant ? rand(1.1, 2.6) : rand(0.55, 1.4));
+    return `radial-gradient(circle at ${point.x.toFixed(2)}% ${point.y.toFixed(2)}%, rgba(${rgb[0]},${rgb[1]},${rgb[2]},${alpha.toFixed(2)}) 0 ${core.toFixed(2)}px, rgba(${rgb[0]},${rgb[1]},${rgb[2]},0) ${glow.toFixed(2)}px)`;
+  }).join(",");
+}
+
+function renderGalaxyBackgroundStars() {
+  const layer = $("#bgStars");
+  const constellationLayer = $("#bgConstellation");
+  if (!layer) return;
+
+  layer.querySelectorAll(".bg-starfield__star").forEach((node) => node.remove());
+  if (state.theme !== "cosmic") {
+    layer.style.backgroundImage = "";
+    if (constellationLayer) constellationLayer.style.removeProperty("--milky-dust-map");
+    return;
+  }
+
+  layer.style.backgroundImage = buildGalaxyDustMap(isMobile() ? 180 : 320, {
+    minX: 0.5,
+    maxX: 99.5,
+    minY: 0.5,
+    maxY: 99.5,
+    clusterCount: isMobile() ? 8 : 12,
+    clusterBias: isMobile() ? 0.6 : 0.74,
+  });
+  if (constellationLayer) {
+    constellationLayer.style.setProperty("--milky-dust-map", buildGalaxyDustMap(isMobile() ? 84 : 156, {
+      minX: 14,
+      maxX: 86,
+      minY: 18,
+      maxY: 78,
+      clusterCount: isMobile() ? 5 : 8,
+      clusterBias: 0.82,
+    }));
+  }
+
+  const count = isMobile() ? 240 : 520;
+  const points = generateGalaxyStarfield(count, {
+    minX: 0.8,
+    maxX: 99.2,
+    minY: 0.8,
+    maxY: 99.2,
+    clusterCount: isMobile() ? 8 : 12,
+    clusterBias: isMobile() ? 0.6 : 0.76,
+    minGap: isMobile() ? 0.34 : 0.44,
+  });
+
+  points.forEach((point) => {
+    const star = document.createElement("span");
+    star.className = [
+      "bg-starfield__star",
+      point.bright ? "bg-starfield__star--bright" : "",
+      point.giant ? "bg-starfield__star--giant" : "",
+      point.dim ? "bg-starfield__star--dim" : "",
+      point.warm ? "bg-starfield__star--warm" : "",
+      point.cool ? "bg-starfield__star--cool" : "",
+    ].filter(Boolean).join(" ");
+    star.style.left = `${point.x.toFixed(2)}%`;
+    star.style.top = `${point.y.toFixed(2)}%`;
+    star.style.setProperty("--size", `${(point.giant ? rand(2.8, 5) : point.bright ? rand(1.6, 3.4) : rand(0.7, 2.1)).toFixed(2)}px`);
+    star.style.setProperty("--opacity", `${(point.giant ? rand(0.76, 0.98) : point.bright ? rand(0.36, 0.82) : point.dim ? rand(0.08, 0.24) : rand(0.14, 0.52)).toFixed(2)}`);
+    star.style.setProperty("--dur", `${rand(2.8, 7.2).toFixed(2)}s`);
+    star.style.setProperty("--delay", `${rand(0, 6.8).toFixed(2)}s`);
+    star.style.setProperty("--blur", `${(point.giant ? rand(0, 0.45) : rand(0, 1.2)).toFixed(2)}px`);
+    star.style.setProperty("--drift-x", `${rand(-8, 8).toFixed(2)}px`);
+    star.style.setProperty("--drift-y", `${rand(-6, 6).toFixed(2)}px`);
+    layer.appendChild(star);
+  });
+}
+
 function applyStageTheme() {
   const stage = $("#memoryStage");
   if (!stage) return;
@@ -403,32 +586,37 @@ function renderStageStars() {
   layer.innerHTML = "";
 
   if (state.theme !== "cosmic" || state.screen !== 2) return;
-  const count = isMobile() ? 42 : 86;
+  const count = isMobile() ? 108 : 220;
   const minCenterDistance = isMobile() ? 14 : 16;
+  const points = generateGalaxyStarfield(count, {
+    minX: 2,
+    maxX: 98,
+    minY: 4,
+    maxY: 94,
+    clusterCount: isMobile() ? 7 : 10,
+    clusterBias: isMobile() ? 0.64 : 0.74,
+    minGap: isMobile() ? 0.48 : 0.6,
+    avoidCenterRadius: minCenterDistance,
+  });
 
-  for (let i = 0; i < count; i += 1) {
-    let x = rand(2, 98);
-    let y = rand(4, 94);
-    const dx = x - 50;
-    const dy = y - 50;
-    const dist = Math.hypot(dx, dy);
-    if (dist < minCenterDistance) {
-      const angle = Math.atan2(dy || rand(-1, 1), dx || rand(-1, 1));
-      const r = minCenterDistance + rand(0, 12);
-      x = clamp(50 + (Math.cos(angle) * r), 2, 98);
-      y = clamp(50 + (Math.sin(angle) * r), 4, 94);
-    }
-
+  points.forEach((point) => {
     const star = document.createElement("span");
-    star.className = `stage-star${Math.random() > 0.74 ? " stage-star--bright" : ""}`;
-    star.style.left = `${x.toFixed(2)}%`;
-    star.style.top = `${y.toFixed(2)}%`;
-    star.style.setProperty("--size", `${rand(1.2, 3.4).toFixed(2)}px`);
-    star.style.setProperty("--dur", `${rand(2.2, 5.4).toFixed(2)}s`);
-    star.style.setProperty("--delay", `${rand(0, 4.6).toFixed(2)}s`);
-    star.style.setProperty("--blur", `${rand(0, 1.25).toFixed(2)}px`);
+    star.className = [
+      "stage-star",
+      point.bright ? "stage-star--bright" : "",
+      point.giant ? "stage-star--giant" : "",
+      point.warm ? "stage-star--warm" : "",
+      point.cool ? "stage-star--cool" : "",
+    ].filter(Boolean).join(" ");
+    star.style.left = `${point.x.toFixed(2)}%`;
+    star.style.top = `${point.y.toFixed(2)}%`;
+    star.style.setProperty("--size", `${(point.giant ? rand(2.4, 4.6) : point.bright ? rand(1.5, 3.4) : rand(0.9, 2.5)).toFixed(2)}px`);
+    star.style.setProperty("--opacity", `${(point.giant ? rand(0.54, 0.88) : point.bright ? rand(0.3, 0.66) : rand(0.12, 0.38)).toFixed(2)}`);
+    star.style.setProperty("--dur", `${rand(2.4, 6.2).toFixed(2)}s`);
+    star.style.setProperty("--delay", `${rand(0, 5.4).toFixed(2)}s`);
+    star.style.setProperty("--blur", `${(point.giant ? rand(0, 0.34) : rand(0, 1.1)).toFixed(2)}px`);
     layer.appendChild(star);
-  }
+  });
 }
 
 function clearBackgroundEffects() {
@@ -508,6 +696,56 @@ function renderHeroPetalPreview() {
     card.innerHTML = `<img src="${shuffled[i % shuffled.length]}" alt="Memory petal ${i + 1}" loading="lazy" />`;
     layer.appendChild(card);
   }
+
+  if (state.theme === "cosmic") {
+    sparkLayer.style.backgroundImage = buildGalaxyDustMap(isMobile() ? 96 : 180, {
+      minX: 2,
+      maxX: 98,
+      minY: 4,
+      maxY: 94,
+      clusterCount: isMobile() ? 6 : 9,
+      clusterBias: 0.78,
+      avoidRects: [
+        { x1: 10, x2: 48, y1: 18, y2: 64, allowChance: 0.42 },
+      ],
+    });
+
+    const starCount = isMobile() ? 72 : 160;
+    const stars = generateGalaxyStarfield(starCount, {
+      minX: 2,
+      maxX: 98,
+      minY: 4,
+      maxY: 94,
+      clusterCount: isMobile() ? 6 : 10,
+      clusterBias: isMobile() ? 0.66 : 0.8,
+      minGap: isMobile() ? 0.5 : 0.62,
+      avoidRects: [
+        { x1: 12, x2: 50, y1: 16, y2: 64, allowChance: 0.48 },
+      ],
+    });
+
+    stars.forEach((point) => {
+      const spark = document.createElement("span");
+      spark.className = [
+        "hero-spark",
+        point.bright ? "hero-spark--bright" : "",
+        point.giant ? "hero-spark--giant" : "",
+        point.warm ? "hero-spark--warm" : "",
+        point.cool ? "hero-spark--cool" : "",
+      ].filter(Boolean).join(" ");
+      spark.style.left = `${point.x.toFixed(2)}%`;
+      spark.style.top = `${point.y.toFixed(2)}%`;
+      spark.style.setProperty("--size", `${(point.giant ? rand(2.4, 4.2) : point.bright ? rand(1.5, 3.2) : rand(0.8, 2.1)).toFixed(2)}px`);
+      spark.style.setProperty("--opacity", `${(point.giant ? rand(0.68, 0.96) : point.bright ? rand(0.34, 0.78) : rand(0.14, 0.48)).toFixed(2)}`);
+      spark.style.setProperty("--blur", `${(point.giant ? rand(0, 0.28) : rand(0, 0.9)).toFixed(2)}px`);
+      spark.style.animationDelay = `${rand(0, 6.2).toFixed(2)}s`;
+      spark.style.animationDuration = `${rand(2.4, 6.2).toFixed(2)}s`;
+      sparkLayer.appendChild(spark);
+    });
+    return;
+  }
+
+  sparkLayer.style.backgroundImage = "";
 
   for (let i = 0; i < sparkCount; i += 1) {
     const spark = document.createElement("span");
@@ -604,6 +842,48 @@ function spawnSakuraLaunch(x, y) {
   document.body.appendChild(launch);
   requestAnimationFrame(() => launch.classList.add("is-live"));
   setTimeout(() => launch.remove(), 1380);
+}
+
+function spawnSakuraPortalSwirl(x, y) {
+  const swirl = document.createElement("div");
+  swirl.className = "sakura-portal-swirl";
+  swirl.style.left = `${x}px`;
+  swirl.style.top = `${y}px`;
+
+  const veil = document.createElement("span");
+  veil.className = "sakura-portal-swirl__veil";
+  swirl.appendChild(veil);
+
+  const glow = document.createElement("span");
+  glow.className = "sakura-portal-swirl__glow";
+  swirl.appendChild(glow);
+
+  const ring = document.createElement("span");
+  ring.className = "sakura-portal-swirl__ring";
+  swirl.appendChild(ring);
+
+  const core = document.createElement("span");
+  core.className = "sakura-portal-swirl__core";
+  core.textContent = "🌸";
+  swirl.appendChild(core);
+
+  const petals = ["🌸", "❀", "✿"];
+  for (let i = 0; i < 18; i += 1) {
+    const petal = document.createElement("span");
+    petal.className = "sakura-portal-swirl__petal";
+    petal.textContent = petals[i % petals.length];
+    const angle = (Math.PI * 2 * i) / 18;
+    const radius = rand(80, 240);
+    petal.style.setProperty("--tx", `${Math.cos(angle) * radius}px`);
+    petal.style.setProperty("--ty", `${Math.sin(angle) * radius}px`);
+    petal.style.setProperty("--rz", `${rand(-180, 180).toFixed(2)}deg`);
+    petal.style.animationDelay = `${(i * 0.012).toFixed(3)}s`;
+    swirl.appendChild(petal);
+  }
+
+  document.body.appendChild(swirl);
+  requestAnimationFrame(() => swirl.classList.add("is-live"));
+  setTimeout(() => swirl.remove(), 1520);
 }
 
 function setupHeroInteraction() {
@@ -1076,7 +1356,8 @@ function setupStageParallax() {
   let lastLinkTs = 0;
 
   const updateStageField = () => {
-    const active = state.screen === 2 && !isMobile();
+    const transitioning = state.portalBusy || stage.classList.contains("is-portal-transition") || stage.classList.contains("is-blackhole-transition");
+    const active = state.screen === 2 && !isMobile() && !transitioning;
     if (active) {
       motion.wasActive = true;
       motion.x += (motion.targetX - motion.x) * 0.15;
@@ -1203,6 +1484,144 @@ function startPortalTransition() {
   const stage = $("#memoryStage");
   if (!stage) return;
   state.portalBusy = true;
+  clearMemoryHighlight();
+
+  const mainGallery = $("#memoryGallery");
+  const echoGallery = $("#memoryGalleryEcho");
+  const cursorGlow = $("#stageCursorGlow");
+  stage.classList.remove("is-pointer");
+  if (mainGallery) mainGallery.style.transform = "";
+  if (echoGallery) echoGallery.style.transform = "";
+  if (cursorGlow) cursorGlow.style.transform = "";
+  $$(".memory-photo").forEach((card) => {
+    card.style.translate = "0 0";
+    card.classList.remove("is-magnetic", "is-highlight");
+  });
+
+  const clearPortalState = () => {
+    stage.classList.remove(
+      "is-portal-transition",
+      "is-blackhole-transition",
+      "is-blackhole-burst",
+      "is-sakura-portal-transition",
+      "is-sakura-portal-bloom"
+    );
+    $$(".memory-photo.to-portal").forEach((card) => {
+      card.classList.remove("to-portal", "to-sakura-portal");
+      card.style.translate = "0 0";
+      [
+        "--portal-dx",
+        "--portal-dy",
+        "--arc-x",
+        "--arc-y",
+        "--spin-a",
+        "--spin-b",
+        "--spin-c",
+        "--petal-scale",
+        "--pull-delay",
+      ].forEach((key) => card.style.removeProperty(key));
+    });
+  };
+
+  if (state.theme === "cosmic") {
+    const portal = $("#openLetterBtn");
+    const stageRect = stage.getBoundingClientRect();
+    const portalRect = portal?.getBoundingClientRect();
+    const portalX = portalRect ? portalRect.left + (portalRect.width / 2) : stageRect.left + (stageRect.width / 2);
+    const portalY = portalRect ? portalRect.top + (portalRect.height / 2) : stageRect.top + (stageRect.height / 2);
+
+    stage.classList.add("is-blackhole-transition");
+    $$(".memory-photo").forEach((card, index) => {
+      const rect = card.getBoundingClientRect();
+      const cardX = rect.left + (rect.width / 2);
+      const cardY = rect.top + (rect.height / 2);
+      const dx = portalX - cardX;
+      const dy = portalY - cardY;
+      const dist = Math.hypot(dx, dy);
+      const side = index % 2 === 0 ? 1 : -1;
+      card.style.translate = "0 0";
+      card.style.setProperty("--portal-dx", `${dx.toFixed(2)}px`);
+      card.style.setProperty("--portal-dy", `${dy.toFixed(2)}px`);
+      card.style.setProperty("--arc-x", `${(side * rand(34, 86)).toFixed(2)}px`);
+      card.style.setProperty("--arc-y", `${rand(-78, 38).toFixed(2)}px`);
+      card.style.setProperty("--spin-a", `${(side * rand(90, 180)).toFixed(2)}deg`);
+      card.style.setProperty("--spin-b", `${(side * rand(240, 420)).toFixed(2)}deg`);
+      card.style.setProperty("--pull-delay", `${clamp((dist / Math.max(stageRect.width, stageRect.height)) * 0.12, 0, 0.14).toFixed(3)}s`);
+      card.classList.add("to-portal");
+    });
+
+    setTimeout(() => {
+      stage.classList.add("is-blackhole-burst");
+    }, 760);
+
+    setTimeout(() => {
+      transitionToScreen(3, {
+        effect: "supernova",
+        switchDelay: 240,
+        totalDuration: 760,
+        onSwitched: () => {
+          startLetterSequence();
+          clearPortalState();
+          state.portalBusy = false;
+        },
+      });
+    }, 860);
+    return;
+  }
+
+  if (state.theme === "sakura") {
+    const portal = $("#openLetterBtn");
+    const stageRect = stage.getBoundingClientRect();
+    const portalRect = portal?.getBoundingClientRect();
+    const portalX = portalRect ? portalRect.left + (portalRect.width / 2) : stageRect.left + (stageRect.width / 2);
+    const portalY = portalRect ? portalRect.top + (portalRect.height / 2) : stageRect.top + (stageRect.height / 2);
+
+    stage.classList.add("is-sakura-portal-transition");
+    spawnSakuraPortalSwirl(portalX, portalY);
+
+    $$(".memory-photo").forEach((card, index) => {
+      const rect = card.getBoundingClientRect();
+      const cardX = rect.left + (rect.width / 2);
+      const cardY = rect.top + (rect.height / 2);
+      const dx = portalX - cardX;
+      const dy = portalY - cardY;
+      const dist = Math.hypot(dx, dy);
+      const side = cardX < portalX ? -1 : 1;
+      const lift = cardY < portalY ? -1 : 1;
+      card.style.translate = "0 0";
+      card.style.setProperty("--portal-dx", `${dx.toFixed(2)}px`);
+      card.style.setProperty("--portal-dy", `${dy.toFixed(2)}px`);
+      card.style.setProperty("--arc-x", `${(side * rand(26, 74)).toFixed(2)}px`);
+      card.style.setProperty("--arc-y", `${(lift * rand(-68, 34)).toFixed(2)}px`);
+      card.style.setProperty("--spin-a", `${(side * rand(14, 34)).toFixed(2)}deg`);
+      card.style.setProperty("--spin-b", `${(side * rand(54, 116)).toFixed(2)}deg`);
+      card.style.setProperty("--spin-c", `${(side * rand(110, 180)).toFixed(2)}deg`);
+      card.style.setProperty("--petal-scale", `${rand(0.08, 0.24).toFixed(2)}`);
+      card.style.setProperty(
+        "--pull-delay",
+        `${clamp((dist / Math.max(stageRect.width, stageRect.height)) * 0.1, 0, 0.12).toFixed(3)}s`
+      );
+      card.classList.add("to-portal", "to-sakura-portal");
+    });
+
+    setTimeout(() => {
+      stage.classList.add("is-sakura-portal-bloom");
+    }, 620);
+
+    setTimeout(() => {
+      transitionToScreen(3, {
+        effect: "blossom",
+        switchDelay: 260,
+        totalDuration: 900,
+        onSwitched: () => {
+          startLetterSequence();
+          clearPortalState();
+          state.portalBusy = false;
+        },
+      });
+    }, 760);
+    return;
+  }
 
   stage.classList.add("is-portal-transition");
   $$(".memory-photo--main").forEach((card) => card.classList.add("to-portal"));
@@ -1213,8 +1632,7 @@ function startPortalTransition() {
       effect: "portal",
       onSwitched: () => {
         startLetterSequence();
-        stage.classList.remove("is-portal-transition");
-        $$(".memory-photo.to-portal").forEach((card) => card.classList.remove("to-portal"));
+        clearPortalState();
         state.portalBusy = false;
       },
     });
@@ -1494,6 +1912,7 @@ function bindEvents() {
   $("#toggleMusic")?.addEventListener("click", toggleMusic);
 
   window.addEventListener("resize", () => {
+    renderGalaxyBackgroundStars();
     renderHeroPetalPreview();
     if (state.screen === 2 && state.currentGirlKey) renderGallery();
     renderStageStars();

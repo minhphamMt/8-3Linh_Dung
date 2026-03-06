@@ -140,6 +140,23 @@ html[data-theme="sakura"] .intro-overlay__text {
   overflow: hidden;
 }
 
+html[data-theme="cosmic"] .bg-stars {
+  mix-blend-mode: screen;
+}
+
+html[data-theme="cosmic"] .bg-constellation {
+  opacity: .92;
+  mix-blend-mode: screen;
+  background:
+    var(--milky-dust-map, none),
+    linear-gradient(114deg, transparent 18%, rgba(142,174,255,.04) 30%, rgba(225,239,255,.1) 42%, rgba(255,255,255,.12) 48%, rgba(178,172,255,.08) 54%, rgba(142,174,255,.04) 62%, transparent 76%),
+    radial-gradient(38% 18% at 36% 38%, rgba(174,213,255,.14), rgba(174,213,255,0) 72%),
+    radial-gradient(30% 14% at 54% 48%, rgba(255,255,255,.12), rgba(255,255,255,0) 72%),
+    radial-gradient(28% 12% at 72% 60%, rgba(170,168,255,.1), rgba(170,168,255,0) 72%);
+  filter: blur(3px) saturate(1.08);
+  animation: milkyBandDrift 26s ease-in-out infinite;
+}
+
 .bg-rays {
   opacity: 0;
 }
@@ -221,6 +238,60 @@ html[data-theme="sakura"] .bg-constellation::after {
     radial-gradient(circle, rgba(255,205,227,.68) 1px, transparent 1.9px),
     radial-gradient(circle at 18% 22%, rgba(255,246,208,.24), transparent 18%),
     radial-gradient(circle at 84% 20%, rgba(255,224,236,.22), transparent 20%);
+}
+
+html[data-theme="cosmic"] .bg-stars::before,
+html[data-theme="cosmic"] .bg-stars::after,
+html[data-theme="cosmic"] .bg-constellation::before,
+html[data-theme="cosmic"] .bg-constellation::after {
+  opacity: 0;
+  background: none;
+  animation: none;
+}
+
+.bg-starfield__star {
+  position: absolute;
+  width: var(--size, 2px);
+  height: var(--size, 2px);
+  border-radius: 50%;
+  left: 0;
+  top: 0;
+  opacity: var(--opacity, .32);
+  filter: blur(var(--blur, 0px));
+  background: radial-gradient(circle, rgba(255,255,255,.98), rgba(173,221,255,.26));
+  box-shadow: 0 0 8px rgba(178,224,255,.34);
+  animation:
+    galaxySkyTwinkle var(--dur, 4.8s) ease-in-out infinite,
+    galaxySkyFloat calc(var(--dur, 4.8s) * 2.4) ease-in-out infinite;
+  animation-delay: var(--delay, 0s), var(--delay, 0s);
+}
+
+.bg-starfield__star--bright {
+  background: radial-gradient(circle, rgba(255,255,255,1), rgba(200,231,255,.48));
+  box-shadow: 0 0 12px rgba(194,232,255,.5);
+}
+
+.bg-starfield__star--giant {
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.1),
+    0 0 18px rgba(208,237,255,.62);
+}
+
+.bg-starfield__star--dim {
+  box-shadow: 0 0 4px rgba(174,220,255,.18);
+}
+
+.bg-starfield__star--warm {
+  background: radial-gradient(circle, rgba(255,252,245,.98), rgba(255,212,198,.34));
+  box-shadow: 0 0 10px rgba(255,220,198,.34);
+}
+
+.bg-starfield__star--cool {
+  background: radial-gradient(circle, rgba(245,251,255,.98), rgba(162,210,255,.34));
+}
+
+html[data-theme="sakura"] .bg-starfield__star {
+  opacity: 0;
 }
 
 .bg-sakura::before {
@@ -608,6 +679,24 @@ html[data-theme="sakura"] .toast {
   filter: blur(12px) saturate(1.16);
 }
 
+.screen-transition[data-effect="supernova"]::before {
+  filter: saturate(1.28) contrast(1.12);
+  background:
+    radial-gradient(circle at 50% 52%, rgba(255,255,255,.96), rgba(192,228,255,.74) 14%, rgba(122,158,255,.42) 28%, rgba(255,174,230,.24) 42%, transparent 66%),
+    conic-gradient(from 0deg at 50% 52%, rgba(190,228,255,.18), rgba(190,228,255,0) 20%, rgba(255,175,228,.2) 34%, rgba(190,228,255,0) 48%, rgba(190,228,255,.18) 64%, rgba(190,228,255,0) 78%, rgba(255,175,228,.18) 90%, rgba(190,228,255,0));
+}
+
+.screen-transition[data-effect="supernova"]::after {
+  filter: blur(16px) saturate(1.2);
+  background:
+    radial-gradient(circle at 50% 52%, rgba(255,255,255,.88), rgba(202,232,255,.42) 34%, transparent 62%);
+}
+
+.screen-transition[data-effect="supernova"].is-enter::before { animation: supernovaIn .32s var(--ease) forwards; }
+.screen-transition[data-effect="supernova"].is-enter::after { animation: supernovaGlowIn .32s var(--ease) forwards; }
+.screen-transition[data-effect="supernova"].is-exit::before { animation: supernovaOut .46s var(--ease) forwards; }
+.screen-transition[data-effect="supernova"].is-exit::after { animation: supernovaGlowOut .46s var(--ease) forwards; }
+
 .screen-transition[data-effect="garden"]::before {
   filter: saturate(1.06) blur(1px);
   background:
@@ -631,6 +720,31 @@ html[data-theme="sakura"] .toast {
 .screen-transition[data-effect="garden"].is-enter::after { animation: sakuraScreenGlowIn .5s var(--ease) forwards; }
 .screen-transition[data-effect="garden"].is-exit::before { animation: sakuraScreenOut .58s var(--ease) forwards; }
 .screen-transition[data-effect="garden"].is-exit::after { animation: sakuraScreenGlowOut .58s var(--ease) forwards; }
+
+.screen-transition[data-effect="blossom"]::before {
+  filter: saturate(1.08) blur(1px);
+  background:
+    radial-gradient(circle at 50% 56%, rgba(255,255,255,.98), rgba(255,214,230,.84) 18%, rgba(255,184,212,.44) 34%, rgba(255,184,212,0) 62%),
+    conic-gradient(from -18deg at 50% 56%, rgba(255,210,226,.24), rgba(255,210,226,0) 16%, rgba(255,241,246,.54) 26%, rgba(255,210,226,0) 38%, rgba(255,225,234,.26) 52%, rgba(255,210,226,0) 66%, rgba(255,241,246,.5) 80%, rgba(255,210,226,0)),
+    radial-gradient(circle at 16% 18%, rgba(255,232,188,.36), transparent 26%),
+    radial-gradient(circle at 82% 16%, rgba(255,205,223,.3), transparent 28%),
+    radial-gradient(circle at 18% 80%, rgba(255,216,229,.2), transparent 22%),
+    radial-gradient(circle at 80% 76%, rgba(255,216,229,.2), transparent 22%);
+}
+
+.screen-transition[data-effect="blossom"]::after {
+  filter: blur(12px) saturate(1.12);
+  background:
+    radial-gradient(circle at 50% 56%, rgba(255,255,255,.92), rgba(255,226,236,.54) 34%, transparent 58%),
+    radial-gradient(circle at 36% 44%, rgba(255,210,226,.34), transparent 18%),
+    radial-gradient(circle at 66% 42%, rgba(255,210,226,.32), transparent 18%),
+    radial-gradient(circle at 48% 74%, rgba(255,232,188,.2), transparent 18%);
+}
+
+.screen-transition[data-effect="blossom"].is-enter::before { animation: blossomIn .42s var(--ease) forwards; }
+.screen-transition[data-effect="blossom"].is-enter::after { animation: blossomGlowIn .42s var(--ease) forwards; }
+.screen-transition[data-effect="blossom"].is-exit::before { animation: blossomOut .52s var(--ease) forwards; }
+.screen-transition[data-effect="blossom"].is-exit::after { animation: blossomGlowOut .52s var(--ease) forwards; }
 
 .topbar {
   padding: 10px 14px;
@@ -750,18 +864,23 @@ html[data-theme="sakura"] .hero {
 .hero::before {
   z-index: 1;
   background:
-    radial-gradient(circle at var(--mx) var(--my), rgba(176,220,255,.22), transparent 24%),
-    repeating-radial-gradient(circle at 55% 50%, rgba(181,219,255,.08) 0 1px, transparent 1px 28px);
-  opacity: .5;
+    radial-gradient(circle at var(--mx) var(--my), rgba(176,220,255,.24), rgba(176,220,255,0) 22%),
+    radial-gradient(circle at 18% 82%, rgba(111,184,255,.12), rgba(111,184,255,0) 26%),
+    radial-gradient(circle at 84% 14%, rgba(208,156,255,.1), rgba(208,156,255,0) 24%);
+  opacity: .58;
   transition: opacity .25s ease;
 }
 
 .hero::after {
   z-index: 1;
-  background-image: radial-gradient(circle, rgba(244,250,255,.86) 1.1px, transparent 1.8px);
-  background-size: 36px 36px;
-  opacity: .34;
-  animation: heroStarDrift 26s linear infinite;
+  background:
+    linear-gradient(112deg, transparent 14%, rgba(150,184,255,.04) 28%, rgba(226,240,255,.1) 40%, rgba(255,255,255,.11) 47%, rgba(178,172,255,.08) 54%, rgba(150,184,255,.04) 62%, transparent 76%),
+    radial-gradient(36% 18% at 32% 42%, rgba(176,215,255,.12), rgba(176,215,255,0) 74%),
+    radial-gradient(24% 12% at 66% 52%, rgba(255,255,255,.1), rgba(255,255,255,0) 74%),
+    radial-gradient(20% 12% at 80% 62%, rgba(166,170,255,.08), rgba(166,170,255,0) 72%);
+  opacity: .66;
+  filter: blur(2px) saturate(1.06);
+  animation: heroStarDrift 34s linear infinite;
 }
 
 html[data-theme="sakura"] .hero::before {
@@ -1252,6 +1371,11 @@ html[data-theme="sakura"] .hero-tree { opacity: .9; }
   overflow: hidden;
 }
 
+html[data-theme="cosmic"] .hero-sparkles {
+  mix-blend-mode: screen;
+  opacity: .98;
+}
+
 .preview-petal {
   position: absolute;
   left: -16%;
@@ -1282,12 +1406,34 @@ html[data-theme="sakura"] .preview-petal {
 
 .hero-spark {
   position: absolute;
-  width: 4px;
-  height: 4px;
+  width: var(--size, 4px);
+  height: var(--size, 4px);
   border-radius: 50%;
   background: radial-gradient(circle, rgba(255,255,255,.98), rgba(187,226,255,.35));
-  opacity: .65;
+  opacity: var(--opacity, .65);
+  filter: blur(var(--blur, 0px));
+  box-shadow: 0 0 8px rgba(188,228,255,.24);
   animation: sparkTwinkle 3s ease-in-out infinite;
+}
+
+.hero-spark--bright {
+  background: radial-gradient(circle, rgba(255,255,255,1), rgba(196,231,255,.48));
+  box-shadow: 0 0 14px rgba(194,232,255,.46);
+}
+
+.hero-spark--giant {
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.08),
+    0 0 18px rgba(202,236,255,.56);
+}
+
+.hero-spark--warm {
+  background: radial-gradient(circle, rgba(255,252,246,.98), rgba(255,219,202,.34));
+  box-shadow: 0 0 12px rgba(255,224,206,.36);
+}
+
+.hero-spark--cool {
+  background: radial-gradient(circle, rgba(244,251,255,.98), rgba(166,218,255,.38));
 }
 
 .hero-hover-star {
@@ -1447,6 +1593,74 @@ html[data-theme="sakura"] .preview-petal {
 .sakura-launch.is-live .sakura-launch__core { animation: sakuraLaunchCore .96s var(--ease) forwards; }
 .sakura-launch.is-live .sakura-launch__petal { animation: sakuraLaunchPetal .98s var(--ease) forwards; }
 
+.sakura-portal-swirl {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  z-index: 74;
+  pointer-events: none;
+}
+
+.sakura-portal-swirl__veil,
+.sakura-portal-swirl__glow,
+.sakura-portal-swirl__ring,
+.sakura-portal-swirl__core,
+.sakura-portal-swirl__petal {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.sakura-portal-swirl__veil {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, rgba(255,255,255,.82), rgba(255,224,236,.42) 32%, rgba(255,224,236,0) 72%);
+  opacity: 0;
+}
+
+.sakura-portal-swirl__glow {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, rgba(255,249,252,.98), rgba(255,205,225,.74) 26%, rgba(255,171,205,.18) 54%, transparent 78%);
+  opacity: 0;
+}
+
+.sakura-portal-swirl__ring {
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  border: 1px solid rgba(246,165,192,.58);
+  box-shadow: 0 0 0 12px rgba(255,203,221,.14), 0 0 28px rgba(255,191,212,.22);
+  opacity: 0;
+}
+
+.sakura-portal-swirl__core {
+  font-size: 28px;
+  line-height: 1;
+  opacity: 0;
+  text-shadow: 0 0 18px rgba(255,192,216,.46);
+}
+
+.sakura-portal-swirl__petal {
+  font-size: 22px;
+  line-height: 1;
+  opacity: 0;
+  filter: drop-shadow(0 8px 14px rgba(232,155,182,.18));
+}
+
+.sakura-portal-swirl.is-live .sakura-portal-swirl__veil { animation: sakuraPortalVeil .98s var(--ease) forwards; }
+.sakura-portal-swirl.is-live .sakura-portal-swirl__glow { animation: sakuraPortalSwirlGlow .86s var(--ease) forwards; }
+.sakura-portal-swirl.is-live .sakura-portal-swirl__ring { animation: sakuraPortalSwirlRing .92s var(--ease) forwards; }
+.sakura-portal-swirl.is-live .sakura-portal-swirl__core { animation: sakuraPortalSwirlCore .82s var(--ease) forwards; }
+.sakura-portal-swirl.is-live .sakura-portal-swirl__petal { animation: sakuraPortalSwirlPetal 1.02s var(--ease) forwards; }
+
 .memory-stage {
   --sx: 50%;
   --sy: 50%;
@@ -1486,6 +1700,7 @@ html[data-theme="sakura"] .memory-stage {
   position: absolute;
   inset: 0;
   pointer-events: none;
+  border-radius: inherit;
 }
 
 .memory-stage::before {
@@ -1911,7 +2126,7 @@ html[data-theme="cosmic"] .stage-sakura-decor { display: none; }
   border-radius: 50%;
   background: radial-gradient(circle, rgba(255,255,255,.98), rgba(173,221,255,.4));
   box-shadow: 0 0 8px rgba(170,222,255,.62);
-  opacity: .26;
+  opacity: var(--opacity, .26);
   filter: blur(var(--blur, 0px));
   animation: stageStarTwinkle var(--dur, 3.2s) ease-in-out infinite;
   animation-delay: var(--delay, 0s);
@@ -1920,6 +2135,21 @@ html[data-theme="cosmic"] .stage-sakura-decor { display: none; }
 .stage-star--bright {
   opacity: .4;
   box-shadow: 0 0 12px rgba(188,230,255,.82);
+}
+
+.stage-star--giant {
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.08),
+    0 0 16px rgba(196,234,255,.8);
+}
+
+.stage-star--warm {
+  background: radial-gradient(circle, rgba(255,250,244,.98), rgba(255,218,200,.42));
+  box-shadow: 0 0 10px rgba(255,224,206,.44);
+}
+
+.stage-star--cool {
+  background: radial-gradient(circle, rgba(245,251,255,.98), rgba(166,218,255,.42));
 }
 
 html[data-theme="sakura"] .stage-stars { display: none; }
@@ -2261,7 +2491,16 @@ html[data-theme="sakura"] .memory-photo--main.is-magnetic {
   text-shadow: 0 0 8px rgba(255,190,214,.58);
 }
 
-.memory-photo.to-portal { animation: flyToPortal .78s var(--ease) forwards; }
+.memory-photo.to-portal {
+  animation: flyToPortal .78s var(--ease) forwards;
+  animation-delay: var(--pull-delay, 0s);
+}
+
+html[data-theme="cosmic"] .memory-photo.to-portal {
+  animation: blackHolePull .92s var(--ease) forwards;
+  animation-delay: var(--pull-delay, 0s);
+  transform-origin: center;
+}
 
 .portal-btn {
   --px: 0px;
@@ -2275,6 +2514,38 @@ html[data-theme="sakura"] .memory-photo--main.is-magnetic {
   cursor: pointer;
   z-index: 8;
   transition: transform .18s linear;
+}
+
+.portal-btn__singularity,
+.portal-btn__shockwave {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(.2);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.portal-btn__singularity {
+  width: 34px;
+  height: 34px;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(2,5,18,.96) 0 40%, rgba(12,18,42,.92) 58%, rgba(85,126,255,.38) 66%, rgba(188,228,255,.14) 78%, transparent 100%);
+  box-shadow:
+    0 0 0 1px rgba(166,214,255,.18),
+    0 0 24px rgba(130,178,255,.28),
+    0 0 54px rgba(24,38,90,.44);
+  filter: saturate(1.06);
+  z-index: 3;
+}
+
+.portal-btn__shockwave {
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgba(205,234,255,.46);
+  box-shadow: 0 0 26px rgba(173,216,255,.36);
+  z-index: 2;
 }
 
 .portal-btn__glyph {
@@ -2397,6 +2668,164 @@ html[data-theme="sakura"] .portal-btn:hover .portal-btn__inner {
 
 .memory-stage.is-portal-transition .portal-btn__inner { animation: portalOpen .9s var(--ease) both; }
 .memory-stage.is-portal-transition .portal-btn__rays { animation: raysBurst .9s var(--ease) both; }
+
+html[data-theme="sakura"] .memory-photo.to-sakura-portal {
+  animation: sakuraPortalPull .94s cubic-bezier(.23, .88, .26, 1) forwards;
+  animation-delay: var(--pull-delay, 0s);
+  transform-origin: center;
+}
+
+html[data-theme="sakura"] .memory-stage.is-sakura-portal-transition::before {
+  animation: sakuraPortalField .84s var(--ease) both;
+  will-change: clip-path, opacity, transform;
+}
+
+html[data-theme="sakura"] .memory-stage.is-sakura-portal-transition::after {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,.78), rgba(255,214,230,.46) 18%, rgba(255,214,230,0) 36%),
+    radial-gradient(circle at 50% 50%, rgba(255,236,210,.18), rgba(255,236,210,0) 26%);
+  animation: sakuraPortalGlow .84s var(--ease) both;
+  will-change: clip-path, opacity, transform;
+}
+
+html[data-theme="sakura"] .memory-stage.is-sakura-portal-transition .memory-photo,
+html[data-theme="sakura"] .memory-stage.is-sakura-portal-transition .portal-btn {
+  transition: none;
+  will-change: transform, opacity;
+}
+
+html[data-theme="sakura"] .memory-stage.is-sakura-portal-transition .stage-sakura-decor,
+html[data-theme="sakura"] .memory-stage.is-sakura-portal-transition .stage-links,
+html[data-theme="sakura"] .memory-stage.is-sakura-portal-transition .stage-cursor-glow {
+  animation: sakuraPortalDecor .88s var(--ease) both;
+}
+
+html[data-theme="sakura"] .memory-stage.is-sakura-portal-transition .memory-caption,
+html[data-theme="sakura"] .memory-stage.is-sakura-portal-transition .stage-hint {
+  animation: sakuraPortalText .72s var(--ease) both;
+}
+
+html[data-theme="sakura"] .memory-stage.is-sakura-portal-transition .portal-btn {
+  animation: sakuraPortalHold .9s var(--ease) both;
+}
+
+html[data-theme="sakura"] .memory-stage.is-sakura-portal-transition .portal-btn__inner {
+  animation: sakuraPortalCore .84s var(--ease) both;
+}
+
+html[data-theme="sakura"] .memory-stage.is-sakura-portal-transition .portal-btn__icon,
+html[data-theme="sakura"] .memory-stage.is-sakura-portal-transition .portal-btn__text,
+html[data-theme="sakura"] .memory-stage.is-sakura-portal-transition .portal-btn__sub {
+  animation: sakuraPortalTextFade .36s ease forwards;
+}
+
+html[data-theme="sakura"] .memory-stage.is-sakura-portal-transition .portal-btn__glyph,
+html[data-theme="sakura"] .memory-stage.is-sakura-portal-transition .portal-btn__rays,
+html[data-theme="sakura"] .memory-stage.is-sakura-portal-transition .portal-btn__ring {
+  animation: sakuraPortalWreath .84s var(--ease) both;
+}
+
+html[data-theme="sakura"] .memory-stage.is-sakura-portal-transition .portal-btn__singularity {
+  width: 44px;
+  height: 44px;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,.96) 0 16%, rgba(255,220,232,.92) 26%, rgba(246,165,192,.5) 56%, rgba(246,165,192,0) 84%);
+  box-shadow:
+    0 0 0 1px rgba(255,226,235,.42),
+    0 0 28px rgba(255,198,218,.38),
+    0 0 56px rgba(255,223,231,.42);
+  animation: sakuraPortalBloom .86s var(--ease) both;
+}
+
+html[data-theme="sakura"] .memory-stage.is-sakura-portal-bloom .portal-btn__shockwave {
+  border-color: rgba(255,214,228,.78);
+  box-shadow: 0 0 34px rgba(255,198,221,.42);
+  animation: sakuraPortalPetalWave .46s var(--ease) both;
+}
+
+html[data-theme="sakura"] .memory-stage.is-sakura-portal-bloom::after {
+  animation: sakuraPortalFlash .48s var(--ease) both;
+}
+
+html[data-theme="cosmic"] .memory-stage.is-blackhole-transition::before {
+  animation: blackHoleFieldCollapse .88s var(--ease) both;
+  will-change: clip-path, opacity;
+}
+
+html[data-theme="cosmic"] .memory-stage.is-blackhole-transition::after {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(2,6,18,.9) 0 7%, rgba(10,18,48,.68) 10%, rgba(10,18,48,0) 22%),
+    radial-gradient(circle at 50% 50%, rgba(186,226,255,.12), rgba(186,226,255,0) 26%);
+  animation: blackHoleCenterPulse .88s var(--ease) both;
+  will-change: clip-path, opacity;
+}
+
+html[data-theme="cosmic"] .memory-stage.is-blackhole-transition .stage-orbits,
+html[data-theme="cosmic"] .memory-stage.is-blackhole-transition .stage-cosmic-decor,
+html[data-theme="cosmic"] .memory-stage.is-blackhole-transition .stage-stars,
+html[data-theme="cosmic"] .memory-stage.is-blackhole-transition .stage-links {
+  animation: blackHoleLayerCollapse .9s var(--ease) both;
+  transform-origin: 50% 50%;
+  will-change: clip-path, opacity, transform;
+}
+
+html[data-theme="cosmic"] .memory-stage.is-blackhole-transition .stage-star,
+html[data-theme="cosmic"] .memory-stage.is-blackhole-transition .stage-milkyway,
+html[data-theme="cosmic"] .memory-stage.is-blackhole-transition .stage-planet,
+html[data-theme="cosmic"] .memory-stage.is-blackhole-transition .orbit {
+  animation-play-state: paused;
+}
+
+html[data-theme="cosmic"] .memory-stage.is-blackhole-transition .memory-photo,
+html[data-theme="cosmic"] .memory-stage.is-blackhole-transition .memory-gallery,
+html[data-theme="cosmic"] .memory-stage.is-blackhole-transition .portal-btn {
+  will-change: transform, opacity;
+}
+
+html[data-theme="cosmic"] .memory-stage.is-blackhole-transition .memory-photo {
+  transition: none;
+}
+
+html[data-theme="cosmic"] .memory-stage.is-blackhole-transition .memory-photo.to-portal {
+  animation-play-state: running;
+}
+
+html[data-theme="cosmic"] .memory-stage.is-blackhole-transition .memory-caption,
+html[data-theme="cosmic"] .memory-stage.is-blackhole-transition .stage-hint {
+  animation: blackHoleTextCollapse .72s var(--ease) both;
+}
+
+html[data-theme="cosmic"] .memory-stage.is-blackhole-transition .portal-btn {
+  animation: blackHolePortalHold .9s var(--ease) both;
+}
+
+html[data-theme="cosmic"] .memory-stage.is-blackhole-transition .portal-btn__inner {
+  animation: blackHolePortalCore .84s var(--ease) both;
+}
+
+html[data-theme="cosmic"] .memory-stage.is-blackhole-transition .portal-btn__icon,
+html[data-theme="cosmic"] .memory-stage.is-blackhole-transition .portal-btn__text,
+html[data-theme="cosmic"] .memory-stage.is-blackhole-transition .portal-btn__sub {
+  animation: blackHolePortalText .34s ease forwards;
+}
+
+html[data-theme="cosmic"] .memory-stage.is-blackhole-transition .portal-btn__glyph,
+html[data-theme="cosmic"] .memory-stage.is-blackhole-transition .portal-btn__rays,
+html[data-theme="cosmic"] .memory-stage.is-blackhole-transition .portal-btn__ring {
+  animation: blackHoleAccretion .78s var(--ease) both;
+}
+
+html[data-theme="cosmic"] .memory-stage.is-blackhole-transition .portal-btn__singularity {
+  animation: blackHoleSingularity .86s var(--ease) both;
+}
+
+html[data-theme="cosmic"] .memory-stage.is-blackhole-burst .portal-btn__shockwave {
+  animation: blackHoleShockwave .42s var(--ease) both;
+}
+
+html[data-theme="cosmic"] .memory-stage.is-blackhole-burst::after {
+  animation: blackHoleBurstFlash .46s var(--ease) both;
+}
 
 .memory-caption {
   position: absolute;
@@ -3396,6 +3825,11 @@ html[data-theme="sakura"] .wish-node__text { color: #704b5e; }
   100% { transform: translate3d(-18px, 14px, 0); }
 }
 
+@keyframes milkyBandDrift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(10px, -6px, 0) scale(1.02); }
+}
+
 @keyframes sakuraBreath {
   0%, 100% { transform: scale(1); opacity: .86; }
   50% { transform: scale(1.04); opacity: 1; }
@@ -3568,6 +4002,17 @@ html[data-theme="sakura"] .wish-node__text { color: #704b5e; }
   50% { opacity: .9; transform: scale(1.18); }
 }
 
+@keyframes galaxySkyTwinkle {
+  0%, 100% { opacity: calc(var(--opacity, .3) * .62); transform: scale(.84); }
+  38% { opacity: var(--opacity, .3); transform: scale(1.02); }
+  72% { opacity: calc(var(--opacity, .3) * .78); transform: scale(.9); }
+}
+
+@keyframes galaxySkyFloat {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(var(--drift-x, 4px), var(--drift-y, -3px), 0); }
+}
+
 @keyframes bloomWarp {
   0% { transform: translate(-50%, -50%) scale(.2); opacity: 0; }
   20% { opacity: 1; }
@@ -3632,6 +4077,175 @@ html[data-theme="sakura"] .wish-node__text { color: #704b5e; }
   }
 }
 
+@keyframes sakuraPortalVeil {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.26); }
+  24% { opacity: .92; }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(6.8); }
+}
+
+@keyframes sakuraPortalSwirlGlow {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.24); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(4.4); }
+}
+
+@keyframes sakuraPortalSwirlRing {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.28) rotate(-12deg); }
+  26% { opacity: .9; }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(2.5) rotate(72deg); }
+}
+
+@keyframes sakuraPortalSwirlCore {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.24) rotate(-14deg); }
+  30% { opacity: 1; }
+  56% { opacity: 1; transform: translate(-50%, -50%) scale(1.08) rotate(8deg); }
+  100% { opacity: 0; transform: translate(-50%, calc(-50% - 38px)) scale(.56) rotate(24deg); }
+}
+
+@keyframes sakuraPortalSwirlPetal {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.4) rotate(0deg); }
+  18% { opacity: 1; }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1.02) rotate(var(--rz, 120deg));
+  }
+}
+
+@keyframes sakuraPortalPull {
+  0% {
+    transform: translate3d(0, 0, var(--depth-z, 0px)) rotate(var(--base-rotate, 0deg)) scale(1);
+    opacity: 1;
+  }
+  26% {
+    transform:
+      translate3d(calc(var(--arc-x, 0px) * .34), calc(var(--arc-y, 0px) * .26 - 10px), calc(var(--depth-z, 0px) + 8px))
+      rotate(calc(var(--base-rotate, 0deg) + var(--spin-a, 18deg)))
+      scale(1.03);
+    opacity: 1;
+  }
+  68% {
+    transform:
+      translate3d(calc(var(--portal-dx) * .62 + var(--arc-x, 0px)), calc(var(--portal-dy) * .5 + var(--arc-y, 0px)), 16px)
+      rotate(calc(var(--base-rotate, 0deg) + var(--spin-b, 84deg)))
+      scale(.7);
+    opacity: .88;
+  }
+  100% {
+    transform:
+      translate3d(var(--portal-dx), var(--portal-dy), -24px)
+      rotate(calc(var(--base-rotate, 0deg) + var(--spin-c, 150deg)))
+      scale(var(--petal-scale, .16));
+    opacity: 0;
+  }
+}
+
+@keyframes sakuraPortalField {
+  0% {
+    opacity: 1;
+    clip-path: inset(0 round 32px);
+    transform: scale(1);
+  }
+  62% {
+    opacity: .94;
+    clip-path: ellipse(46% 40% at 50% 50%);
+    transform: scale(.99);
+  }
+  100% {
+    opacity: 0;
+    clip-path: ellipse(14% 14% at 50% 50%);
+    transform: scale(1.02);
+  }
+}
+
+@keyframes sakuraPortalGlow {
+  0% {
+    opacity: .18;
+    clip-path: circle(10% at 50% 50%);
+    transform: scale(.82);
+  }
+  42% {
+    opacity: .96;
+    clip-path: circle(24% at 50% 50%);
+    transform: scale(1.04);
+  }
+  100% {
+    opacity: 1;
+    clip-path: circle(54% at 50% 50%);
+    transform: scale(1.16);
+  }
+}
+
+@keyframes sakuraPortalDecor {
+  0% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+  100% { opacity: 0; transform: translate3d(0, -10px, 0) scale(.92); }
+}
+
+@keyframes sakuraPortalText {
+  0% { opacity: 1; transform: translateX(-50%) scale(1); }
+  100% { opacity: 0; transform: translateX(-50%) scale(.7); }
+}
+
+@keyframes sakuraPortalHold {
+  0% { transform: translate(calc(-50% + var(--px)), calc(-50% + var(--py))) scale(1); }
+  100% { transform: translate(calc(-50% + var(--px)), calc(-50% + var(--py))) scale(1.03); }
+}
+
+@keyframes sakuraPortalCore {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 12px rgba(255,190,217,.2), 0 0 46px rgba(255,182,193,.4);
+    filter: brightness(1);
+  }
+  54% {
+    transform: scale(.8);
+    box-shadow: 0 0 0 8px rgba(255,199,218,.16), 0 0 32px rgba(255,194,214,.34);
+    filter: brightness(.96);
+  }
+  100% {
+    transform: scale(.14);
+    box-shadow: 0 0 0 0 rgba(255,199,218,0), 0 0 0 rgba(255,194,214,0);
+    filter: brightness(.92);
+  }
+}
+
+@keyframes sakuraPortalTextFade {
+  0% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(.46); }
+}
+
+@keyframes sakuraPortalWreath {
+  0% { opacity: .92; transform: scale(1) rotate(0deg); }
+  100% { opacity: 0; transform: scale(.26) rotate(96deg); }
+}
+
+@keyframes sakuraPortalBloom {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.16); }
+  24% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: .98; transform: translate(-50%, -50%) scale(1.72); }
+}
+
+@keyframes sakuraPortalPetalWave {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.14); }
+  22% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(6.4); }
+}
+
+@keyframes sakuraPortalFlash {
+  0% {
+    background:
+      radial-gradient(circle at 50% 50%, rgba(255,255,255,.82), rgba(255,220,232,.42) 14%, rgba(255,220,232,0) 32%),
+      linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,0));
+    opacity: 0;
+  }
+  22% { opacity: 1; }
+  100% {
+    background:
+      radial-gradient(circle at 50% 50%, rgba(255,255,255,0), rgba(255,220,232,0) 24%, rgba(255,220,232,0) 42%),
+      linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,0));
+    opacity: 0;
+  }
+}
+
 @keyframes portalPulse {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.03); }
@@ -3647,10 +4261,178 @@ html[data-theme="sakura"] .wish-node__text { color: #704b5e; }
   100% { opacity: 0; transform: translate3d(0, 0, 0) scale(.18) rotate(0deg); }
 }
 
+@keyframes blackHolePull {
+  0% {
+    transform: translate3d(0, 0, var(--depth-z, 0px)) rotate(var(--base-rotate, 0deg)) scale(1);
+    opacity: 1;
+  }
+  42% {
+    transform:
+      translate3d(calc(var(--portal-dx) * .42 + var(--arc-x, 0px)), calc(var(--portal-dy) * .34 + var(--arc-y, 0px)), calc(var(--depth-z, 0px) - 6px))
+      rotate(calc(var(--base-rotate, 0deg) + var(--spin-a, 120deg)))
+      scale(.76);
+    opacity: .98;
+  }
+  78% {
+    opacity: .84;
+  }
+  100% {
+    transform:
+      translate3d(var(--portal-dx), var(--portal-dy), -40px)
+      rotate(calc(var(--base-rotate, 0deg) + var(--spin-b, 320deg)))
+      scale(.05);
+    opacity: 0;
+  }
+}
+
+@keyframes blackHoleFieldCollapse {
+  0% {
+    opacity: 1;
+    clip-path: circle(88% at 50% 50%);
+    transform: scale(1);
+  }
+  62% {
+    opacity: .94;
+    clip-path: circle(26% at 50% 50%);
+    transform: scale(.98);
+  }
+  100% {
+    opacity: 0;
+    clip-path: circle(7% at 50% 50%);
+    transform: scale(.96);
+  }
+}
+
+@keyframes blackHoleCenterPulse {
+  0% {
+    opacity: .28;
+    clip-path: circle(8% at 50% 50%);
+    transform: scale(.92);
+  }
+  40% {
+    opacity: .94;
+    clip-path: circle(22% at 50% 50%);
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    clip-path: circle(18% at 50% 50%);
+    transform: scale(1);
+  }
+}
+
+@keyframes blackHoleLayerCollapse {
+  0% {
+    opacity: 1;
+    clip-path: circle(88% at 50% 50%);
+    transform: scale(1);
+  }
+  56% {
+    opacity: .78;
+    clip-path: circle(24% at 50% 50%);
+    transform: scale(.94);
+  }
+  100% {
+    opacity: 0;
+    clip-path: circle(5% at 50% 50%);
+    transform: scale(.88);
+  }
+}
+
+@keyframes blackHoleTextCollapse {
+  0% { opacity: 1; transform: translateX(-50%) scale(1); }
+  100% { opacity: 0; transform: translateX(-50%) scale(.16); }
+}
+
+@keyframes blackHolePortalHold {
+  0% { transform: translate(calc(-50% + var(--px)), calc(-50% + var(--py))) scale(1); }
+  100% { transform: translate(calc(-50% + var(--px)), calc(-50% + var(--py))) scale(1.02); }
+}
+
+@keyframes blackHolePortalCore {
+  0% {
+    transform: scale(1);
+    border-color: rgba(196,227,255,.62);
+    box-shadow: 0 0 0 14px rgba(144,195,255,.16), 0 0 42px rgba(149,201,255,.52);
+    filter: brightness(1);
+  }
+  48% {
+    transform: scale(.82);
+    border-color: rgba(120,172,255,.28);
+    box-shadow: 0 0 0 8px rgba(92,136,255,.14), 0 0 54px rgba(72,96,188,.42);
+    filter: brightness(.46);
+  }
+  100% {
+    transform: scale(.08);
+    border-color: rgba(90,130,210,0);
+    box-shadow: 0 0 0 0 rgba(92,136,255,0), 0 0 0 rgba(72,96,188,0);
+    filter: brightness(.1);
+  }
+}
+
+@keyframes blackHolePortalText {
+  0% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(.4); }
+}
+
+@keyframes blackHoleAccretion {
+  0% { opacity: .9; transform: scale(1) rotate(0deg); filter: blur(0); }
+  100% { opacity: 0; transform: scale(.22) rotate(180deg); filter: blur(8px); }
+}
+
+@keyframes blackHoleSingularity {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.18); }
+  26% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+  68% { opacity: 1; transform: translate(-50%, -50%) scale(2.2); }
+  100% { opacity: .96; transform: translate(-50%, -50%) scale(1.2); }
+}
+
+@keyframes blackHoleShockwave {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.1); }
+  18% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(7.4); }
+}
+
+@keyframes blackHoleBurstFlash {
+  0% {
+    background:
+      radial-gradient(circle at 50% 50%, rgba(255,255,255,.82), rgba(196,230,255,.42) 14%, rgba(196,230,255,0) 32%),
+      linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,0));
+    opacity: 0;
+  }
+  22% { opacity: 1; }
+  100% {
+    background:
+      radial-gradient(circle at 50% 50%, rgba(255,255,255,0), rgba(196,230,255,0) 26%, rgba(196,230,255,0) 42%),
+      linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,0));
+    opacity: 0;
+  }
+}
+
 @keyframes portalOpen {
   0% { transform: scale(1); }
   45% { transform: scale(.9); }
   100% { transform: scale(1.26); opacity: .1; }
+}
+
+@keyframes supernovaIn {
+  0% { opacity: 0; transform: scale(.2); }
+  100% { opacity: 1; transform: scale(1.16); }
+}
+
+@keyframes supernovaOut {
+  0% { opacity: 1; transform: scale(1.02); }
+  100% { opacity: 0; transform: scale(1.62); }
+}
+
+@keyframes supernovaGlowIn {
+  0% { opacity: 0; transform: scale(.34); }
+  100% { opacity: 1; transform: scale(1.22); }
+}
+
+@keyframes supernovaGlowOut {
+  0% { opacity: 1; transform: scale(1.08); }
+  100% { opacity: 0; transform: scale(1.82); }
 }
 
 @keyframes letterStarfield {
@@ -3803,6 +4585,42 @@ html[data-theme="sakura"] .wish-node__text { color: #704b5e; }
 @keyframes sakuraScreenGlowOut {
   0% { opacity: .92; transform: scale(1.08); }
   100% { opacity: 0; transform: scale(1.42); }
+}
+
+@keyframes blossomIn {
+  0% {
+    opacity: 0;
+    clip-path: circle(10% at 50% 56%);
+    transform: scale(.7) rotate(-10deg);
+  }
+  100% {
+    opacity: 1;
+    clip-path: circle(98% at 50% 56%);
+    transform: scale(1.08) rotate(4deg);
+  }
+}
+
+@keyframes blossomOut {
+  0% {
+    opacity: 1;
+    clip-path: circle(96% at 50% 56%);
+    transform: scale(1.02) rotate(2deg);
+  }
+  100% {
+    opacity: 0;
+    clip-path: circle(120% at 50% 56%);
+    transform: scale(1.3) rotate(10deg);
+  }
+}
+
+@keyframes blossomGlowIn {
+  0% { opacity: 0; transform: scale(.44); }
+  100% { opacity: 1; transform: scale(1.18); }
+}
+
+@keyframes blossomGlowOut {
+  0% { opacity: 1; transform: scale(1.04); }
+  100% { opacity: 0; transform: scale(1.7); }
 }
 
 @keyframes burstUp {
