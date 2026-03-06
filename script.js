@@ -568,6 +568,44 @@ function spawnCosmicLaunch(x, y) {
   setTimeout(() => launch.remove(), 1280);
 }
 
+function spawnSakuraLaunch(x, y) {
+  const launch = document.createElement("div");
+  launch.className = "sakura-launch";
+  launch.style.left = `${x}px`;
+  launch.style.top = `${y}px`;
+
+  const glow = document.createElement("span");
+  glow.className = "sakura-launch__glow";
+  launch.appendChild(glow);
+
+  const ring = document.createElement("span");
+  ring.className = "sakura-launch__ring";
+  launch.appendChild(ring);
+
+  const core = document.createElement("span");
+  core.className = "sakura-launch__core";
+  core.textContent = "\u{1F338}";
+  launch.appendChild(core);
+
+  const petals = ["\u{1F338}", "\u2740", "\u273F"];
+  for (let i = 0; i < 16; i += 1) {
+    const petal = document.createElement("span");
+    petal.className = "sakura-launch__petal";
+    petal.textContent = petals[i % petals.length];
+    const angle = (Math.PI * 2 * i) / 16;
+    const radius = rand(90, 220);
+    petal.style.setProperty("--tx", `${Math.cos(angle) * radius}px`);
+    petal.style.setProperty("--ty", `${Math.sin(angle) * radius}px`);
+    petal.style.setProperty("--rz", `${rand(-160, 160).toFixed(2)}deg`);
+    petal.style.animationDelay = `${(i * 0.014).toFixed(3)}s`;
+    launch.appendChild(petal);
+  }
+
+  document.body.appendChild(launch);
+  requestAnimationFrame(() => launch.classList.add("is-live"));
+  setTimeout(() => launch.remove(), 1380);
+}
+
 function setupHeroInteraction() {
   if (state.heroParallaxBound) return;
   const hero = $(".screen-1 .hero");
@@ -636,6 +674,39 @@ function startHomeTransition(girlKey, sourceEl) {
   const rect = sourceEl.getBoundingClientRect();
   const centerX = rect.left + rect.width / 2;
   const centerY = rect.top + rect.height / 2;
+
+  if (state.theme === "sakura") {
+    const hero = $(".screen-1 .hero");
+    const bloom = document.createElement("span");
+    bloom.className = "transition-bloom transition-bloom--sakura";
+    bloom.style.left = `${centerX}px`;
+    bloom.style.top = `${centerY}px`;
+    document.body.appendChild(bloom);
+    spawnSakuraLaunch(centerX, centerY);
+    hero?.classList.add("is-sakura-transition");
+    requestAnimationFrame(() => bloom.classList.add("is-live"));
+
+    setTimeout(() => {
+      transitionToScreen(2, {
+        effect: "garden",
+        switchDelay: 420,
+        totalDuration: 1120,
+        onSwitched: () => {
+          renderGallery();
+          startMemoryHighlight();
+          setupStageParallax();
+        },
+      });
+    }, 520);
+
+    setTimeout(() => {
+      bloom.remove();
+      hero?.classList.remove("is-sakura-transition");
+      state.homeBusy = false;
+    }, 1420);
+    return;
+  }
+
   const bloom = document.createElement("span");
   bloom.className = "transition-bloom";
   bloom.style.left = `${centerX}px`;
@@ -1168,7 +1239,7 @@ function resetLetterScene() {
   const scene = $("#letterScene");
 
   if (scene) scene.classList.remove("is-arriving");
-  if (envelope) envelope.classList.remove("is-arrived", "is-open", "is-paper");
+  if (envelope) envelope.classList.remove("is-arrived", "is-open", "is-paper", "is-floating");
   if (paper) paper.classList.remove("is-visible");
   if (typing) {
     typing.textContent = "";
@@ -1243,8 +1314,9 @@ function startLetterSequence() {
     envelope.classList.add("is-paper");
     paper.classList.add("is-visible");
   }, 980);
+  const tFloat = setTimeout(() => envelope.classList.add("is-floating"), 1040);
   const t4 = setTimeout(() => typeWriter(girl.letter, typing), 1220);
-  state.letterTimers.push(t1, t2, t3, t4);
+  state.letterTimers.push(t1, t2, t3, tFloat, t4);
 }
 
 function backToStage() {
