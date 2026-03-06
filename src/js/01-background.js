@@ -239,6 +239,7 @@ function renderGalaxyBackgroundStars() {
   const layer = $("#bgStars");
   const constellationLayer = $("#bgConstellation");
   if (!layer) return;
+  const phone = isPhoneViewport();
 
   layer.querySelectorAll(".bg-starfield__star").forEach((node) => node.remove());
   if (state.theme !== "cosmic") {
@@ -247,34 +248,46 @@ function renderGalaxyBackgroundStars() {
     return;
   }
 
-  layer.style.backgroundImage = buildGalaxyDustMap(scalePerformanceCount(isMobile() ? 150 : 260, isMobile() ? 102 : 184, isMobile() ? 72 : 132), {
+  layer.style.backgroundImage = buildGalaxyDustMap(scalePerformanceCount(
+    phone ? 72 : isMobile() ? 150 : 260,
+    phone ? 48 : isMobile() ? 102 : 184,
+    phone ? 28 : isMobile() ? 72 : 132
+  ), {
     minX: 0.5,
     maxX: 99.5,
     minY: 0.5,
     maxY: 99.5,
-    clusterCount: pickPerformanceValue(isMobile() ? 8 : 12, isMobile() ? 6 : 9, isMobile() ? 4 : 7),
-    clusterBias: pickPerformanceValue(isMobile() ? 0.6 : 0.74, isMobile() ? 0.58 : 0.68, isMobile() ? 0.54 : 0.62),
+    clusterCount: pickPerformanceValue(phone ? 4 : isMobile() ? 8 : 12, phone ? 3 : isMobile() ? 6 : 9, phone ? 2 : isMobile() ? 4 : 7),
+    clusterBias: pickPerformanceValue(phone ? 0.52 : isMobile() ? 0.6 : 0.74, phone ? 0.48 : isMobile() ? 0.58 : 0.68, phone ? 0.44 : isMobile() ? 0.54 : 0.62),
   });
   if (constellationLayer) {
-    constellationLayer.style.setProperty("--milky-dust-map", buildGalaxyDustMap(scalePerformanceCount(isMobile() ? 68 : 128, isMobile() ? 44 : 86, isMobile() ? 28 : 54), {
+    constellationLayer.style.setProperty("--milky-dust-map", buildGalaxyDustMap(scalePerformanceCount(
+      phone ? 22 : isMobile() ? 68 : 128,
+      phone ? 14 : isMobile() ? 44 : 86,
+      phone ? 8 : isMobile() ? 28 : 54
+    ), {
       minX: 14,
       maxX: 86,
       minY: 18,
       maxY: 78,
-      clusterCount: pickPerformanceValue(isMobile() ? 5 : 7, isMobile() ? 3 : 5, isMobile() ? 2 : 4),
-      clusterBias: pickPerformanceValue(0.8, 0.72, 0.66),
+      clusterCount: pickPerformanceValue(phone ? 2 : isMobile() ? 5 : 7, phone ? 2 : isMobile() ? 3 : 5, phone ? 1 : isMobile() ? 2 : 4),
+      clusterBias: pickPerformanceValue(phone ? 0.62 : 0.8, phone ? 0.58 : 0.72, phone ? 0.5 : 0.66),
     }));
   }
 
-  const count = scalePerformanceCount(isMobile() ? 160 : 300, isMobile() ? 104 : 190, isMobile() ? 64 : 120);
+  const count = scalePerformanceCount(
+    phone ? 56 : isMobile() ? 160 : 300,
+    phone ? 34 : isMobile() ? 104 : 190,
+    phone ? 18 : isMobile() ? 64 : 120
+  );
   const points = generateGalaxyStarfield(count, {
     minX: 0.8,
     maxX: 99.2,
     minY: 0.8,
     maxY: 99.2,
-    clusterCount: pickPerformanceValue(isMobile() ? 7 : 10, isMobile() ? 5 : 7, isMobile() ? 4 : 5),
-    clusterBias: pickPerformanceValue(isMobile() ? 0.58 : 0.72, isMobile() ? 0.54 : 0.66, isMobile() ? 0.48 : 0.6),
-    minGap: pickPerformanceValue(isMobile() ? 0.42 : 0.54, isMobile() ? 0.56 : 0.72, isMobile() ? 0.74 : 0.94),
+    clusterCount: pickPerformanceValue(phone ? 4 : isMobile() ? 7 : 10, phone ? 3 : isMobile() ? 5 : 7, phone ? 2 : isMobile() ? 4 : 5),
+    clusterBias: pickPerformanceValue(phone ? 0.46 : isMobile() ? 0.58 : 0.72, phone ? 0.42 : isMobile() ? 0.54 : 0.66, phone ? 0.38 : isMobile() ? 0.48 : 0.6),
+    minGap: pickPerformanceValue(phone ? 0.86 : isMobile() ? 0.42 : 0.54, phone ? 1 : isMobile() ? 0.56 : 0.72, phone ? 1.14 : isMobile() ? 0.74 : 0.94),
   });
 
   points.forEach((point) => {
@@ -310,18 +323,23 @@ function renderStageStars() {
   const layer = $("#stageStars");
   if (!layer) return;
   layer.innerHTML = "";
+  const phone = isPhoneViewport();
 
   if (state.theme !== "cosmic" || state.screen !== 2) return;
-  const count = scalePerformanceCount(isMobile() ? 72 : 140, isMobile() ? 48 : 92, isMobile() ? 28 : 54);
-  const minCenterDistance = pickPerformanceValue(isMobile() ? 14 : 16, isMobile() ? 15 : 18, isMobile() ? 16 : 20);
+  const count = scalePerformanceCount(
+    phone ? 24 : isMobile() ? 72 : 140,
+    phone ? 16 : isMobile() ? 48 : 92,
+    phone ? 8 : isMobile() ? 28 : 54
+  );
+  const minCenterDistance = pickPerformanceValue(phone ? 16 : isMobile() ? 14 : 16, phone ? 18 : isMobile() ? 15 : 18, phone ? 20 : isMobile() ? 16 : 20);
   const points = generateGalaxyStarfield(count, {
     minX: 2,
     maxX: 98,
     minY: 4,
     maxY: 94,
-    clusterCount: pickPerformanceValue(isMobile() ? 6 : 8, isMobile() ? 4 : 5, isMobile() ? 3 : 4),
-    clusterBias: pickPerformanceValue(isMobile() ? 0.6 : 0.7, isMobile() ? 0.56 : 0.64, isMobile() ? 0.5 : 0.58),
-    minGap: pickPerformanceValue(isMobile() ? 0.6 : 0.72, isMobile() ? 0.76 : 0.94, isMobile() ? 0.92 : 1.1),
+    clusterCount: pickPerformanceValue(phone ? 3 : isMobile() ? 6 : 8, phone ? 2 : isMobile() ? 4 : 5, phone ? 2 : isMobile() ? 3 : 4),
+    clusterBias: pickPerformanceValue(phone ? 0.46 : isMobile() ? 0.6 : 0.7, phone ? 0.42 : isMobile() ? 0.56 : 0.64, phone ? 0.38 : isMobile() ? 0.5 : 0.58),
+    minGap: pickPerformanceValue(phone ? 1.04 : isMobile() ? 0.6 : 0.72, phone ? 1.18 : isMobile() ? 0.76 : 0.94, phone ? 1.28 : isMobile() ? 0.92 : 1.1),
     avoidCenterRadius: minCenterDistance,
   });
 
@@ -363,6 +381,7 @@ function startBackgroundEffects() {
   const lowPower = profile.reduced || profile.level === "low";
   const sakura = state.theme === "sakura";
   const intervalScale = profile.backgroundIntervalScale || 1;
+  if (isPhoneViewport()) return;
   const recipes = [];
 
   if (sakura) {

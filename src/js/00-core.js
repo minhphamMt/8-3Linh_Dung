@@ -101,7 +101,7 @@ const CONFIG = {
     wishTitle: "Thả một điều ước vào dải ngân hà",
 
     wishSubtitle:
-      "Viết một lời chúc nhỏ, rồi để vì sao ấy lặng lẽ tỏa sáng trong bầu trời kỷ niệm của hai người.",
+      "Viết một điều ước và thả nó đi theo ánh sao nhé.",
 
     wishLabel: "Tin nhắn ánh sao",
 
@@ -214,6 +214,7 @@ const state = {
 const rand = (min, max) => Math.random() * (max - min) + min;
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 const isMobile = () => window.matchMedia("(max-width: 820px)").matches;
+const isPhoneViewport = () => window.matchMedia("(max-width: 760px)").matches;
 const isCompactViewport = () => window.innerHeight <= 860;
 const isTightViewport = () => window.innerHeight <= 760;
 const supportsFinePointer = () => window.matchMedia("(hover: hover) and (pointer: fine)").matches;

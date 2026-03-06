@@ -359,6 +359,94 @@
     display: block;
   }
 
+  .bg-starfield__star,
+  .bg-constellation::before,
+  .bg-constellation::after,
+  .preview-petal,
+  .hero-photo--one,
+  .hero-photo--two,
+  .choice-emblem__ring,
+  .hero-spark,
+  .stage-milkyway,
+  .stage-planet,
+  .stage-star,
+  .orbit-1,
+  .orbit-2,
+  .memory-photo--main,
+  .memory-photo--echo,
+  .letter-nebula,
+  .letter-vault-ring,
+  .letter-planet,
+  .letter-starfield,
+  .letter-sakura-canopy,
+  .letter-sakura-branch,
+  .letter-sakura-petal,
+  html[data-theme="cosmic"] .envelope.is-floating .envelope-shell,
+  html[data-theme="sakura"] .envelope.is-floating .envelope-shell,
+  .wish-cosmic-nebula,
+  .wish-cosmic-orbit--one,
+  .wish-cosmic-orbit--two,
+  .wish-cosmic-star,
+  .wish-sakura-canopy,
+  .wish-sakura-butterfly,
+  .wish-sakura-petal {
+    animation: none;
+  }
+
+  .memory-stage:not(.is-portal-transition):not(.is-blackhole-transition):not(.is-sakura-portal-transition) .portal-btn__glyph,
+  .memory-stage:not(.is-portal-transition):not(.is-blackhole-transition):not(.is-sakura-portal-transition) .portal-btn__ring,
+  .memory-stage:not(.is-portal-transition):not(.is-blackhole-transition):not(.is-sakura-portal-transition) .portal-btn__rays,
+  .memory-stage:not(.is-portal-transition):not(.is-blackhole-transition):not(.is-sakura-portal-transition) .portal-btn__inner::after {
+    animation: none;
+  }
+
+  .fx-item,
+  .fx-constellation,
+  .fx-constellation-bridge,
+  .preview-petal,
+  .hero-spark,
+  .wish-cosmic-star,
+  .wish-sakura-petal {
+    display: none;
+  }
+
+  .hero-sparkles,
+  .stage-stars,
+  .letter-starfield {
+    background-image: none;
+  }
+
+  .stage-link,
+  .stage-anchor {
+    animation: none;
+  }
+
+  html[data-theme="cosmic"] .hero-photo--one {
+    animation: heroFloatOne 6.8s ease-in-out infinite;
+  }
+
+  html[data-theme="cosmic"] .hero-photo--two {
+    animation: heroFloatTwo 7.2s ease-in-out infinite;
+  }
+
+  html[data-theme="cosmic"] .memory-photo--main {
+    animation: orbitCard var(--orbit-duration, 12s) ease-in-out infinite;
+    animation-delay: var(--orbit-delay, 0s);
+  }
+
+  html[data-theme="sakura"] .hero-photo--one {
+    animation: heroFloatOne 6.8s ease-in-out infinite;
+  }
+
+  html[data-theme="sakura"] .hero-photo--two {
+    animation: heroFloatTwo 7.2s ease-in-out infinite;
+  }
+
+  html[data-theme="sakura"] .memory-photo--main {
+    animation: sakuraHang var(--orbit-duration, 13s) ease-in-out infinite;
+    animation-delay: var(--orbit-delay, 0s);
+  }
+
   .stage-milkyway { opacity: .2; }
   .stage-planet--one { width: 40px; height: 40px; }
   .stage-planet--two { width: 56px; height: 56px; }
@@ -516,7 +604,11 @@
     gap: 10px;
   }
   .hero-photo { width: min(100%, 148px); }
-  .memory-stage .memory-photo--echo-faint { display: none; }
+  .memory-stage .memory-photo--echo-faint {
+    display: block;
+    opacity: .13;
+    filter: blur(3.6px) saturate(.34);
+  }
   .letter-planet--two { display: none; }
   .letter-vault-beam { width: 180px; }
   .letter-ending { padding-inline: 14px; font-size: 12px; }

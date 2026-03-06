@@ -278,12 +278,18 @@ function renderGallery() {
   const compactStage = isCompactViewport();
   const tightStage = isTightViewport();
   const level = performanceLevel();
-  const primaryEchoIndexes = level === "low"
+  const phoneViewport = isPhoneViewport();
+  const tinyPhone = window.innerWidth <= 520;
+  const primaryEchoIndexes = phoneViewport
+    ? []
+    : level === "low"
     ? [0, 2, 4]
     : level === "medium"
       ? [0, 1, 3, 4]
       : [0, 1, 2, 3, 4];
-  const softEchoIndexes = level === "high"
+  const softEchoIndexes = phoneViewport
+    ? []
+    : level === "high"
     ? [0, 1, 2, 3, 4]
     : level === "medium"
       ? [0, 2, 4]
@@ -358,9 +364,9 @@ function renderGallery() {
   const sparse = normalizeGallerySlots(sakuraMode
     ? (isMobile()
       ? [
-        { x: 2, y: 28, w: 74, h: 96, r: -6, z: 4, orbit: 16.8 },
-        { x: 84, y: 24, w: 74, h: 96, r: 7, z: 4, orbit: 16.2 },
-        { x: 44, y: 80, w: 72, h: 92, r: -4, z: 3, orbit: 17.4 },
+        { x: 43, y: 2, w: 58, h: 74, r: -4, z: 4, orbit: 16.8 },
+        { x: 1, y: 38, w: 56, h: 72, r: -8, z: 3, orbit: 16.2 },
+        { x: 84, y: 39, w: 56, h: 72, r: 7, z: 3, orbit: 17.4 },
       ]
       : [
         { x: 3, y: 24, w: 88, h: 112, r: -7, z: 5, orbit: 18.2 },
@@ -369,10 +375,20 @@ function renderGallery() {
         { x: 84, y: 72, w: 88, h: 112, r: 7, z: 4, orbit: 18.4 },
       ])
     : (isMobile()
-      ? [{ x: 3, y: 27, w: 78, h: 100, r: -8, z: 4, orbit: 16.2 }, { x: 82, y: 27, w: 78, h: 100, r: 7, z: 4, orbit: 15.8 }]
+      ? [
+        { x: 43, y: 2, w: 60, h: 76, r: -6, z: 4, orbit: 16.2 },
+        { x: 1, y: 39, w: 58, h: 74, r: -9, z: 3, orbit: 15.8 },
+        { x: 84, y: 38, w: 58, h: 74, r: 8, z: 3, orbit: 17.2 },
+      ]
       : [{ x: 3, y: 20, w: 96, h: 122, r: -8, z: 5, orbit: 17.4 }, { x: 81, y: 22, w: 96, h: 122, r: 8, z: 5, orbit: 16.8 }, { x: 43, y: 76, w: 96, h: 122, r: -6, z: 4, orbit: 18.2 }]));
 
-  const sparseLimit = level === "low" ? Math.min(2, sparse.length) : level === "medium" ? Math.min(3, sparse.length) : sparse.length;
+  const sparseLimit = phoneViewport
+    ? Math.min(tinyPhone ? 2 : 3, sparse.length)
+    : level === "low"
+      ? Math.min(2, sparse.length)
+      : level === "medium"
+        ? Math.min(3, sparse.length)
+        : sparse.length;
   sparse.slice(0, sparseLimit).forEach((slot, idx) => {
     echo.appendChild(createMemoryCard(girl.images[idx % girl.images.length], slot, "memory-photo--echo memory-photo--echo-faint"));
   });

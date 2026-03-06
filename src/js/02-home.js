@@ -4,15 +4,20 @@ function renderHeroPetalPreview() {
   const layer = $("#heroPetalPreview");
   const sparkLayer = $("#heroSparkles");
   if (!layer || !sparkLayer) return;
+  const phone = isPhoneViewport();
 
   const allImages = [...CONFIG.girls.linh.images, ...CONFIG.girls.dung.images];
   const shuffled = allImages.slice().sort(() => Math.random() - 0.5);
-  const count = isMobile()
+  const count = phone
+    ? 0
+    : isMobile()
     ? scalePerformanceCount(4, 4, 3)
     : state.theme === "cosmic"
       ? scalePerformanceCount(8, 5, 3)
       : scalePerformanceCount(8, 6, 4);
-  const sparkCount = isMobile()
+  const sparkCount = phone
+    ? 0
+    : isMobile()
     ? scalePerformanceCount(8, 6, 4)
     : state.theme === "cosmic"
       ? scalePerformanceCount(20, 14, 8)
@@ -35,17 +40,22 @@ function renderHeroPetalPreview() {
   }
 
   if (state.theme === "cosmic") {
-    sparkLayer.style.backgroundImage = buildGalaxyDustMap(scalePerformanceCount(isMobile() ? 76 : 144, isMobile() ? 54 : 96, isMobile() ? 30 : 62), {
+    sparkLayer.style.backgroundImage = buildGalaxyDustMap(scalePerformanceCount(
+      phone ? 18 : isMobile() ? 76 : 144,
+      phone ? 12 : isMobile() ? 54 : 96,
+      phone ? 6 : isMobile() ? 30 : 62
+    ), {
       minX: 2,
       maxX: 98,
       minY: 4,
       maxY: 94,
-      clusterCount: pickPerformanceValue(isMobile() ? 5 : 8, isMobile() ? 4 : 6, isMobile() ? 3 : 4),
-      clusterBias: pickPerformanceValue(0.74, 0.68, 0.62),
+      clusterCount: pickPerformanceValue(phone ? 2 : isMobile() ? 5 : 8, phone ? 2 : isMobile() ? 4 : 6, phone ? 1 : isMobile() ? 3 : 4),
+      clusterBias: pickPerformanceValue(phone ? 0.46 : 0.74, phone ? 0.42 : 0.68, phone ? 0.38 : 0.62),
       avoidRects: [
         { x1: 10, x2: 48, y1: 18, y2: 64, allowChance: 0.42 },
       ],
     });
+    if (phone) return;
 
     const starCount = scalePerformanceCount(isMobile() ? 42 : 92, isMobile() ? 28 : 56, isMobile() ? 16 : 28);
     const stars = generateGalaxyStarfield(starCount, {
@@ -83,6 +93,7 @@ function renderHeroPetalPreview() {
   }
 
   sparkLayer.style.backgroundImage = "";
+  if (phone) return;
 
   for (let i = 0; i < sparkCount; i += 1) {
     const spark = document.createElement("span");
