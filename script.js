@@ -132,6 +132,7 @@ const state = {
   },
   heroParallaxBound: false,
   heroHoverTick: 0,
+  customCursorBound: false,
   backgroundTimeouts: [],
   transitionBusy: false,
   constellationAnchors: [],
@@ -140,6 +141,7 @@ const state = {
 const rand = (min, max) => Math.random() * (max - min) + min;
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 const isMobile = () => window.matchMedia("(max-width: 820px)").matches;
+const supportsFinePointer = () => window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 const prefersReducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 function showToast(message) {
@@ -934,6 +936,57 @@ function setupHeroInteraction() {
     floatingDecor.forEach((node) => {
       node.style.transform = "";
     });
+  });
+}
+
+function setupCustomCursor() {
+  if (state.customCursorBound) return;
+  const cursor = $("#siteCursor");
+  if (!cursor) return;
+  state.customCursorBound = true;
+
+  const root = document.documentElement;
+  const syncCursorMode = () => {
+    const enabled = supportsFinePointer();
+    root.classList.toggle("has-site-cursor", enabled);
+    if (!enabled) {
+      cursor.classList.remove("is-visible", "is-hover", "is-pressed");
+      cursor.style.setProperty("--cursor-x", "-120px");
+      cursor.style.setProperty("--cursor-y", "-120px");
+    }
+  };
+
+  const hideCursor = () => {
+    cursor.classList.remove("is-visible", "is-hover", "is-pressed");
+  };
+
+  syncCursorMode();
+
+  window.addEventListener("resize", syncCursorMode);
+  window.addEventListener("blur", hideCursor);
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) hideCursor();
+  });
+
+  window.addEventListener("pointermove", (event) => {
+    if (!supportsFinePointer() || (event.pointerType && event.pointerType !== "mouse")) return;
+    cursor.style.setProperty("--cursor-x", `${event.clientX}px`);
+    cursor.style.setProperty("--cursor-y", `${event.clientY}px`);
+    cursor.classList.add("is-visible");
+    const interactive = event.target instanceof Element
+      ? event.target.closest("button, a, input, textarea, select, label, [role='button']")
+      : null;
+    cursor.classList.toggle("is-hover", Boolean(interactive));
+  });
+
+  window.addEventListener("pointerdown", (event) => {
+    if (!supportsFinePointer() || (event.pointerType && event.pointerType !== "mouse")) return;
+    cursor.classList.add("is-visible", "is-pressed");
+  });
+
+  window.addEventListener("pointerup", () => cursor.classList.remove("is-pressed"));
+  document.addEventListener("mouseout", (event) => {
+    if (!event.relatedTarget) hideCursor();
   });
 }
 
@@ -1936,6 +1989,7 @@ function init() {
   setTheme(savedTheme === "sakura" ? "sakura" : "cosmic", false);
   showScreen(1);
   bindEvents();
+  setupCustomCursor();
   setupHeroInteraction();
   runIntro();
 

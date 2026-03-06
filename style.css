@@ -52,6 +52,101 @@ body {
   transition: background .45s var(--ease), color .35s var(--ease);
 }
 
+@media (hover: hover) and (pointer: fine) {
+  html.has-site-cursor,
+  html.has-site-cursor body,
+  html.has-site-cursor button,
+  html.has-site-cursor a,
+  html.has-site-cursor input,
+  html.has-site-cursor textarea,
+  html.has-site-cursor select,
+  html.has-site-cursor label,
+  html.has-site-cursor [role="button"],
+  html.has-site-cursor .hero-photo,
+  html.has-site-cursor .memory-photo,
+  html.has-site-cursor .portal-btn {
+    cursor: none !important;
+  }
+}
+
+.site-cursor {
+  --cursor-scale: 1;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 38px;
+  height: 38px;
+  z-index: 95;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate3d(var(--cursor-x, -120px), var(--cursor-y, -120px), 0) translate(-50%, -50%) scale(var(--cursor-scale));
+  transition: opacity .18s ease, transform .12s linear;
+}
+
+.site-cursor.is-visible { opacity: 1; }
+.site-cursor.is-hover { --cursor-scale: 1.18; }
+.site-cursor.is-pressed { --cursor-scale: .94; }
+
+.site-cursor__halo,
+.site-cursor__glyph {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.site-cursor__halo {
+  border-radius: 50%;
+  transition: transform .2s var(--ease), box-shadow .2s ease, background .2s ease;
+}
+
+.site-cursor__glyph {
+  font-size: 22px;
+  line-height: 1;
+  transition: transform .2s var(--ease), filter .2s ease;
+}
+
+html[data-theme="cosmic"] .site-cursor__halo {
+  background: radial-gradient(circle, rgba(177,226,255,.26), rgba(132,171,255,.16) 56%, transparent 74%);
+  box-shadow: 0 0 0 1px rgba(176,214,255,.34), 0 0 18px rgba(130,182,255,.42);
+}
+
+html[data-theme="cosmic"] .site-cursor__glyph::before {
+  content: "✦";
+  color: #f7fbff;
+  text-shadow: 0 0 16px rgba(178,226,255,.92), 0 0 28px rgba(143,191,255,.58);
+  animation: cursorTwinkle 2.8s ease-in-out infinite;
+}
+
+html[data-theme="cosmic"] .site-cursor.is-hover .site-cursor__halo {
+  transform: scale(1.12);
+  box-shadow: 0 0 0 1px rgba(198,232,255,.52), 0 0 28px rgba(151,201,255,.58);
+}
+
+html[data-theme="cosmic"] .site-cursor.is-hover .site-cursor__glyph {
+  transform: scale(1.08) rotate(12deg);
+}
+
+html[data-theme="sakura"] .site-cursor__halo {
+  background: radial-gradient(circle, rgba(255,220,233,.84), rgba(255,177,204,.36) 52%, transparent 76%);
+  box-shadow: 0 0 0 1px rgba(255,185,208,.4), 0 0 22px rgba(255,176,205,.46);
+}
+
+html[data-theme="sakura"] .site-cursor__glyph::before {
+  content: "🌸";
+  filter: drop-shadow(0 0 10px rgba(255,182,203,.64));
+  animation: sakuraCursorFloat 3.2s ease-in-out infinite;
+}
+
+html[data-theme="sakura"] .site-cursor.is-hover .site-cursor__halo {
+  transform: scale(1.14);
+  box-shadow: 0 0 0 1px rgba(255,175,202,.52), 0 0 30px rgba(255,176,205,.54);
+}
+
+html[data-theme="sakura"] .site-cursor.is-hover .site-cursor__glyph {
+  transform: scale(1.04) rotate(10deg);
+}
+
 html[data-theme="sakura"] body {
   background:
     radial-gradient(1200px 760px at 50% -16%, rgba(255,255,235,.76), rgba(255,255,235,0) 58%),
@@ -955,26 +1050,34 @@ html[data-theme="sakura"] .hero.is-sakura-transition .hero-visual {
 
 .choice-card {
   position: relative;
+  display: grid;
+  grid-template-columns: 74px minmax(0, 1fr);
+  grid-template-areas:
+    "emblem tag"
+    "emblem name"
+    "emblem hint";
+  align-items: center;
+  column-gap: 16px;
+  row-gap: 4px;
   text-align: left;
-  border-radius: 20px;
+  border-radius: 22px;
   border: 1px solid var(--panel-border);
   background: linear-gradient(145deg, rgba(255,255,255,.16), rgba(255,255,255,.06));
   color: var(--ink);
-  padding: 15px;
-  cursor: pointer;
+  padding: 16px 18px;
+  overflow: hidden;
+  isolation: isolate;
   box-shadow: 0 0 0 1px rgba(162,212,255,.24), 0 0 28px rgba(160,207,255,.2);
-  transition: transform .24s ease, box-shadow .24s ease, border-color .24s ease;
+  transition: transform .24s ease, box-shadow .24s ease, border-color .24s ease, background .24s ease;
 }
 
 .choice-card::after {
   content: "";
   position: absolute;
-  inset: -20%;
+  inset: 0;
   border-radius: inherit;
-  background: radial-gradient(circle, rgba(189,222,255,.28), rgba(255,165,226,.12) 50%, transparent 72%);
-  filter: blur(18px);
-  opacity: .4;
   pointer-events: none;
+  z-index: 0;
 }
 
 .choice-card::before {
@@ -982,10 +1085,142 @@ html[data-theme="sakura"] .hero.is-sakura-transition .hero-visual {
   position: absolute;
   inset: -1px;
   border-radius: inherit;
-  background: linear-gradient(120deg, rgba(170,218,255,.5), rgba(255,167,226,.3), rgba(170,218,255,.16));
-  opacity: .32;
+  background: linear-gradient(120deg, rgba(170,218,255,.42), rgba(255,167,226,.26), rgba(170,218,255,.1));
+  opacity: .4;
   mix-blend-mode: screen;
   pointer-events: none;
+  z-index: 1;
+}
+
+html[data-theme="cosmic"] .choice-card {
+  background:
+    radial-gradient(circle at 14% 18%, rgba(180,225,255,.18), transparent 24%),
+    linear-gradient(145deg, rgba(25,42,101,.76), rgba(11,20,57,.58));
+  box-shadow:
+    0 0 0 1px rgba(162,212,255,.24),
+    inset 0 1px 0 rgba(222,239,255,.12),
+    0 18px 36px rgba(11,18,54,.34),
+    0 0 28px rgba(132,183,255,.18);
+}
+
+html[data-theme="cosmic"] .choice-card::after {
+  background:
+    radial-gradient(circle at 12% 50%, rgba(154,218,255,.26), transparent 22%),
+    radial-gradient(circle at 84% 18%, rgba(255,166,228,.16), transparent 22%),
+    linear-gradient(95deg, rgba(151,205,255,.08), transparent 46%, rgba(255,174,228,.08));
+  opacity: .95;
+}
+
+html[data-theme="sakura"] .choice-card {
+  background:
+    radial-gradient(circle at 16% 18%, rgba(255,255,255,.78), transparent 24%),
+    linear-gradient(145deg, rgba(255,255,255,.94), rgba(255,238,246,.9));
+  box-shadow:
+    0 0 0 1px rgba(255,196,218,.54),
+    inset 0 1px 0 rgba(255,255,255,.76),
+    0 18px 34px rgba(216,145,177,.18),
+    0 0 24px rgba(255,195,219,.18);
+}
+
+html[data-theme="sakura"] .choice-card::after {
+  background:
+    radial-gradient(circle at 14% 50%, rgba(255,182,205,.24), transparent 20%),
+    radial-gradient(circle at 84% 18%, rgba(255,232,240,.76), transparent 22%),
+    linear-gradient(100deg, rgba(255,183,210,.08), transparent 44%, rgba(255,223,235,.16));
+  opacity: .96;
+}
+
+html[data-theme="sakura"] .choice-card::before {
+  background: linear-gradient(120deg, rgba(255,216,230,.72), rgba(255,188,210,.42), rgba(255,255,255,.4));
+  mix-blend-mode: normal;
+}
+
+.choice-aura {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+html[data-theme="cosmic"] .choice-aura {
+  background:
+    radial-gradient(circle at 18% 48%, rgba(147,214,255,.24), transparent 24%),
+    radial-gradient(circle at 78% 20%, rgba(255,173,229,.16), transparent 22%),
+    linear-gradient(90deg, rgba(146,205,255,.08), transparent 42%, rgba(255,176,229,.08));
+}
+
+html[data-theme="sakura"] .choice-aura {
+  background:
+    radial-gradient(circle at 18% 48%, rgba(255,194,215,.34), transparent 24%),
+    radial-gradient(circle at 86% 16%, rgba(255,243,247,.92), transparent 24%),
+    linear-gradient(90deg, rgba(255,198,220,.12), transparent 44%, rgba(255,231,240,.22));
+}
+
+.choice-emblem {
+  grid-area: emblem;
+  position: relative;
+  width: 64px;
+  height: 64px;
+  align-self: center;
+  justify-self: start;
+  border-radius: 22px;
+  display: grid;
+  place-items: center;
+  z-index: 2;
+  transition: transform .24s var(--ease);
+}
+
+.choice-emblem__orb,
+.choice-emblem__ring,
+.choice-emblem__icon {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: inherit;
+}
+
+html[data-theme="cosmic"] .choice-emblem__orb {
+  background: radial-gradient(circle at 40% 34%, rgba(245,251,255,.96), rgba(145,196,255,.44) 40%, rgba(96,124,255,.16) 78%);
+  box-shadow: inset 0 0 0 1px rgba(219,238,255,.32), 0 0 30px rgba(132,186,255,.34);
+}
+
+html[data-theme="cosmic"] .choice-emblem__ring {
+  inset: -6px;
+  border: 1px solid rgba(177,221,255,.32);
+  box-shadow: 0 0 18px rgba(132,186,255,.22);
+  animation: choiceOrbitSpin 8.5s linear infinite;
+}
+
+html[data-theme="cosmic"] .choice-emblem__icon::before {
+  content: "✦";
+  display: block;
+  font-size: 31px;
+  color: #f8fcff;
+  text-shadow: 0 0 16px rgba(193,232,255,.98), 0 0 28px rgba(151,199,255,.52);
+}
+
+html[data-theme="sakura"] .choice-emblem {
+  border-radius: 24px;
+}
+
+html[data-theme="sakura"] .choice-emblem__orb {
+  background: radial-gradient(circle at 42% 34%, rgba(255,255,255,.98), rgba(255,214,228,.82) 36%, rgba(255,165,192,.46) 74%);
+  box-shadow: inset 0 0 0 1px rgba(255,245,249,.72), 0 0 28px rgba(255,186,208,.34);
+}
+
+html[data-theme="sakura"] .choice-emblem__ring {
+  inset: -5px;
+  border: 1px solid rgba(255,188,210,.5);
+  box-shadow: 0 0 18px rgba(255,194,215,.26);
+  animation: sakuraSealBreath 4.4s ease-in-out infinite;
+}
+
+html[data-theme="sakura"] .choice-emblem__icon::before {
+  content: "🌸";
+  display: block;
+  font-size: 28px;
+  filter: drop-shadow(0 0 10px rgba(255,183,205,.68));
 }
 
 .choice-stars {
@@ -999,6 +1234,7 @@ html[data-theme="sakura"] .hero.is-sakura-transition .hero-visual {
   text-shadow: 0 0 10px rgba(175,226,255,.82);
   opacity: .9;
   pointer-events: none;
+  z-index: 2;
 }
 
 .choice-stars i {
@@ -1021,12 +1257,48 @@ html[data-theme="sakura"] .choice-stars {
 .choice-card:hover,
 .choice-card:focus-visible {
   transform: translateY(-3px);
+}
+
+html[data-theme="cosmic"] .choice-card:hover,
+html[data-theme="cosmic"] .choice-card:focus-visible {
   border-color: rgba(220,238,255,.7);
-  box-shadow: 0 0 0 1px rgba(183,223,255,.55), 0 0 42px rgba(149,200,255,.46);
+  box-shadow:
+    0 0 0 1px rgba(183,223,255,.55),
+    inset 0 1px 0 rgba(229,243,255,.18),
+    0 0 42px rgba(149,200,255,.36),
+    0 22px 40px rgba(10,18,54,.42);
+}
+
+html[data-theme="cosmic"] .choice-card:hover .choice-emblem,
+html[data-theme="cosmic"] .choice-card:focus-visible .choice-emblem {
+  transform: translateY(-2px) scale(1.04);
+}
+
+html[data-theme="cosmic"] .choice-card:hover .choice-emblem__ring,
+html[data-theme="cosmic"] .choice-card:focus-visible .choice-emblem__ring {
+  box-shadow: 0 0 26px rgba(145,198,255,.3);
+}
+
+html[data-theme="sakura"] .choice-card:hover,
+html[data-theme="sakura"] .choice-card:focus-visible {
+  border-color: rgba(255,176,202,.72);
+  box-shadow:
+    0 0 0 1px rgba(255,186,209,.66),
+    inset 0 1px 0 rgba(255,255,255,.84),
+    0 0 36px rgba(255,193,213,.28),
+    0 20px 36px rgba(218,145,179,.24);
+}
+
+html[data-theme="sakura"] .choice-card:hover .choice-emblem,
+html[data-theme="sakura"] .choice-card:focus-visible .choice-emblem {
+  transform: translateY(-2px) rotate(-4deg) scale(1.04);
 }
 
 .choice-tag {
   display: block;
+  grid-area: tag;
+  position: relative;
+  z-index: 2;
   font-size: 10px;
   letter-spacing: .14em;
   color: var(--ink-soft);
@@ -1035,7 +1307,10 @@ html[data-theme="sakura"] .choice-stars {
 
 .choice-name {
   display: block;
-  margin-top: 6px;
+  grid-area: name;
+  position: relative;
+  z-index: 2;
+  margin-top: 2px;
   font-family: var(--font-title);
   font-size: clamp(34px, 2.8vw, 44px);
   line-height: .92;
@@ -1043,7 +1318,10 @@ html[data-theme="sakura"] .choice-stars {
 
 .choice-hint {
   display: block;
-  margin-top: 6px;
+  grid-area: hint;
+  position: relative;
+  z-index: 2;
+  margin-top: 2px;
   font-size: 12px;
   color: var(--ink-soft);
 }
@@ -4818,6 +5096,27 @@ html[data-theme="sakura"] .wish-node__text { color: #704b5e; }
   100% { opacity: 0; transform: scale(1.68); }
 }
 
+@keyframes cursorTwinkle {
+  0%, 100% { transform: scale(.92) rotate(0deg); opacity: .88; }
+  50% { transform: scale(1.08) rotate(12deg); opacity: 1; }
+}
+
+@keyframes sakuraCursorFloat {
+  0%, 100% { transform: translateY(0) rotate(-6deg); }
+  50% { transform: translateY(-2px) rotate(6deg); }
+}
+
+@keyframes choiceOrbitSpin {
+  0% { transform: rotate(0deg) scale(1); opacity: .72; }
+  50% { transform: rotate(180deg) scale(1.04); opacity: .92; }
+  100% { transform: rotate(360deg) scale(1); opacity: .72; }
+}
+
+@keyframes sakuraSealBreath {
+  0%, 100% { transform: scale(1); opacity: .72; }
+  50% { transform: scale(1.06); opacity: 1; }
+}
+
 @media (max-width: 1100px) {
   .hero-grid {
     grid-template-columns: 1fr;
@@ -4876,7 +5175,15 @@ html[data-theme="sakura"] .wish-node__text { color: #704b5e; }
     gap: 8px;
   }
 
-  .choice-card { padding: 11px; }
+  .choice-card {
+    grid-template-columns: 58px minmax(0, 1fr);
+    column-gap: 12px;
+    padding: 12px;
+  }
+  .choice-emblem {
+    width: 52px;
+    height: 52px;
+  }
   .choice-name { font-size: 32px; }
   .choice-stars { top: 8px; right: 10px; }
   .choice-stars i { font-size: 10px; }

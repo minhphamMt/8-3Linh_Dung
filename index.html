@@ -36,6 +36,10 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <div class="screen-transition" id="screenTransition" aria-hidden="true"></div>
+  <div class="site-cursor" id="siteCursor" aria-hidden="true">
+    <span class="site-cursor__halo"></span>
+    <span class="site-cursor__glyph"></span>
+  </div>
 
   <main class="app">
     <section class="screen screen-1 active" data-screen="1" aria-hidden="false">
@@ -67,13 +71,25 @@
 
             <div class="choice-grid">
               <button class="choice-card" type="button" data-girl="linh">
+                <span class="choice-aura" aria-hidden="true"></span>
                 <span class="choice-stars" aria-hidden="true"><i>✦</i><i>✧</i></span>
+                <span class="choice-emblem" aria-hidden="true">
+                  <span class="choice-emblem__orb"></span>
+                  <span class="choice-emblem__ring"></span>
+                  <span class="choice-emblem__icon"></span>
+                </span>
                 <span class="choice-tag" id="choiceTagLinh">STAR 01</span>
                 <span class="choice-name">Mỹ Linh</span>
                 <span class="choice-hint" id="choiceHintLinh">Chạm để mở hành trình</span>
               </button>
               <button class="choice-card" type="button" data-girl="dung">
+                <span class="choice-aura" aria-hidden="true"></span>
                 <span class="choice-stars" aria-hidden="true"><i>✦</i><i>✧</i></span>
+                <span class="choice-emblem" aria-hidden="true">
+                  <span class="choice-emblem__orb"></span>
+                  <span class="choice-emblem__ring"></span>
+                  <span class="choice-emblem__icon"></span>
+                </span>
                 <span class="choice-tag" id="choiceTagDung">STAR 02</span>
                 <span class="choice-name">Vân Dung</span>
                 <span class="choice-hint" id="choiceHintDung">Đi vào khu vườn bí mật</span>
