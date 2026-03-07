@@ -44,6 +44,11 @@ html[data-theme="cosmic"] .letter-scene::before {
   animation: letterStarfield 18s linear infinite;
 }
 
+body[data-theme="cosmic"][data-screen="3"] .letter-scene::before {
+  animation: none;
+  opacity: .16;
+}
+
 html[data-theme="cosmic"] .letter-scene::after {
   inset: auto 18% 5% 18%;
   height: 28%;
@@ -203,6 +208,16 @@ html[data-performance="low"] .letter-sakura-petal--six {
   border: 1px dashed rgba(191,226,255,.18);
   filter: blur(.2px);
   animation: letterVaultSpinReverse 24s linear infinite;
+}
+
+body[data-theme="cosmic"][data-screen="3"] .letter-nebula,
+body[data-theme="cosmic"][data-screen="3"] .letter-vault-ring,
+body[data-theme="cosmic"][data-screen="3"] .letter-planet {
+  animation: none;
+}
+
+body[data-theme="cosmic"][data-screen="3"] .letter-nebula {
+  filter: blur(12px);
 }
 
 .letter-vault-beam {

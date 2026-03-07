@@ -305,6 +305,11 @@ html[data-theme="cosmic"] .wish-sky::after {
   animation: milkyBandDrift 12s ease-in-out infinite;
 }
 
+body[data-theme="cosmic"][data-screen="4"] .wish-sky::after {
+  animation: none;
+  filter: blur(16px);
+}
+
 html[data-theme="sakura"] .wish-sky {
   background:
     radial-gradient(circle at 14% 16%, rgba(255,246,214,.78), transparent 28%),
@@ -463,6 +468,17 @@ html[data-performance="low"] .wish-sakura-petal--four {
   color: #eef7ff;
   text-shadow: 0 0 12px rgba(180,222,255,.82), 0 0 24px rgba(152,201,255,.34);
   animation: cursorTwinkle 3s ease-in-out infinite;
+}
+
+body[data-theme="cosmic"][data-screen="4"] .wish-cosmic-nebula,
+body[data-theme="cosmic"][data-screen="4"] .wish-cosmic-orbit--one,
+body[data-theme="cosmic"][data-screen="4"] .wish-cosmic-orbit--two,
+body[data-theme="cosmic"][data-screen="4"] .wish-cosmic-star {
+  animation: none;
+}
+
+body[data-theme="cosmic"][data-screen="4"] .wish-cosmic-nebula {
+  filter: blur(18px);
 }
 
 .wish-cosmic-star::before {

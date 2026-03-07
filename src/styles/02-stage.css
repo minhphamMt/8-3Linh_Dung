@@ -599,6 +599,10 @@ html[data-theme="sakura"] .tree-canopy { display: none; }
   animation: orbitSpinA 54s linear infinite;
 }
 
+body[data-theme="cosmic"][data-screen="2"] .orbit {
+  animation: none;
+}
+
 .tree-canopy {
   position: absolute;
   right: -40px;
@@ -730,6 +734,13 @@ html[data-theme="sakura"] .memory-photo--echo-soft {
 .memory-photo--ambient {
   opacity: .13;
   filter: blur(3.8px) saturate(.4);
+}
+
+body[data-theme="cosmic"][data-screen="2"] .memory-photo--echo,
+body[data-theme="cosmic"][data-screen="2"] .memory-photo--echo-soft,
+body[data-theme="cosmic"][data-screen="2"] .memory-photo--echo-faint,
+body[data-theme="cosmic"][data-screen="2"] .memory-photo--ambient {
+  animation: none;
 }
 
 html[data-performance="medium"] .memory-photo--echo {
@@ -1003,6 +1014,26 @@ html[data-theme="sakura"] .portal-btn__sub {
   background: linear-gradient(130deg, rgba(255,255,255,0) 36%, rgba(255,255,255,.24) 48%, rgba(255,255,255,0) 60%);
   transform: translateX(-120%) rotate(8deg);
   animation: portalSweep 3.2s ease-in-out infinite;
+}
+
+body[data-theme="cosmic"][data-screen="2"] .stage-milkyway,
+body[data-theme="cosmic"][data-screen="2"] .stage-planet,
+body[data-theme="cosmic"][data-screen="2"] .stage-star,
+body[data-theme="cosmic"][data-screen="2"] .stage-link,
+body[data-theme="cosmic"][data-screen="2"] .portal-btn__glyph,
+body[data-theme="cosmic"][data-screen="2"] .portal-btn__rays,
+body[data-theme="cosmic"][data-screen="2"] .portal-btn__inner::after {
+  animation: none;
+}
+
+body[data-theme="cosmic"][data-screen="2"] .stage-milkyway {
+  filter: blur(8px);
+  opacity: .38;
+}
+
+body[data-theme="cosmic"][data-screen="2"] .portal-btn__rays {
+  filter: blur(10px);
+  opacity: .42;
 }
 
 html[data-theme="cosmic"] .portal-btn:hover .portal-btn__inner {

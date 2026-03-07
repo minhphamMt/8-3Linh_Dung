@@ -74,14 +74,18 @@ function bindEvents() {
 
   const handleResize = debounce(() => {
     refreshPerformanceProfile();
-    renderGalaxyBackgroundStars();
-    renderHeroPetalPreview();
-    if (state.screen === 2 && state.currentGirlKey) renderGallery();
-    renderStageStars();
-    if (state.screen === 4) renderWishSky();
+    renderActiveScreenVisuals({ refreshHighlight: state.screen === 2 });
   }, state.performance?.resizeDebounceMs || 160);
 
   window.addEventListener("resize", handleResize, { passive: true });
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      clearBackgroundEffects();
+      if (state.screen === 2) clearMemoryHighlight();
+      return;
+    }
+    renderActiveScreenVisuals({ refreshHighlight: state.screen === 2 });
+  });
 }
 
 function init() {

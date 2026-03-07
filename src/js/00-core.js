@@ -336,9 +336,33 @@ function showToast(message) {
   setTimeout(() => toast.classList.remove("show"), 2200);
 }
 
+function renderActiveScreenVisuals(options = {}) {
+  const { refreshHighlight = false } = options;
+  renderGalaxyBackgroundStars();
+  startBackgroundEffects();
+  applyStageTheme();
+  renderStageStars();
+
+  if (state.screen === 1) {
+    renderHeroPetalPreview();
+    return;
+  }
+
+  if (state.screen === 2 && state.currentGirlKey) {
+    renderGallery();
+    if (refreshHighlight) startMemoryHighlight();
+    return;
+  }
+
+  if (state.screen === 4) {
+    renderWishSky();
+  }
+}
+
 function showScreen(screenId) {
   state.screen = screenId;
   document.body.dataset.screen = String(screenId);
+  document.documentElement.dataset.screen = String(screenId);
   $$(".screen").forEach((screen) => {
     const active = Number(screen.dataset.screen) === screenId;
     screen.classList.toggle("active", active);
@@ -351,19 +375,7 @@ function showScreen(screenId) {
     clearLetterTimers();
   }
 
-  startBackgroundEffects();
-  applyStageTheme();
-  renderStageStars();
-  if (screenId === 1) {
-    renderHeroPetalPreview();
-  }
-  if (screenId === 2 && state.currentGirlKey) {
-    renderGallery();
-    startMemoryHighlight();
-  }
-  if (screenId === 4) {
-    renderWishSky();
-  }
+  renderActiveScreenVisuals({ refreshHighlight: screenId === 2 });
 }
 
 function transitionToScreen(screenId, options = {}) {
@@ -416,13 +428,7 @@ function setTheme(theme, persist = true) {
 
   $$(".theme-btn").forEach((btn) => btn.classList.toggle("is-active", btn.dataset.theme === normalized));
   applyThemeCopy();
-  applyStageTheme();
-  renderGalaxyBackgroundStars();
-  renderHeroPetalPreview();
-  renderWishSky();
-  if (state.screen === 2 && state.currentGirlKey) renderGallery();
-  renderStageStars();
-  startBackgroundEffects();
+  renderActiveScreenVisuals({ refreshHighlight: state.screen === 2 });
 }
 
 function applyThemeCopy() {

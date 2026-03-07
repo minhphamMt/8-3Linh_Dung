@@ -383,7 +383,7 @@ function startBackgroundEffects() {
   const sakura = state.theme === "sakura";
   const homeScreen = state.screen === 1;
   const intervalScale = profile.backgroundIntervalScale || 1;
-  if (isPhoneViewport()) return;
+  if (document.hidden || isPhoneViewport() || ![1, 2].includes(state.screen)) return;
   const recipes = [];
 
   if (sakura) {
