@@ -243,19 +243,11 @@ const scalePerformanceCount = (high, medium = high, low = medium) => Math.max(0,
 function buildPerformanceProfile() {
   const reduced = prefersReducedMotion();
   const mobile = isMobile();
-  const width = window.innerWidth;
-  const height = window.innerHeight;
   const memory = readDeviceNumber("deviceMemory", mobile ? 4 : 8);
   const cores = readDeviceNumber("hardwareConcurrency", mobile ? 4 : 8);
-  const verySmallScreen = width <= 420 || height <= 720;
-  const compactScreen = width <= 1366 || height <= 820;
 
-  let level = "high";
-  if (reduced || memory <= 4 || cores <= 4 || (mobile && verySmallScreen)) {
-    level = "low";
-  } else if (mobile || compactScreen || memory <= 8 || cores <= 8) {
-    level = "medium";
-  }
+  // Keep one balanced default profile across devices so visuals behave consistently.
+  const level = reduced ? "low" : "medium";
   const pickLevelValue = (high, medium = high, low = medium) => (
     level === "low" ? low : level === "medium" ? medium : high
   );
@@ -267,9 +259,9 @@ function buildPerformanceProfile() {
     memory,
     cores,
     allowCustomCursor: supportsFinePointer() && level !== "low",
-    allowHeroParallax: !mobile && !reduced && level !== "low" && supportsFinePointer(),
-    allowStageParallax: !mobile && !reduced && level !== "low" && supportsFinePointer(),
-    allowConstellation: !reduced && level === "high",
+    allowHeroParallax: !mobile && !reduced && supportsFinePointer(),
+    allowStageParallax: !mobile && !reduced && supportsFinePointer(),
+    allowConstellation: !reduced,
     stageLinkRefreshMs: pickLevelValue(420, 760, 1180),
     heroHoverMs: pickLevelValue(48, 82, 132),
     stageHoverMs: pickLevelValue(46, 92, 148),
