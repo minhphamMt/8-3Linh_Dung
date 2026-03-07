@@ -258,6 +258,11 @@ html[data-theme="cosmic"] .bg-constellation {
   animation: milkyBandDrift 26s ease-in-out infinite;
 }
 
+body[data-theme="cosmic"][data-screen="1"] .bg-constellation {
+  opacity: .66;
+  filter: blur(2px) saturate(1.02);
+}
+
 .bg-rays {
   opacity: 0;
 }
@@ -533,6 +538,11 @@ html[data-theme="sakura"] .bg-particles::after {
     radial-gradient(44% 42% at 86% 16%, rgba(255,166,226,.28), transparent 70%),
     radial-gradient(48% 44% at 50% 100%, rgba(117,180,255,.2), transparent 72%);
   filter: blur(24px);
+}
+
+body[data-theme="cosmic"][data-screen="1"] .bg-glow {
+  opacity: .72;
+  filter: blur(18px);
 }
 
 html[data-performance="medium"] .bg-glow {

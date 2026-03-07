@@ -851,6 +851,10 @@ html[data-theme="cosmic"] .hero-sparkles {
   opacity: .98;
 }
 
+body[data-theme="cosmic"][data-screen="1"] .hero-sparkles {
+  opacity: .72;
+}
+
 .preview-petal {
   position: absolute;
   left: -16%;
@@ -864,6 +868,10 @@ html[data-theme="cosmic"] .hero-sparkles {
   opacity: 0;
   animation: previewDrift 14s linear infinite;
   animation-delay: var(--delay, 0s);
+}
+
+body[data-theme="cosmic"][data-screen="1"] .preview-petal {
+  opacity: .88;
 }
 
 html[data-theme="sakura"] .preview-petal {
@@ -889,6 +897,10 @@ html[data-theme="sakura"] .preview-petal {
   filter: blur(var(--blur, 0px));
   box-shadow: 0 0 5px rgba(188,228,255,.18);
   animation: sparkTwinkle 5.6s ease-in-out infinite;
+}
+
+body[data-theme="cosmic"][data-screen="1"] .hero-spark {
+  box-shadow: 0 0 4px rgba(188,228,255,.12);
 }
 
 .hero-spark--bright {

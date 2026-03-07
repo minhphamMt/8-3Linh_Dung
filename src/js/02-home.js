@@ -5,6 +5,7 @@ function renderHeroPetalPreview() {
   const sparkLayer = $("#heroSparkles");
   if (!layer || !sparkLayer) return;
   const phone = isPhoneViewport();
+  const homeScreen = state.screen === 1;
 
   const allImages = [...CONFIG.girls.linh.images, ...CONFIG.girls.dung.images];
   const shuffled = allImages.slice().sort(() => Math.random() - 0.5);
@@ -41,9 +42,9 @@ function renderHeroPetalPreview() {
 
   if (state.theme === "cosmic") {
     sparkLayer.style.backgroundImage = buildGalaxyDustMap(scalePerformanceCount(
-      phone ? 18 : isMobile() ? 76 : 144,
-      phone ? 12 : isMobile() ? 54 : 96,
-      phone ? 6 : isMobile() ? 30 : 62
+      homeScreen ? (phone ? 10 : isMobile() ? 42 : 88) : (phone ? 18 : isMobile() ? 76 : 144),
+      homeScreen ? (phone ? 6 : isMobile() ? 28 : 58) : (phone ? 12 : isMobile() ? 54 : 96),
+      homeScreen ? (phone ? 2 : isMobile() ? 14 : 32) : (phone ? 6 : isMobile() ? 30 : 62)
     ), {
       minX: 2,
       maxX: 98,
@@ -57,7 +58,11 @@ function renderHeroPetalPreview() {
     });
     if (phone) return;
 
-    const starCount = scalePerformanceCount(isMobile() ? 42 : 92, isMobile() ? 28 : 56, isMobile() ? 16 : 28);
+    const starCount = scalePerformanceCount(
+      homeScreen ? (isMobile() ? 24 : 54) : (isMobile() ? 42 : 92),
+      homeScreen ? (isMobile() ? 16 : 34) : (isMobile() ? 28 : 56),
+      homeScreen ? (isMobile() ? 8 : 18) : (isMobile() ? 16 : 28)
+    );
     const stars = generateGalaxyStarfield(starCount, {
       minX: 2,
       maxX: 98,

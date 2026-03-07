@@ -240,6 +240,7 @@ function renderGalaxyBackgroundStars() {
   const constellationLayer = $("#bgConstellation");
   if (!layer) return;
   const phone = isPhoneViewport();
+  const homeScreen = state.screen === 1;
 
   layer.querySelectorAll(".bg-starfield__star").forEach((node) => node.remove());
   if (state.theme !== "cosmic") {
@@ -249,9 +250,9 @@ function renderGalaxyBackgroundStars() {
   }
 
   layer.style.backgroundImage = buildGalaxyDustMap(scalePerformanceCount(
-    phone ? 72 : isMobile() ? 150 : 260,
-    phone ? 48 : isMobile() ? 102 : 184,
-    phone ? 28 : isMobile() ? 72 : 132
+    homeScreen ? (phone ? 40 : isMobile() ? 96 : 176) : (phone ? 72 : isMobile() ? 150 : 260),
+    homeScreen ? (phone ? 26 : isMobile() ? 62 : 122) : (phone ? 48 : isMobile() ? 102 : 184),
+    homeScreen ? (phone ? 14 : isMobile() ? 36 : 84) : (phone ? 28 : isMobile() ? 72 : 132)
   ), {
     minX: 0.5,
     maxX: 99.5,
@@ -262,9 +263,9 @@ function renderGalaxyBackgroundStars() {
   });
   if (constellationLayer) {
     constellationLayer.style.setProperty("--milky-dust-map", buildGalaxyDustMap(scalePerformanceCount(
-      phone ? 22 : isMobile() ? 68 : 128,
-      phone ? 14 : isMobile() ? 44 : 86,
-      phone ? 8 : isMobile() ? 28 : 54
+      homeScreen ? (phone ? 10 : isMobile() ? 34 : 80) : (phone ? 22 : isMobile() ? 68 : 128),
+      homeScreen ? (phone ? 6 : isMobile() ? 22 : 52) : (phone ? 14 : isMobile() ? 44 : 86),
+      homeScreen ? (phone ? 3 : isMobile() ? 12 : 28) : (phone ? 8 : isMobile() ? 28 : 54)
     ), {
       minX: 14,
       maxX: 86,
@@ -276,9 +277,9 @@ function renderGalaxyBackgroundStars() {
   }
 
   const count = scalePerformanceCount(
-    phone ? 56 : isMobile() ? 160 : 300,
-    phone ? 34 : isMobile() ? 104 : 190,
-    phone ? 18 : isMobile() ? 64 : 120
+    homeScreen ? (phone ? 30 : isMobile() ? 96 : 180) : (phone ? 56 : isMobile() ? 160 : 300),
+    homeScreen ? (phone ? 18 : isMobile() ? 60 : 114) : (phone ? 34 : isMobile() ? 104 : 190),
+    homeScreen ? (phone ? 8 : isMobile() ? 28 : 72) : (phone ? 18 : isMobile() ? 64 : 120)
   );
   const points = generateGalaxyStarfield(count, {
     minX: 0.8,
@@ -380,6 +381,7 @@ function startBackgroundEffects() {
   const profile = state.performance || buildPerformanceProfile();
   const lowPower = profile.reduced || profile.level === "low";
   const sakura = state.theme === "sakura";
+  const homeScreen = state.screen === 1;
   const intervalScale = profile.backgroundIntervalScale || 1;
   if (isPhoneViewport()) return;
   const recipes = [];
@@ -396,9 +398,29 @@ function startBackgroundEffects() {
       recipes.push({ layer: "#bgSakura", className: "fx-bird", text: "🐦", min: 10.4, max: 14.8, interval: 5200 });
     }
   } else {
-    recipes.push({ layer: "#bgStars", className: "fx-star", text: "", min: 7.8, max: 11.8, interval: Math.round((profile.level === "low" ? 1800 : profile.level === "medium" ? 1200 : 760) * intervalScale) });
-    recipes.push({ layer: "#bgParticles", className: "fx-soft", text: "", min: 9.4, max: 14.8, interval: Math.round((profile.level === "low" ? 2200 : profile.level === "medium" ? 1500 : 900) * intervalScale) });
-    recipes.push({ layer: "#bgParticles", className: "fx-shooting", text: "", min: 1.3, max: 2.1, interval: Math.round((profile.level === "low" ? 16800 : profile.level === "medium" ? 12200 : 8600) * intervalScale) });
+    recipes.push({
+      layer: "#bgStars",
+      className: "fx-star",
+      text: "",
+      min: 7.8,
+      max: 11.8,
+      interval: Math.round((homeScreen
+        ? (profile.level === "low" ? 2600 : profile.level === "medium" ? 1800 : 1320)
+        : (profile.level === "low" ? 1800 : profile.level === "medium" ? 1200 : 760)) * intervalScale)
+    });
+    recipes.push({
+      layer: "#bgParticles",
+      className: "fx-soft",
+      text: "",
+      min: 9.4,
+      max: 14.8,
+      interval: Math.round((homeScreen
+        ? (profile.level === "low" ? 3200 : profile.level === "medium" ? 2400 : 1700)
+        : (profile.level === "low" ? 2200 : profile.level === "medium" ? 1500 : 900)) * intervalScale)
+    });
+    if (!homeScreen) {
+      recipes.push({ layer: "#bgParticles", className: "fx-shooting", text: "", min: 1.3, max: 2.1, interval: Math.round((profile.level === "low" ? 16800 : profile.level === "medium" ? 12200 : 8600) * intervalScale) });
+    }
   }
 
   recipes.forEach((recipe) => {
