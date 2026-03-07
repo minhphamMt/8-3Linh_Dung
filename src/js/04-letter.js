@@ -133,10 +133,6 @@ function startLetterSequence() {
 function backToStage() {
   transitionToScreen(2, {
     effect: "drift",
-    onSwitched: () => {
-      renderGallery();
-      startMemoryHighlight();
-    },
   });
 }
 

@@ -90,37 +90,41 @@ function gallerySlots() {
   if (state.theme === "sakura") {
     if (isMobile()) {
       return resolveSlotCollisions(normalizeGallerySlots([
-        { x: 8, y: 18, w: 108, h: 142, r: -6, z: 50, orbit: 10.8 },
-        { x: 39, y: 10, w: 108, h: 142, r: 3, z: 38, orbit: 12.6 },
-        { x: 68, y: 18, w: 108, h: 142, r: 6, z: 50, orbit: 10.8 },
-        { x: 12, y: 55, w: 108, h: 142, r: -5, z: 42, orbit: 13.4 },
-        { x: 66, y: 55, w: 108, h: 142, r: 5, z: 42, orbit: 13.2 },
-      ]), { gap: 10, portalRadius: 88 });
+        { x: 20, y: 8, w: 88, h: 118, r: -10, z: 48, orbit: 10.8 },
+        { x: 59, y: 11, w: 98, h: 128, r: 8, z: 40, orbit: 11.4 },
+        { x: 11, y: 35, w: 98, h: 130, r: -5, z: 56, orbit: 12.8 },
+        { x: 67, y: 37, w: 92, h: 122, r: 6, z: 36, orbit: 12.1 },
+        { x: 22, y: 66, w: 92, h: 122, r: 7, z: 38, orbit: 13.1 },
+        { x: 57, y: 62, w: 100, h: 132, r: -9, z: 52, orbit: 12.7 },
+      ]), { gap: 8, portalRadius: 64, padX: 6, padY: 6 });
     }
     return resolveSlotCollisions(normalizeGallerySlots([
-      { x: 10, y: 17, w: 198, h: 248, r: -6, z: 58, orbit: 12.4 },
-      { x: 39, y: 8, w: 186, h: 234, r: 3, z: 40, orbit: 13.8 },
-      { x: 67, y: 17, w: 198, h: 248, r: 6, z: 58, orbit: 12.6 },
-      { x: 14, y: 54, w: 186, h: 236, r: -5, z: 46, orbit: 14.2 },
-      { x: 62, y: 54, w: 186, h: 236, r: 5, z: 46, orbit: 14.2 },
-    ]), { gap: isCompactViewport() ? 16 : 14, portalRadius: isCompactViewport() ? 124 : 132 });
+      { x: 22, y: 7, w: 154, h: 198, r: -11, z: 54, orbit: 12.1 },
+      { x: 58, y: 10, w: 176, h: 222, r: 8, z: 42, orbit: 12.7 },
+      { x: 12, y: 31, w: 184, h: 234, r: -5, z: 62, orbit: 13.7 },
+      { x: 66, y: 36, w: 162, h: 206, r: 6, z: 38, orbit: 13.2 },
+      { x: 23, y: 66, w: 166, h: 210, r: 7, z: 40, orbit: 14.2 },
+      { x: 57, y: 60, w: 178, h: 224, r: -9, z: 54, orbit: 13.9 },
+    ]), { gap: 12, portalRadius: isCompactViewport() ? 88 : 94, padX: 10, padY: 10 });
   }
   if (isMobile()) {
     return resolveSlotCollisions(normalizeGallerySlots([
-      { x: 9, y: 14, w: 116, h: 150, r: -8, z: 50, orbit: 10.2 },
-      { x: 40, y: 8, w: 110, h: 146, r: 6, z: 36, orbit: 12.2 },
-      { x: 68, y: 14, w: 116, h: 150, r: -7, z: 50, orbit: 10.8 },
-      { x: 65, y: 51, w: 116, h: 150, r: 8, z: 42, orbit: 11.6 },
-      { x: 10, y: 51, w: 116, h: 150, r: -8, z: 42, orbit: 12.6 },
-    ]), { gap: 10, portalRadius: 92 });
+      { x: 20, y: 8, w: 90, h: 120, r: -11, z: 48, orbit: 10.3 },
+      { x: 60, y: 10, w: 98, h: 128, r: 9, z: 40, orbit: 10.8 },
+      { x: 11, y: 35, w: 100, h: 132, r: -5, z: 58, orbit: 11.8 },
+      { x: 68, y: 37, w: 92, h: 122, r: 6, z: 36, orbit: 11.5 },
+      { x: 22, y: 67, w: 94, h: 124, r: 8, z: 38, orbit: 12.9 },
+      { x: 58, y: 62, w: 100, h: 132, r: -9, z: 52, orbit: 12.5 },
+    ]), { gap: 8, portalRadius: 64, padX: 6, padY: 6 });
   }
   return resolveSlotCollisions(normalizeGallerySlots([
-    { x: 11, y: 15, w: 208, h: 258, r: -9, z: 58, orbit: 12.4 },
-    { x: 39, y: 8, w: 188, h: 236, r: 5, z: 40, orbit: 14.2 },
-    { x: 67, y: 15, w: 208, h: 258, r: -8, z: 58, orbit: 12.8 },
-    { x: 63, y: 51, w: 194, h: 244, r: 7, z: 48, orbit: 13.6 },
-    { x: 15, y: 51, w: 194, h: 244, r: -7, z: 48, orbit: 14.4 },
-  ]), { gap: isCompactViewport() ? 18 : 14, portalRadius: isTightViewport() ? 124 : isCompactViewport() ? 136 : 144 });
+    { x: 22, y: 7, w: 160, h: 206, r: -12, z: 54, orbit: 12.1 },
+    { x: 59, y: 10, w: 178, h: 224, r: 9, z: 42, orbit: 12.8 },
+    { x: 12, y: 30, w: 188, h: 238, r: -5, z: 64, orbit: 13.8 },
+    { x: 67, y: 35, w: 164, h: 210, r: 6, z: 38, orbit: 13.1 },
+    { x: 22, y: 66, w: 168, h: 214, r: 8, z: 42, orbit: 14.3 },
+    { x: 58, y: 60, w: 174, h: 220, r: -10, z: 56, orbit: 13.7 },
+  ]), { gap: 12, portalRadius: isTightViewport() ? 84 : 92, padX: 10, padY: 10 });
 }
 
 function createMemoryCard(src, slot, className = "") {
@@ -280,26 +284,27 @@ function renderGallery() {
   const level = performanceLevel();
   const phoneViewport = isPhoneViewport();
   const tinyPhone = window.innerWidth <= 520;
+  const slots = gallerySlots();
+  const galleryImages = girl.images.slice(0, Math.min(girl.images.length, slots.length));
   const primaryEchoIndexes = phoneViewport
     ? []
     : level === "low"
     ? [0, 2, 4]
     : level === "medium"
-      ? [0, 1, 3, 4]
-      : [0, 1, 2, 3, 4];
+      ? [0, 1, 3, 4, 5]
+      : galleryImages.map((_, index) => index);
   const softEchoIndexes = phoneViewport
     ? []
     : level === "high"
-    ? [0, 1, 2, 3, 4]
+    ? galleryImages.map((_, index) => index)
     : level === "medium"
-      ? [0, 2, 4]
+      ? [0, 2, 4, 5]
       : [];
 
   main.innerHTML = "";
   echo.innerHTML = "";
 
-  const slots = gallerySlots();
-  girl.images.slice(0, 5).forEach((src, index) => {
+  galleryImages.forEach((src, index) => {
     const slot = slots[index];
     const card = createMemoryCard(src, {
       ...slot,
@@ -315,7 +320,7 @@ function renderGallery() {
     main.appendChild(card);
   });
 
-  girl.images.slice(0, 5).forEach((src, index) => {
+  galleryImages.forEach((src, index) => {
     const base = slots[index];
     if (!primaryEchoIndexes.includes(index)) return;
     const dirX = Math.sign(base.x - 50) || (index % 2 ? 1 : -1);
@@ -338,7 +343,7 @@ function renderGallery() {
     );
   });
 
-  girl.images.slice(0, 5).forEach((src, index) => {
+  galleryImages.forEach((src, index) => {
     const base = slots[index];
     if (!softEchoIndexes.includes(index)) return;
     const dirX = Math.sign(base.x - 50) || (index % 2 ? 1 : -1);
@@ -686,7 +691,7 @@ function startPortalTransition() {
         effect: "supernova",
         switchDelay: 240,
         totalDuration: 760,
-        onSwitched: () => {
+        onSettled: () => {
           startLetterSequence();
           clearPortalState();
           state.portalBusy = false;
@@ -740,7 +745,7 @@ function startPortalTransition() {
         effect: "blossom",
         switchDelay: 260,
         totalDuration: 900,
-        onSwitched: () => {
+        onSettled: () => {
           startLetterSequence();
           clearPortalState();
           state.portalBusy = false;
@@ -757,7 +762,7 @@ function startPortalTransition() {
   setTimeout(() => {
     transitionToScreen(3, {
       effect: "portal",
-      onSwitched: () => {
+      onSettled: () => {
         startLetterSequence();
         clearPortalState();
         state.portalBusy = false;

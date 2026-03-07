@@ -109,7 +109,7 @@ function openWishScreen(fromScreen) {
   state.previousScreen = fromScreen;
   transitionToScreen(4, {
     effect: "petal",
-    onSwitched: () => setTimeout(() => $("#wishInput")?.focus({ preventScroll: true }), 120),
+    onSettled: () => setTimeout(() => $("#wishInput")?.focus({ preventScroll: true }), 120),
   });
 }
 

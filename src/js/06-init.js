@@ -1,33 +1,64 @@
 ﻿/* Music toggle, event binding, app bootstrap */
 
 function toggleMusic() {
-  const audio = $("#bgm");
-  const btn = $("#toggleMusic");
-  if (!audio || !btn) return;
-
-  if (!state.musicOn) {
-    audio.volume = 0.16;
-    const p = audio.play();
-    if (p && typeof p.catch === "function") {
-      p.then(() => {
-        state.musicOn = true;
-        btn.classList.add("is-on");
-        localStorage.setItem(CONFIG.storageMusic, "1");
-      }).catch(() => {
-        state.musicOn = false;
-        btn.classList.remove("is-on");
-        showToast("Trình duyệt đang chặn autoplay.");
-      });
-      return;
-    }
-    state.musicOn = true;
-  } else {
+  if (state.musicOn) {
+    const audio = $("#bgm");
+    const btn = $("#toggleMusic");
+    if (!audio || !btn) return;
     audio.pause();
     state.musicOn = false;
+    btn.classList.remove("is-on");
+    localStorage.setItem(CONFIG.storageMusic, "0");
+    return;
+  }
+  tryStartMusic();
+}
+
+function tryStartMusic(options = {}) {
+  const {
+    silent = false,
+    persist = true,
+  } = options;
+  const audio = $("#bgm");
+  const btn = $("#toggleMusic");
+  if (!audio || !btn) return Promise.resolve(false);
+
+  audio.volume = 0.16;
+  const playResult = audio.play();
+  if (playResult && typeof playResult.then === "function") {
+    return playResult.then(() => {
+      state.musicOn = true;
+      btn.classList.add("is-on");
+      if (persist) localStorage.setItem(CONFIG.storageMusic, "1");
+      return true;
+    }).catch(() => {
+      state.musicOn = false;
+      btn.classList.remove("is-on");
+      if (!silent) showToast("Trình duyệt đang chặn autoplay.");
+      return false;
+    });
   }
 
-  btn.classList.toggle("is-on", state.musicOn);
-  localStorage.setItem(CONFIG.storageMusic, state.musicOn ? "1" : "0");
+  state.musicOn = true;
+  btn.classList.add("is-on");
+  if (persist) localStorage.setItem(CONFIG.storageMusic, "1");
+  return Promise.resolve(true);
+}
+
+function setupAutoplayMusicFallback() {
+  let armed = true;
+  const activate = () => {
+    if (!armed || state.musicOn) return;
+    armed = false;
+    tryStartMusic({ silent: true, persist: true });
+    window.removeEventListener("pointerdown", activate, true);
+    window.removeEventListener("keydown", activate, true);
+    window.removeEventListener("touchstart", activate, true);
+  };
+
+  window.addEventListener("pointerdown", activate, { capture: true, once: true, passive: true });
+  window.addEventListener("keydown", activate, { capture: true, once: true });
+  window.addEventListener("touchstart", activate, { capture: true, once: true, passive: true });
 }
 
 function bindEvents() {
@@ -55,9 +86,6 @@ function bindEvents() {
   $("#backFromWish")?.addEventListener("click", () => {
     transitionToScreen(state.previousScreen || 1, {
       effect: "drift",
-      onSwitched: () => {
-        if (state.previousScreen === 2) startMemoryHighlight();
-      },
     });
   });
   $("#openLetterBtn")?.addEventListener("click", startPortalTransition);
@@ -99,10 +127,9 @@ function init() {
   setupCustomCursor();
   setupHeroInteraction();
   runIntro();
-
-  if (localStorage.getItem(CONFIG.storageMusic) === "1") {
-    toggleMusic();
-  }
+  tryStartMusic({ silent: true, persist: true }).then((started) => {
+    if (!started) setupAutoplayMusicFallback();
+  });
 }
 
 init();

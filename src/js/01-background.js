@@ -8,9 +8,9 @@ function runIntro() {
     return;
   }
   intro.classList.add("is-visible");
-  const revealDelay = pickPerformanceValue(260, 220, 180);
-  const fadeDelay = pickPerformanceValue(1700, 1380, 1040);
-  const removeDelay = pickPerformanceValue(2550, 2080, 1540);
+  const revealDelay = pickPerformanceValue(320, 260, 220);
+  const fadeDelay = pickPerformanceValue(2800, 2400, 2100);
+  const removeDelay = pickPerformanceValue(3750, 3280, 2860);
   setTimeout(() => intro.classList.add("is-reveal"), revealDelay);
   setTimeout(() => intro.classList.add("is-fade"), fadeDelay);
   setTimeout(() => intro.remove(), removeDelay);

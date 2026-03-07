@@ -26,6 +26,7 @@ const CONFIG = {
         "./assets/Linh/Linh3.png",
         "./assets/Linh/Linh4.png",
         "./assets/Linh/Linh5.png",
+        "./assets/Linh/Linh6.jpg",
       ],
      letter: [
   "Dear Linh,",
@@ -54,6 +55,7 @@ const CONFIG = {
         "./assets/Dung/Dung3.png",
         "./assets/Dung/Dung4.png",
         "./assets/Dung/Dung5.png",
+        "./assets/Dung/Dung6.png",
       ],
       letter: [
   "Dear Dung,",
@@ -76,6 +78,7 @@ const CONFIG = {
   },
   themeCopy: {
   cosmic: {
+    introText: "Two bright stars are drifting into a glowing orbit ✨",
     heroKicker: "International Women's Day • 08/03",
     heroTitle: "Hai vì sao tỏa sáng trong khu vườn của vũ trụ",
     heroSubtitle:
@@ -125,6 +128,7 @@ const CONFIG = {
   },
 
   sakura: {
+    introText: "Two soft petals have landed in a gentle sakura garden 🌸",
     heroKicker: "International Women's Day • 08/03",
 
     heroTitle: "Hai cánh hoa rực rỡ trong khu vườn mùa xuân",
@@ -166,7 +170,7 @@ const CONFIG = {
     stageHint:
       "Di chuột để cánh hoa bay • chạm vòng hoa để mở thư",
 
-    portalText: "Mở lá thư sakura",
+    portalText: "Mở lời chúc",
     portalSub: "Chạm để vào",
 
     ending: "Hope this little garden made your 8/3 sweeter 🌸",
@@ -359,7 +363,11 @@ function renderActiveScreenVisuals(options = {}) {
   }
 }
 
-function showScreen(screenId) {
+function showScreen(screenId, options = {}) {
+  const {
+    render = true,
+    refreshHighlight = screenId === 2,
+  } = options;
   state.screen = screenId;
   document.body.dataset.screen = String(screenId);
   document.documentElement.dataset.screen = String(screenId);
@@ -375,13 +383,16 @@ function showScreen(screenId) {
     clearLetterTimers();
   }
 
-  renderActiveScreenVisuals({ refreshHighlight: screenId === 2 });
+  if (render) {
+    renderActiveScreenVisuals({ refreshHighlight });
+  }
 }
 
 function transitionToScreen(screenId, options = {}) {
   const {
     effect = "warp",
     onSwitched,
+    onSettled,
     switchDelay = 300,
     totalDuration = 840,
   } = options;
@@ -389,27 +400,36 @@ function transitionToScreen(screenId, options = {}) {
   if (!layer || prefersReducedMotion()) {
     showScreen(screenId);
     onSwitched?.();
+    onSettled?.();
     return;
   }
   if (state.transitionBusy) return;
 
   state.transitionBusy = true;
+  document.body.dataset.transitioning = "1";
+  document.documentElement.dataset.transitioning = "1";
+  clearBackgroundEffects();
+  if (state.screen === 2) clearMemoryHighlight();
   layer.className = "screen-transition";
   layer.dataset.effect = effect;
   layer.dataset.theme = state.theme;
   requestAnimationFrame(() => layer.classList.add("is-active", "is-enter"));
 
   setTimeout(() => {
-    showScreen(screenId);
+    showScreen(screenId, { render: false });
     onSwitched?.();
     layer.classList.remove("is-enter");
     layer.classList.add("is-exit");
   }, switchDelay);
 
   setTimeout(() => {
+    renderActiveScreenVisuals({ refreshHighlight: screenId === 2 });
+    onSettled?.();
     layer.className = "screen-transition";
     layer.removeAttribute("data-effect");
     layer.removeAttribute("data-theme");
+    delete document.body.dataset.transitioning;
+    delete document.documentElement.dataset.transitioning;
     state.transitionBusy = false;
   }, totalDuration);
 }
@@ -434,6 +454,7 @@ function setTheme(theme, persist = true) {
 function applyThemeCopy() {
   const copy = CONFIG.themeCopy[state.theme] || CONFIG.themeCopy.cosmic;
   const map = [
+    ["introOverlayText", "introText", false],
     ["heroKicker", "heroKicker", false],
     ["heroTitle", "heroTitle", false],
     ["heroSubtitle", "heroSubtitle", false],

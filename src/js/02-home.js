@@ -379,9 +379,7 @@ function startHomeTransition(girlKey, sourceEl) {
         effect: "garden",
         switchDelay: 420,
         totalDuration: 1120,
-        onSwitched: () => {
-          renderGallery();
-          startMemoryHighlight();
+        onSettled: () => {
           setupStageParallax();
         },
       });
@@ -411,9 +409,7 @@ function startHomeTransition(girlKey, sourceEl) {
       effect: "quantum",
       switchDelay: 240,
       totalDuration: 820,
-      onSwitched: () => {
-        renderGallery();
-        startMemoryHighlight();
+      onSettled: () => {
         setupStageParallax();
         sourceEl.classList.remove("is-cosmic-selected");
         hero?.classList.remove("is-cosmic-transition");
