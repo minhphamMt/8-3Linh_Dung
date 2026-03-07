@@ -143,7 +143,7 @@ function spawnCosmicLaunch(x, y) {
   ring.className = "cosmic-launch__ring";
   launch.appendChild(ring);
 
-  const particleCount = scalePerformanceCount(18, 12, 8);
+  const particleCount = scalePerformanceCount(14, 10, 6);
   for (let i = 0; i < particleCount; i += 1) {
     const p = document.createElement("span");
     p.className = "cosmic-launch__particle";
@@ -180,7 +180,7 @@ function spawnSakuraLaunch(x, y) {
   launch.appendChild(core);
 
   const petals = ["\u{1F338}", "\u2740", "\u273F"];
-  const petalCount = scalePerformanceCount(16, 12, 8);
+  const petalCount = scalePerformanceCount(14, 10, 6);
   for (let i = 0; i < petalCount; i += 1) {
     const petal = document.createElement("span");
     petal.className = "sakura-launch__petal";
@@ -223,7 +223,7 @@ function spawnSakuraPortalSwirl(x, y) {
   swirl.appendChild(core);
 
   const petals = ["🌸", "❀", "✿"];
-  const petalCount = scalePerformanceCount(18, 13, 9);
+  const petalCount = scalePerformanceCount(15, 11, 7);
   for (let i = 0; i < petalCount; i += 1) {
     const petal = document.createElement("span");
     petal.className = "sakura-portal-swirl__petal";

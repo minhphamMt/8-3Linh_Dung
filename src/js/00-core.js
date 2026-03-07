@@ -188,6 +188,8 @@ const state = {
   previousScreen: 1,
   typingTimer: null,
   backgroundIntervals: [],
+  backgroundTimers: new Set(),
+  backgroundRunId: 0,
   memoryInterval: null,
   memoryTimeout: null,
   letterTimers: [],
@@ -213,6 +215,11 @@ const state = {
   constellationAnchors: [],
   performance: null,
   resizeTimer: null,
+  stageGeometry: {
+    stageWidth: 0,
+    stageHeight: 0,
+    cards: [],
+  },
 };
 
 const rand = (min, max) => Math.random() * (max - min) + min;
@@ -263,11 +270,12 @@ function buildPerformanceProfile() {
     allowHeroParallax: !mobile && !reduced && level !== "low" && supportsFinePointer(),
     allowStageParallax: !mobile && !reduced && level !== "low" && supportsFinePointer(),
     allowConstellation: !reduced && level === "high",
-    stageLinkRefreshMs: pickLevelValue(420, 620, 960),
+    stageLinkRefreshMs: pickLevelValue(420, 760, 1180),
     heroHoverMs: pickLevelValue(48, 82, 132),
-    stageHoverMs: pickLevelValue(46, 76, 128),
+    stageHoverMs: pickLevelValue(46, 92, 148),
     resizeDebounceMs: pickLevelValue(120, 160, 220),
-    backgroundIntervalScale: pickLevelValue(1, 1.22, 1.58),
+    backgroundIntervalScale: pickLevelValue(1, 1.34, 1.74),
+    transitionScale: pickLevelValue(1, 0.92, 0.84),
   };
 }
 
@@ -396,6 +404,10 @@ function transitionToScreen(screenId, options = {}) {
     switchDelay = 300,
     totalDuration = 840,
   } = options;
+  const profile = state.performance || buildPerformanceProfile();
+  const transitionScale = profile.transitionScale || 1;
+  const switchMs = Math.max(160, Math.round(switchDelay * transitionScale));
+  const totalMs = Math.max(switchMs + 220, Math.round(totalDuration * transitionScale));
   const layer = $("#screenTransition");
   if (!layer || prefersReducedMotion()) {
     showScreen(screenId);
@@ -420,7 +432,7 @@ function transitionToScreen(screenId, options = {}) {
     onSwitched?.();
     layer.classList.remove("is-enter");
     layer.classList.add("is-exit");
-  }, switchDelay);
+  }, switchMs);
 
   setTimeout(() => {
     renderActiveScreenVisuals({ refreshHighlight: screenId === 2 });
@@ -431,7 +443,7 @@ function transitionToScreen(screenId, options = {}) {
     delete document.body.dataset.transitioning;
     delete document.documentElement.dataset.transitioning;
     state.transitionBusy = false;
-  }, totalDuration);
+  }, totalMs);
 }
 
 function currentGirl() {

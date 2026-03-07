@@ -147,6 +147,30 @@ function createMemoryCard(src, slot, className = "") {
   return card;
 }
 
+function updateStageGeometryCache() {
+  const stage = $("#memoryStage");
+  if (!stage) {
+    state.stageGeometry = {
+      stageWidth: 0,
+      stageHeight: 0,
+      cards: [],
+    };
+    return;
+  }
+
+  state.stageGeometry = {
+    stageWidth: stage.clientWidth,
+    stageHeight: stage.clientHeight,
+    cards: $$(".memory-photo").map((card) => ({
+      element: card,
+      centerX: card.offsetLeft + (card.offsetWidth / 2),
+      centerY: card.offsetTop + (card.offsetHeight / 2),
+      isMain: card.classList.contains("memory-photo--main"),
+      isEcho: card.classList.contains("memory-photo--echo"),
+    })),
+  };
+}
+
 function renderStageLinks() {
   const stage = $("#memoryStage");
   const svg = $("#stageLinks");
@@ -303,6 +327,8 @@ function renderGallery() {
 
   main.innerHTML = "";
   echo.innerHTML = "";
+  const mainFragment = document.createDocumentFragment();
+  const echoFragment = document.createDocumentFragment();
 
   galleryImages.forEach((src, index) => {
     const slot = slots[index];
@@ -317,7 +343,7 @@ function renderGallery() {
       card.addEventListener("focus", () => spawnCardHoverBurst(stage, card));
     }
     card.insertAdjacentHTML("beforeend", `<span class="memory-label">${CONFIG.memoryCaptions[index % CONFIG.memoryCaptions.length]}</span>`);
-    main.appendChild(card);
+    mainFragment.appendChild(card);
   });
 
   galleryImages.forEach((src, index) => {
@@ -334,7 +360,7 @@ function renderGallery() {
       z: Math.max(2, base.z - rand(16, 22)),
       orbit: base.orbit + rand(1.1, 2.8),
     };
-    echo.appendChild(
+    echoFragment.appendChild(
       createMemoryCard(
         src,
         moveSlotAwayFromCore(slot, isMobile() ? (sakuraMode ? 30 : 20) : (sakuraMode ? (compactStage ? 38 : 34) : (compactStage ? 29 : 25))),
@@ -357,7 +383,7 @@ function renderGallery() {
       z: Math.max(1, base.z - rand(24, 30)),
       orbit: base.orbit + rand(2.2, 4.8),
     };
-    echo.appendChild(
+    echoFragment.appendChild(
       createMemoryCard(
         src,
         moveSlotAwayFromCore(slot, isMobile() ? (sakuraMode ? 34 : 24) : (sakuraMode ? (compactStage ? 42 : 38) : (compactStage ? 34 : 30))),
@@ -395,7 +421,7 @@ function renderGallery() {
         ? Math.min(3, sparse.length)
         : sparse.length;
   sparse.slice(0, sparseLimit).forEach((slot, idx) => {
-    echo.appendChild(createMemoryCard(girl.images[idx % girl.images.length], slot, "memory-photo--echo memory-photo--echo-faint"));
+    echoFragment.appendChild(createMemoryCard(girl.images[idx % girl.images.length], slot, "memory-photo--echo memory-photo--echo-faint"));
   });
 
   if (!isMobile() && level !== "low") {
@@ -412,7 +438,7 @@ function renderGallery() {
         z: rand(2, 8),
         orbit: rand(16, 21),
       };
-      echo.appendChild(
+      echoFragment.appendChild(
         createMemoryCard(
           girl.images[i % girl.images.length],
           moveSlotAwayFromCore(slot, sakuraMode ? (compactStage ? 44 : 40) : (compactStage ? 38 : 34)),
@@ -422,7 +448,13 @@ function renderGallery() {
     }
   }
 
-  requestAnimationFrame(() => renderStageLinks());
+  main.appendChild(mainFragment);
+  echo.appendChild(echoFragment);
+  updateStageGeometryCache();
+  requestAnimationFrame(() => {
+    updateStageGeometryCache();
+    renderStageLinks();
+  });
 }
 
 function clearMemoryHighlight() {
@@ -480,6 +512,10 @@ function setupStageParallax() {
       card.classList.remove("is-magnetic");
     });
   };
+  const getCachedCards = () => {
+    if (!state.stageGeometry.cards.length) updateStageGeometryCache();
+    return state.stageGeometry.cards;
+  };
   const isStageInteractive = () => {
     const transitioning = state.portalBusy || stage.classList.contains("is-portal-transition") || stage.classList.contains("is-blackhole-transition");
     return state.screen === 2 && !transitioning && Boolean(state.performance?.allowStageParallax);
@@ -511,17 +547,16 @@ function setupStageParallax() {
         portal.style.setProperty("--py", `${((-y * 7) + (driftY * 0.3)).toFixed(2)}px`);
       }
 
-      const stageRect = stage.getBoundingClientRect();
-      const pointerX = stageRect.left + (motion.x * stageRect.width);
-      const pointerY = stageRect.top + (motion.y * stageRect.height);
+      const cachedCards = getCachedCards();
+      const stageWidth = state.stageGeometry.stageWidth || stage.clientWidth;
+      const stageHeight = state.stageGeometry.stageHeight || stage.clientHeight;
+      const pointerX = motion.x * stageWidth;
+      const pointerY = motion.y * stageHeight;
       let nearest = null;
       let nearestDist = Number.POSITIVE_INFINITY;
-      const mainCards = $$(".memory-photo--main");
-      mainCards.forEach((card) => {
-        const r = card.getBoundingClientRect();
-        const cx = r.left + (r.width / 2);
-        const cy = r.top + (r.height / 2);
-        const d = Math.hypot(pointerX - cx, pointerY - cy);
+      cachedCards.forEach((card) => {
+        if (!card.isMain) return;
+        const d = Math.hypot(pointerX - card.centerX, pointerY - card.centerY);
         if (d < nearestDist) {
           nearest = card;
           nearestDist = d;
@@ -529,18 +564,13 @@ function setupStageParallax() {
       });
 
       const cardsToMove = performanceLevel() === "high"
-        ? $$(".memory-photo")
-        : performanceLevel() === "medium"
-          ? $$(".memory-photo--main, .memory-photo--echo")
-          : $$(".memory-photo--main");
+        ? cachedCards
+        : cachedCards.filter((card) => card.isMain);
       cardsToMove.forEach((card) => {
-        const r = card.getBoundingClientRect();
-        const cx = r.left + (r.width / 2);
-        const cy = r.top + (r.height / 2);
-        const dx = pointerX - cx;
-        const dy = pointerY - cy;
+        const dx = pointerX - card.centerX;
+        const dy = pointerY - card.centerY;
         const dist = Math.hypot(dx, dy);
-        const isMain = card.classList.contains("memory-photo--main");
+        const isMain = card.isMain;
         const radius = isMain ? pickPerformanceValue(300, 250, 210) : pickPerformanceValue(220, 180, 140);
         const safeDist = dist || 0.001;
 
@@ -558,12 +588,12 @@ function setupStageParallax() {
           const pullForce = 1 - (nearestDist / magneticRadius);
           tx += (dx / safeDist) * pullForce * pickPerformanceValue(7.5, 5.8, 4.4);
           ty += (dy / safeDist) * pullForce * pickPerformanceValue(7.5, 5.8, 4.4);
-          card.classList.add("is-magnetic");
+          card.element.classList.add("is-magnetic");
         } else {
-          card.classList.remove("is-magnetic");
+          card.element.classList.remove("is-magnetic");
         }
 
-        card.style.translate = `${tx.toFixed(2)}px ${ty.toFixed(2)}px`;
+        card.element.style.translate = `${tx.toFixed(2)}px ${ty.toFixed(2)}px`;
       });
 
       const now = performance.now();
@@ -611,6 +641,13 @@ function setupStageParallax() {
   });
 }
 
+function fadeSecondaryPortalCards() {
+  if (performanceLevel() === "high") return;
+  $$(".memory-photo--echo, .memory-photo--echo-soft, .memory-photo--echo-faint, .memory-photo--ambient").forEach((card) => {
+    card.classList.add("memory-photo--transition-fade");
+  });
+}
+
 function startPortalTransition() {
   if (state.portalBusy || !currentGirl()) return;
   const stage = $("#memoryStage");
@@ -639,7 +676,7 @@ function startPortalTransition() {
       "is-sakura-portal-bloom"
     );
     $$(".memory-photo.to-portal").forEach((card) => {
-      card.classList.remove("to-portal", "to-sakura-portal");
+      card.classList.remove("to-portal", "to-sakura-portal", "memory-photo--transition-fade");
       card.style.translate = "0 0";
       [
         "--portal-dx",
@@ -653,6 +690,7 @@ function startPortalTransition() {
         "--pull-delay",
       ].forEach((key) => card.style.removeProperty(key));
     });
+    $$(".memory-photo--transition-fade").forEach((card) => card.classList.remove("memory-photo--transition-fade"));
   };
 
   if (state.theme === "cosmic") {
@@ -661,9 +699,11 @@ function startPortalTransition() {
     const portalRect = portal?.getBoundingClientRect();
     const portalX = portalRect ? portalRect.left + (portalRect.width / 2) : stageRect.left + (stageRect.width / 2);
     const portalY = portalRect ? portalRect.top + (portalRect.height / 2) : stageRect.top + (stageRect.height / 2);
+    const portalCards = performanceLevel() === "high" ? $$(".memory-photo") : $$(".memory-photo--main");
 
     stage.classList.add("is-blackhole-transition");
-    $$(".memory-photo").forEach((card, index) => {
+    fadeSecondaryPortalCards();
+    portalCards.forEach((card, index) => {
       const rect = card.getBoundingClientRect();
       const cardX = rect.left + (rect.width / 2);
       const cardY = rect.top + (rect.height / 2);
@@ -707,11 +747,13 @@ function startPortalTransition() {
     const portalRect = portal?.getBoundingClientRect();
     const portalX = portalRect ? portalRect.left + (portalRect.width / 2) : stageRect.left + (stageRect.width / 2);
     const portalY = portalRect ? portalRect.top + (portalRect.height / 2) : stageRect.top + (stageRect.height / 2);
+    const portalCards = performanceLevel() === "high" ? $$(".memory-photo") : $$(".memory-photo--main");
 
     stage.classList.add("is-sakura-portal-transition");
     spawnSakuraPortalSwirl(portalX, portalY);
 
-    $$(".memory-photo").forEach((card, index) => {
+    fadeSecondaryPortalCards();
+    portalCards.forEach((card, index) => {
       const rect = card.getBoundingClientRect();
       const cardX = rect.left + (rect.width / 2);
       const cardY = rect.top + (rect.height / 2);
@@ -756,8 +798,11 @@ function startPortalTransition() {
   }
 
   stage.classList.add("is-portal-transition");
+  fadeSecondaryPortalCards();
   $$(".memory-photo--main").forEach((card) => card.classList.add("to-portal"));
-  $$(".memory-photo--echo").forEach((card) => card.classList.add("to-portal"));
+  if (performanceLevel() === "high") {
+    $$(".memory-photo--echo").forEach((card) => card.classList.add("to-portal"));
+  }
 
   setTimeout(() => {
     transitionToScreen(3, {

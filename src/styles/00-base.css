@@ -832,6 +832,10 @@ html[data-theme="sakura"] .toast {
   z-index: 70;
   pointer-events: none;
   opacity: 0;
+  isolation: isolate;
+  contain: layout style paint;
+  will-change: opacity;
+  transform: translateZ(0);
 }
 
 .screen-transition::before,
@@ -840,6 +844,8 @@ html[data-theme="sakura"] .toast {
   position: absolute;
   inset: -12%;
   opacity: 0;
+  will-change: transform, opacity, filter;
+  transform: translateZ(0);
 }
 
 .screen-transition[data-theme="cosmic"]::before {
@@ -986,10 +992,48 @@ body[data-transitioning="1"] .wish-sakura-petal {
   animation-play-state: paused !important;
 }
 
+body[data-transitioning="1"] .card {
+  backdrop-filter: none !important;
+}
+
+html[data-performance="medium"] .screen-transition::before,
+html[data-performance="medium"] .screen-transition::after {
+  inset: -8%;
+}
+
 html[data-performance="medium"] .screen-transition[data-effect="quantum"]::after,
 html[data-performance="medium"] .screen-transition[data-effect="supernova"]::after,
 html[data-performance="medium"] .screen-transition[data-effect="blossom"]::after {
   filter: blur(10px) saturate(1.08);
+}
+
+html[data-performance="medium"] .screen-transition[data-effect="supernova"]::before {
+  filter: saturate(1.18) contrast(1.08);
+  background:
+    radial-gradient(circle at 50% 52%, rgba(255,255,255,.96), rgba(192,228,255,.72) 16%, rgba(122,158,255,.38) 30%, rgba(255,174,230,.2) 42%, transparent 64%),
+    radial-gradient(circle at 50% 52%, rgba(190,228,255,.18), rgba(190,228,255,0) 56%);
+}
+
+html[data-performance="medium"] .screen-transition[data-effect="blossom"]::before {
+  filter: saturate(1.04) blur(.8px);
+  background:
+    radial-gradient(circle at 50% 56%, rgba(255,255,255,.98), rgba(255,214,230,.82) 20%, rgba(255,184,212,.42) 34%, rgba(255,184,212,0) 60%),
+    radial-gradient(circle at 16% 18%, rgba(255,232,188,.32), transparent 24%),
+    radial-gradient(circle at 82% 16%, rgba(255,205,223,.26), transparent 26%),
+    radial-gradient(circle at 18% 80%, rgba(255,216,229,.18), transparent 20%),
+    radial-gradient(circle at 80% 76%, rgba(255,216,229,.18), transparent 20%);
+}
+
+html[data-performance="medium"] .screen-transition[data-effect="quantum"]::before {
+  filter: saturate(1.14) contrast(1.04);
+  background:
+    radial-gradient(circle at 50% 52%, rgba(182,225,255,.72), rgba(118,145,255,.34) 30%, transparent 64%),
+    radial-gradient(circle at 50% 52%, rgba(190,226,255,.12), rgba(190,226,255,0) 58%);
+}
+
+html[data-performance="low"] .screen-transition::before,
+html[data-performance="low"] .screen-transition::after {
+  inset: -4%;
 }
 
 html[data-performance="low"] .screen-transition[data-effect="quantum"]::after,
@@ -997,6 +1041,34 @@ html[data-performance="low"] .screen-transition[data-effect="supernova"]::after,
 html[data-performance="low"] .screen-transition[data-effect="blossom"]::after,
 html[data-performance="low"] .screen-transition[data-effect="garden"]::after {
   filter: blur(8px) saturate(1.04);
+}
+
+html[data-performance="low"] .screen-transition[data-effect="quantum"]::after,
+html[data-performance="low"] .screen-transition[data-effect="supernova"]::after,
+html[data-performance="low"] .screen-transition[data-effect="blossom"]::after,
+html[data-performance="low"] .screen-transition[data-effect="garden"]::after,
+html[data-performance="low"] .screen-transition[data-theme="cosmic"]::after,
+html[data-performance="low"] .screen-transition[data-theme="sakura"]::after {
+  display: none;
+}
+
+html[data-performance="low"] .screen-transition[data-effect="quantum"]::before {
+  filter: saturate(1.08) contrast(1.02);
+  background: radial-gradient(circle at 50% 52%, rgba(182,225,255,.7), rgba(118,145,255,.28) 32%, transparent 62%);
+}
+
+html[data-performance="low"] .screen-transition[data-effect="supernova"]::before {
+  filter: saturate(1.12) contrast(1.04);
+  background: radial-gradient(circle at 50% 52%, rgba(255,255,255,.94), rgba(192,228,255,.66) 18%, rgba(122,158,255,.34) 32%, rgba(255,174,230,.16) 44%, transparent 62%);
+}
+
+html[data-performance="low"] .screen-transition[data-effect="garden"]::before,
+html[data-performance="low"] .screen-transition[data-effect="blossom"]::before {
+  filter: saturate(1.02) blur(.6px);
+  background:
+    radial-gradient(circle at 50% 54%, rgba(255,244,250,.94), rgba(255,194,220,.5) 30%, rgba(255,228,238,.12) 52%, transparent 68%),
+    radial-gradient(circle at 16% 18%, rgba(255,232,188,.26), transparent 24%),
+    radial-gradient(circle at 82% 16%, rgba(255,197,223,.22), transparent 26%);
 }
 
 .topbar {

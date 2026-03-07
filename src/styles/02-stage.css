@@ -866,6 +866,11 @@ html[data-theme="sakura"] .memory-photo--main.is-magnetic {
   animation-delay: var(--pull-delay, 0s);
 }
 
+.memory-photo--transition-fade {
+  pointer-events: none;
+  animation: secondaryPortalFade .34s ease forwards;
+}
+
 html[data-theme="cosmic"] .memory-photo.to-portal {
   animation: blackHolePull .92s var(--ease) forwards;
   animation-delay: var(--pull-delay, 0s);
@@ -1298,6 +1303,17 @@ html[data-theme="sakura"] .stage-hint { color: #87586d; }
     font-size: 11px;
     width: min(90%, 320px);
     text-align: center;
+  }
+}
+
+@keyframes secondaryPortalFade {
+  from {
+    opacity: var(--portal-fade-from, 1);
+    transform: translate3d(0, 0, var(--depth-z, 0px)) rotate(var(--base-rotate, 0deg)) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(0, -10px, calc(var(--depth-z, 0px) - 8px)) rotate(var(--base-rotate, 0deg)) scale(.92);
   }
 }
 

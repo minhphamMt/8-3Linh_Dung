@@ -344,6 +344,7 @@ function renderStageStars() {
     avoidCenterRadius: minCenterDistance,
   });
 
+  const fragment = document.createDocumentFragment();
   points.forEach((point) => {
     const star = document.createElement("span");
     star.className = [
@@ -360,15 +361,52 @@ function renderStageStars() {
     star.style.setProperty("--dur", `${rand(2.4, 6.2).toFixed(2)}s`);
     star.style.setProperty("--delay", `${rand(0, 5.4).toFixed(2)}s`);
     star.style.setProperty("--blur", `${(point.giant ? rand(0, 0.34) : rand(0, 1.1)).toFixed(2)}px`);
-    layer.appendChild(star);
+    fragment.appendChild(star);
   });
+  layer.appendChild(fragment);
+}
+
+function trackBackgroundTimer(timer) {
+  state.backgroundTimers.add(timer);
+  return timer;
+}
+
+function untrackBackgroundTimer(timer) {
+  state.backgroundTimers.delete(timer);
+}
+
+function canRunBackgroundEffects(runId) {
+  return runId === state.backgroundRunId
+    && !document.hidden
+    && !state.transitionBusy
+    && [1, 2].includes(state.screen);
+}
+
+function scheduleBackgroundRecipe(recipe, runId) {
+  if (!canRunBackgroundEffects(runId)) return;
+  const jitter = rand(0.9, 1.14);
+  let timer = null;
+  timer = window.setTimeout(() => {
+    untrackBackgroundTimer(timer);
+    if (!canRunBackgroundEffects(runId)) return;
+    if (recipe.className === "fx-constellation-seed") {
+      spawnConstellation();
+    } else {
+      spawnBackgroundItem(recipe.layer, recipe.className, recipe.text, recipe.min, recipe.max);
+    }
+    scheduleBackgroundRecipe(recipe, runId);
+  }, Math.max(240, Math.round(recipe.interval * jitter)));
+  trackBackgroundTimer(timer);
 }
 
 function clearBackgroundEffects() {
+  state.backgroundRunId += 1;
   state.backgroundIntervals.forEach((timer) => clearInterval(timer));
   state.backgroundTimeouts.forEach((timer) => clearTimeout(timer));
+  state.backgroundTimers.forEach((timer) => clearTimeout(timer));
   state.backgroundIntervals = [];
   state.backgroundTimeouts = [];
+  state.backgroundTimers.clear();
   state.constellationAnchors = [];
   $$(".fx-item").forEach((node) => node.remove());
   $$(".fx-constellation").forEach((node) => node.remove());
@@ -379,6 +417,7 @@ function startBackgroundEffects() {
   clearBackgroundEffects();
 
   const profile = state.performance || buildPerformanceProfile();
+  const runId = state.backgroundRunId;
   const lowPower = profile.reduced || profile.level === "low";
   const sakura = state.theme === "sakura";
   const homeScreen = state.screen === 1;
@@ -438,18 +477,24 @@ function startBackgroundEffects() {
     for (let i = 0; i < burst; i += 1) {
       spawnBackgroundItem(recipe.layer, recipe.className, recipe.text, recipe.min, recipe.max);
     }
-    const timer = setInterval(
-      () => spawnBackgroundItem(recipe.layer, recipe.className, recipe.text, recipe.min, recipe.max),
-      recipe.interval
-    );
-    state.backgroundIntervals.push(timer);
+    scheduleBackgroundRecipe(recipe, runId);
   });
 
   if (!sakura && profile.allowConstellation) {
     spawnConstellation();
-    const constellationTimer = setInterval(spawnConstellation, 7600);
-    state.backgroundIntervals.push(constellationTimer);
-    state.backgroundTimeouts.push(setTimeout(spawnConstellation, 2600));
+    scheduleBackgroundRecipe({
+      layer: "#bgConstellation",
+      className: "fx-constellation-seed",
+      text: "",
+      min: 0,
+      max: 0,
+      interval: Math.round(7600 * intervalScale),
+    }, runId);
+    const initialConstellationTimer = window.setTimeout(() => {
+      untrackBackgroundTimer(initialConstellationTimer);
+      if (canRunBackgroundEffects(runId)) spawnConstellation();
+    }, Math.round(2600 * intervalScale));
+    trackBackgroundTimer(initialConstellationTimer);
   }
 }
 
