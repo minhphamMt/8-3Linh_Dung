@@ -246,8 +246,8 @@ function buildPerformanceProfile() {
   const memory = readDeviceNumber("deviceMemory", mobile ? 4 : 8);
   const cores = readDeviceNumber("hardwareConcurrency", mobile ? 4 : 8);
 
-  // Keep one balanced default profile across devices so visuals behave consistently.
-  const level = reduced ? "low" : "medium";
+  // Force the lighter profile for every device so all screens use the same low-cost animation setup.
+  const level = "low";
   const pickLevelValue = (high, medium = high, low = medium) => (
     level === "low" ? low : level === "medium" ? medium : high
   );
@@ -258,7 +258,7 @@ function buildPerformanceProfile() {
     mobile,
     memory,
     cores,
-    allowCustomCursor: supportsFinePointer() && level !== "low",
+    allowCustomCursor: supportsFinePointer() && !reduced,
     allowHeroParallax: !mobile && !reduced && supportsFinePointer(),
     allowStageParallax: !mobile && !reduced && supportsFinePointer(),
     allowConstellation: !reduced,

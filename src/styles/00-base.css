@@ -89,10 +89,6 @@ body {
 .site-cursor.is-hover { --cursor-scale: 1.18; }
 .site-cursor.is-pressed { --cursor-scale: .94; }
 
-html[data-performance="low"] .site-cursor {
-  display: none;
-}
-
 .site-cursor__halo,
 .site-cursor__glyph {
   position: absolute;
